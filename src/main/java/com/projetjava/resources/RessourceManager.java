@@ -2,7 +2,6 @@ package com.projetjava.resources;
 
 import java.util.HashMap;
 
-import com.projetjava.resources.ResourceType;
 
 public class RessourceManager {
     private static RessourceManager instance;
@@ -42,7 +41,7 @@ public class RessourceManager {
         if(resource != null){
             resource.addQuantity(quantity);
         }else{
-            throw new IllegalArgumentException("Resource type not found");
+            throw new UnknownResourceTypeException("Resource type not found");
         }
     }
 
@@ -57,7 +56,7 @@ public class RessourceManager {
         if(resource != null){
             resource.subtractQuantity(quantity);
         }else{
-            throw new IllegalArgumentException("Resource type not found");
+            throw new UnknownResourceTypeException("Resource type not found");
         }
     }
     

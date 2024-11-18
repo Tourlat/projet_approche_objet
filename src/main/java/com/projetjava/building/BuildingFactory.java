@@ -1,10 +1,5 @@
 package com.projetjava.building;
 
-import com.projetjava.resources.ResourceType;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class BuildingFactory {
     public static Building createBuilding(BuildingType type) {
         switch (type) {
@@ -27,7 +22,7 @@ public class BuildingFactory {
             case TOOL_FACTORY:
                 return new ToolFactory();
             default:
-                throw new IllegalArgumentException("Unknown building type: " + type);
+                throw new UnknownBuildingTypeException("Unknown building type: " + type);
         }
     }
 }
