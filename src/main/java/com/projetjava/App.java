@@ -8,6 +8,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+
+import com.projetjava.building.*;
+import com.projetjava.map.MapManager;
+import com.projetjava.map.Position;
+
 /**
  * JavaFX App
  */
@@ -31,8 +36,32 @@ public class App extends Application {
         return fxmlLoader.load();
     }
 
-    public static void main(String[] args) {
-        launch();
+   public static void main(String[] args) {
+        // Créer une instance de la carte
+        MapManager mapManager = MapManager.getInstance(10, 10);
+
+        // Créer des bâtiments en utilisant la factory
+        Building quarry = BuildingFactory.createBuilding(BuildingType.QUARRY);
+        Building house = BuildingFactory.createBuilding(BuildingType.HOUSE);
+
+        // Ajouter des bâtiments à la carte
+        Position position1 = new Position(0, 0);
+        
+        Position position2 = new Position(4, 4);
+
+        mapManager.placeBuilding(position1, quarry);
+        mapManager.placeBuilding(position2, house);
+
+        // Afficher la carte après l'ajout des bâtiments
+        System.out.println("Map after adding buildings:");
+        mapManager.showMap();
+
+        // Supprimer un bâtiment de la carte
+        mapManager.removeBuilding(position1);
+        System.out.println("Map after removing building at position " + position1.getX() + ", " + position1.getY() + ":");
+        mapManager.showMap();
+
+        
     }
 
 }
