@@ -12,10 +12,12 @@ public abstract class Building {
     private Map<ResourceType, Integer> consumption;
     private int nbWorkers;
     private int nbInhabitants;
+    private static Integer uid = 0;
 
 
     public Building(String name, int width, int height, int nbInhabitants, int nbWorkers, Map<ResourceType, Integer> constructionCost, Map<ResourceType, Integer> consumption, Map<ResourceType, Integer> production, int constructionTime) {
-        this.name = name;
+        uid++;
+        this.name = name + "_" + uid.toString();
         this.width = width;
         this.height = height;
         this.constructionTime = constructionTime;
