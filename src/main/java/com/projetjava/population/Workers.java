@@ -64,6 +64,22 @@ public class Workers implements Population {
   }
 
   /**
+   * Remove employed workers
+   * @param employed Number of workers to remove
+   */
+  @Override
+  public void removeEmployed(int employed) {
+    if (employed < 0) {
+      throw new IllegalArgumentException("Employed workers can't be negative");
+    } else if (employed > this.employedWorkers) {
+      throw new IllegalArgumentException("Not enough employed workers");
+    } else {
+      this.employedWorkers -= employed;
+      this.unemployedWorkers += employed;
+    }
+  }
+
+  /**
    * Add workers to the population
    * @param pop Number of workers to add
    */
@@ -72,19 +88,46 @@ public class Workers implements Population {
     this.unemployedWorkers += pop;
   }
 
+  // /**
+  //  * Remove workers depending on the food available
+  //  * @param food Food available
+  //  */
+  // @Override
+  // public void foodComsumption(int food) {
+  //   if (food < getFoodConsumption()) {
+  //     int foodComsumptionForEmployed = getEmployed() * 2;
+  //     if (food > foodComsumptionForEmployed) { // Remove unemployed workers first
+  //       unemployedWorkers -= food - foodComsumptionForEmployed;
+  //     } else {
+  //       unemployedWorkers = 0;
+  //       employedWorkers -= Math.abs((food - foodComsumptionForEmployed) / 2); // If it's odd, let a worker live
+  //     }
+  //   }
+  // }
+
   /**
    * Remove workers depending on the food available
-   * @param food Food available
+   * 
    */
-  @Override
-  public void foodComsumption(int food) {
-    if (food < getFoodConsumption()) {
-      int foodComsumptionForEmployed = getEmployed() * 2;
-      if (food > foodComsumptionForEmployed) { // Remove unemployed workers first
-        unemployedWorkers -= food - foodComsumptionForEmployed;
+  public void foodConsumption(int foodAvailable) {
+    int foodConsumption = getFoodConsumption();
+    int foodNeeded = foodConsumption - foodAvailable;
+    //if there is not enough food
+    if (foodNeeded > 0) {
+      //remove employed workers first
+      if (foodNeeded >= getEmployed() * 2) {
+        foodNeeded -= getEmployed() * 2;
+        removeEmployed(getEmployed());
+        unemployedWorkers -= foodNeeded;
       } else {
+        //remove unemployed workers first
+        unemployedWorkers -= foodNeeded;
+      }
+      if(unemployedWorkers < 0){
         unemployedWorkers = 0;
-        employedWorkers -= Math.abs((food - foodComsumptionForEmployed) / 2); // If it's odd, let a worker live
+      }
+      if(employedWorkers < 0){
+        employedWorkers = 0;
       }
     }
   }

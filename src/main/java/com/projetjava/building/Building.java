@@ -137,4 +137,32 @@ public abstract class Building {
   public int getEmployed() {
     return employed;
   }
+
+  /**
+   * Add workers to the building
+   * @param workers the number of workers to add
+   */
+  public void addWorkers(int workers) {
+    if (workers < 0) {
+      throw new IllegalArgumentException("Workers can't be negative");
+    } else if (workers > employeesNeeded - employed) {
+      throw new IllegalArgumentException("Not enough space for workers");
+    } else {
+      this.employed += workers;
+    }
+  }
+
+  /**
+   * Remove workers from the building
+   * @param workers the number of workers to remove
+   */
+  public void removeWorkers(int workers) {
+    if (workers < 0) {
+      throw new IllegalArgumentException("Workers can't be negative");
+    } else if (workers > employed) {
+      throw new IllegalArgumentException("Not enough workers to remove");
+    } else {
+      this.employed -= workers;
+    }
+  }
 }

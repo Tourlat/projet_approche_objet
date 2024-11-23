@@ -117,4 +117,12 @@ public class MapManager {
         return height;
     }
 
+
+    public Building getBuilding(Position pos) {
+        return buildings.get(pos);
+    }
+
+    public HashMap<Position, Building> getBuildings() {
+        return buildings;
+    }
 }

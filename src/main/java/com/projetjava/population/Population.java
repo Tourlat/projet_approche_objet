@@ -11,7 +11,9 @@ public interface Population {
 
   public void addPop(int pop);
 
-  public void foodComsumption(int food);
+  public void foodConsumption(int food);
+
+  public void removeEmployed(int employed);
 
   /**
    * Default method to get the food consumption of the population

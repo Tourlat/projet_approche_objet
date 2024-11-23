@@ -3,18 +3,18 @@ package com.projetjava.resources;
 import java.util.HashMap;
 
 
-public class RessourceManager {
-    private static RessourceManager instance;
+public class ResourceManager {
+    private static ResourceManager instance;
     private HashMap<ResourceType, Resource> resources;
 
-    private RessourceManager(){
+    private ResourceManager(){
         resources = new HashMap<>();
         initializeResources();
     }
 
-    public static RessourceManager getInstance(){
+    public static ResourceManager getInstance(){
         if(instance == null){
-            instance = new RessourceManager();
+            instance = new ResourceManager();
         }
         return instance;
     }
@@ -59,5 +59,18 @@ public class RessourceManager {
             throw new UnknownResourceTypeException("Resource type not found");
         }
     }
-    
+
+    /**
+     * Get the quantity of a resource
+     * @param type
+     * @return the quantity of the resource
+     */
+    public int getResourceQuantity(ResourceType type){
+        Resource resource = resources.get(type);
+        if(resource != null){
+            return resource.getQuantity();
+        }else{
+            throw new UnknownResourceTypeException("Resource type not found");
+        }
+    }
 }
