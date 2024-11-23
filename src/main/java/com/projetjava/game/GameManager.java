@@ -26,7 +26,21 @@ public class GameManager {
 
     public boolean addBuilding(Position position, BuildingType building) {
         Building newBuilding = BuildingFactory.createBuilding(building);
+
+        //check if the player has enough resources to build the building
+        for(Map.Entry<ResourceType, Integer> entry : newBuilding.getConstructionCost().entrySet()) {
+            if(resourceManager.getResourceQuantity(entry.getKey()) < entry.getValue()) {
+                return false;
+            }
+        }
+
         boolean success = mapManager.placeBuilding(position, newBuilding);
+        if (success) {
+            for(Map.Entry<ResourceType, Integer> entry : newBuilding.getConstructionCost().entrySet()) {
+                resourceManager.subtractResource(entry.getKey(), entry.getValue());
+            };
+            workers.addUnemployed(newBuilding.getPopulationCreated());
+        }
         return success;
     }
 
@@ -34,7 +48,7 @@ public class GameManager {
         Building building = mapManager.getBuilding(position);
         boolean success = mapManager.removeBuilding(position);
         if (success) {
-            for(Map.Entry<ResourceType, Integer> entry : building.getConstructionCost().entrySet()) {
+            for(Map.Entry<ResourceType, Integer> entry : building.getConsumption().entrySet()) {
                 resourceManager.subtractResource(entry.getKey(), entry.getValue());
             };
         }
@@ -65,12 +79,11 @@ public class GameManager {
         for(Map.Entry<Position, Building> entry : mapManager.getBuildings().entrySet()) {
             Building building = entry.getValue();
             for(Map.Entry<ResourceType, Integer> entry2 : building.getCurrentProduction().entrySet()) {
+                System.out.println(entry2.getKey() + " " + entry2.getValue() + " " + building.getName());
                 resourceManager.addResource(entry2.getKey(), entry2.getValue());
             }
         }
     }
-
-
 
     public void consumeFood() {
         int foodAvailable = resourceManager.getResourceQuantity(ResourceType.FOOD);
@@ -78,6 +91,11 @@ public class GameManager {
         workers.foodConsumption(foodAvailable);
         resourceManager.addResource(ResourceType.FOOD, Math.max(0, foodAvailable - workers.getFoodConsumption()));
     }
+
+    public void showResources() {
+        resourceManager.showResources();
+    }
+    
 }
 
 

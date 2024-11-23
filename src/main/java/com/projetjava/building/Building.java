@@ -103,6 +103,7 @@ public abstract class Building {
    * @return the current production of the building
    */
   public Map<ResourceType, Integer> getCurrentProduction() {
+    System.out.println("employed: " + employed);
     Map<ResourceType, Integer> currentProduction = new HashMap<>();
     double proportion = (double) employed / employeesNeeded;
 

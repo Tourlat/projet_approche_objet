@@ -15,6 +15,8 @@ public interface Population {
 
   public void removeEmployed(int employed);
 
+  public void addUnemployed(int unemployed);
+
   /**
    * Default method to get the food consumption of the population
    * @return Food consumption

@@ -73,4 +73,14 @@ public class ResourceManager {
             throw new UnknownResourceTypeException("Resource type not found");
         }
     }
+
+
+    /**
+     * display the quantity of all resources
+     */
+    public void showResources(){
+     for(Resource resource : resources.values()){
+            System.out.println(resource.getType() + " : " + resource.getQuantity());
+        }
+    }
 }
