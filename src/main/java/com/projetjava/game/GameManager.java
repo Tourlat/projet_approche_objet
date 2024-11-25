@@ -79,7 +79,6 @@ public class GameManager {
         for(Map.Entry<Position, Building> entry : mapManager.getBuildings().entrySet()) {
             Building building = entry.getValue();
             for(Map.Entry<ResourceType, Integer> entry2 : building.getCurrentProduction().entrySet()) {
-                System.out.println(entry2.getKey() + " " + entry2.getValue() + " " + building.getName());
                 resourceManager.addResource(entry2.getKey(), entry2.getValue());
             }
         }
@@ -88,8 +87,8 @@ public class GameManager {
     public void consumeFood() {
         int foodAvailable = resourceManager.getResourceQuantity(ResourceType.FOOD);
         workers.foodConsumption(foodAvailable);
-        workers.foodConsumption(foodAvailable);
-        resourceManager.addResource(ResourceType.FOOD, Math.max(0, foodAvailable - workers.getFoodConsumption()));
+        System.out.println("Food consumption: " + workers.getFoodConsumption());
+        resourceManager.setResourceQuantity(ResourceType.FOOD, Math.max(0, foodAvailable - workers.getFoodConsumption()));
     }
 
     public void showResources() {

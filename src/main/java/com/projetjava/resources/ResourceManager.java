@@ -60,6 +60,15 @@ public class ResourceManager {
         }
     }
 
+    public void setResourceQuantity(ResourceType type, int quantity){
+        Resource resource = resources.get(type);
+        if(resource != null){
+            resource.setQuantity(quantity);
+        }else{
+            throw new UnknownResourceTypeException("Resource type not found");
+        }
+    }
+
     /**
      * Get the quantity of a resource
      * @param type

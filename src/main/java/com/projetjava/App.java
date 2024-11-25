@@ -37,8 +37,7 @@ public class App extends Application {
 
   private static Parent loadFXML(String fxml) throws IOException {
     FXMLLoader fxmlLoader = new FXMLLoader(
-      App.class.getResource(fxml + ".fxml")
-    );
+        App.class.getResource(fxml + ".fxml"));
     return fxmlLoader.load();
   }
 
@@ -66,11 +65,11 @@ public class App extends Application {
     // // Supprimer un bâtiment de la carte
     // mapManager.removeBuilding(position1);
     // System.out.println(
-    //   "Map after removing building at position " +
-    //   position1.getX() +
-    //   ", " +
-    //   position1.getY() +
-    //   ":"
+    // "Map after removing building at position " +
+    // position1.getX() +
+    // ", " +
+    // position1.getY() +
+    // ":"
     // );
     // mapManager.showMap();
 
@@ -91,44 +90,51 @@ public class App extends Application {
     // Ajouter un bâtiment pour tester
     Position position = new Position(2, 3);
     if (gameManager.addBuilding(position, BuildingType.WOODEN_CABIN)) {
-        System.out.println("Building added at position: " + position.getX() + ", " + position.getY());
+      System.out.println("Building added at position: " + position.getX() + ", " + position.getY());
     } else {
-        System.out.println("Failed to add building at position: " + position.getX() + ", " + position.getY());
+      System.out.println("Failed to add building at position: " + position.getX() + ", " + position.getY());
     }
 
     gameManager.addWorkersToBuilding(position, 2);
     // Démarrer le timer du jeu
-    GameTimer gameTimer = new GameTimer();
+    GameTimer gameTimer = GameTimer.getInstance();
     gameTimer.start();
 
     // Thread pour afficher les ressources périodiquement
     Thread resourceDisplayThread = new Thread(() -> {
-        while (true) {
-            try {
-                Thread.sleep(1000);
-                gameManager.updateResources();
-            gameManager.showResources();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            
+      while (gameTimer.isRunning()) {
+        if (gameTimer.isUpdated()) {
+          // Afficher les ressources ici
+          System.out.println("Ressources mises à jour à l'heure: " + gameTimer.getTimeOfDay());
+          gameManager.updateResources();
+          gameManager.consumeFood();
+          System.out.println("Food: " + resourceManager.getResourceQuantity(ResourceType.FOOD) + " Wood: "
+              + resourceManager.getResourceQuantity(ResourceType.WOOD) + " Stone: "
+              + resourceManager.getResourceQuantity(ResourceType.STONE));
+          // Réinitialiser l'état de mise à jour
+          gameTimer.setUpdated(false);
         }
+        try {
+          Thread.sleep(1000); // Attendre une seconde avant de vérifier à nouveau
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
     });
 
     resourceDisplayThread.start();
 
     // Boucle principale pour simuler le jeu
     while (true) {
-        try {
-            Thread.sleep(1000);
-            
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // Vous pouvez ajouter d'autres simulations ou mises à jour ici
-        // Par exemple, vérifier l'état du jeu, afficher des informations, etc.
+      try {
+        Thread.sleep(1000);
+
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      // Vous pouvez ajouter d'autres simulations ou mises à jour ici
+      // Par exemple, vérifier l'état du jeu, afficher des informations, etc.
     }
-    
 
   }
 }
