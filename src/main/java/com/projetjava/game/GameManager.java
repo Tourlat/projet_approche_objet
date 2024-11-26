@@ -1,6 +1,5 @@
 package com.projetjava.game;
 
-
 import com.projetjava.resources.ResourceManager;
 
 import java.util.Map;
@@ -27,18 +26,19 @@ public class GameManager {
     public boolean addBuilding(Position position, BuildingType building) {
         Building newBuilding = BuildingFactory.createBuilding(building);
 
-        //check if the player has enough resources to build the building
-        for(Map.Entry<ResourceType, Integer> entry : newBuilding.getConstructionCost().entrySet()) {
-            if(resourceManager.getResourceQuantity(entry.getKey()) < entry.getValue()) {
+        // check if the player has enough resources to build the building
+        for (Map.Entry<ResourceType, Integer> entry : newBuilding.getConstructionCost().entrySet()) {
+            if (resourceManager.getResourceQuantity(entry.getKey()) < entry.getValue()) {
                 return false;
             }
         }
 
         boolean success = mapManager.placeBuilding(position, newBuilding);
         if (success) {
-            for(Map.Entry<ResourceType, Integer> entry : newBuilding.getConstructionCost().entrySet()) {
+            for (Map.Entry<ResourceType, Integer> entry : newBuilding.getConstructionCost().entrySet()) {
                 resourceManager.subtractResource(entry.getKey(), entry.getValue());
-            };
+            }
+            ;
             workers.addUnemployed(newBuilding.getPopulationCreated());
         }
         return success;
@@ -48,19 +48,22 @@ public class GameManager {
         Building building = mapManager.getBuilding(position);
         boolean success = mapManager.removeBuilding(position);
         if (success) {
-            // for(Map.Entry<ResourceType, Integer> entry : building.getConsumption().entrySet()) {
-            //     resourceManager.subtractResource(entry.getKey(), entry.getValue());
+            // for(Map.Entry<ResourceType, Integer> entry :
+            // building.getConsumption().entrySet()) {
+            // resourceManager.subtractResource(entry.getKey(), entry.getValue());
             // };
             /**
              * enlever les habitants / workers etc ....................
              */
+            workers.removeEmployed(building.getCurrentEmployees());
+            workers.removeUnemployed(building.getCurrentPopulation());
         }
         return success;
     }
 
     public boolean addWorkersToBuilding(Position position, int numberOfWorkers) {
         Building building = mapManager.getBuilding(position);
-        if(building != null && workers.getUnemployed() >= numberOfWorkers) {
+        if (building != null && workers.getUnemployed() >= numberOfWorkers) {
             building.addWorkers(numberOfWorkers);
             workers.addEmployed(numberOfWorkers);
             return true;
@@ -70,7 +73,7 @@ public class GameManager {
 
     public boolean removeWorkersFromBuilding(Position position, int numberOfWorkers) {
         Building building = mapManager.getBuilding(position);
-        if(building != null && building.getEmployed() >= numberOfWorkers) {
+        if (building != null && building.getCurrentEmployees() >= numberOfWorkers) {
             building.removeWorkers(numberOfWorkers);
             workers.removeEmployed(numberOfWorkers);
             return true;
@@ -79,9 +82,9 @@ public class GameManager {
     }
 
     public void updateResources() {
-        for(Map.Entry<Position, Building> entry : mapManager.getBuildings().entrySet()) {
+        for (Map.Entry<Position, Building> entry : mapManager.getBuildings().entrySet()) {
             Building building = entry.getValue();
-            for(Map.Entry<ResourceType, Integer> entry2 : building.getCurrentProduction().entrySet()) {
+            for (Map.Entry<ResourceType, Integer> entry2 : building.getCurrentProduction().entrySet()) {
                 resourceManager.addResource(entry2.getKey(), entry2.getValue());
             }
         }
@@ -91,14 +94,12 @@ public class GameManager {
         int foodAvailable = resourceManager.getResourceQuantity(ResourceType.FOOD);
         workers.foodConsumption(foodAvailable);
         System.out.println("Food consumption: " + workers.getFoodConsumption());
-        resourceManager.setResourceQuantity(ResourceType.FOOD, Math.max(0, foodAvailable - workers.getFoodConsumption()));
+        resourceManager.setResourceQuantity(ResourceType.FOOD,
+                Math.max(0, foodAvailable - workers.getFoodConsumption()));
     }
 
     public void showResources() {
         resourceManager.showResources();
     }
-    
+
 }
-
-
-

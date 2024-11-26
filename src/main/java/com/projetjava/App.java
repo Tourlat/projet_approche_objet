@@ -3,10 +3,7 @@ package com.projetjava;
 import com.projetjava.building.*;
 import com.projetjava.game.GameManager;
 import com.projetjava.game.GameTimer;
-import com.projetjava.map.MapManager;
 import com.projetjava.map.Position;
-import com.projetjava.population.Population;
-import com.projetjava.population.PopulationManager;
 import com.projetjava.resources.ResourceManager;
 import com.projetjava.resources.ResourceType;
 

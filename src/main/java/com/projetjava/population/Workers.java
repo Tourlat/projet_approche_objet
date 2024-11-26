@@ -98,6 +98,22 @@ public class Workers implements Population {
   }
 
   /**
+   * Remove unemployed workers
+   * 
+   * @param unemployed Number of workers to remove
+   */
+  @Override
+  public void removeUnemployed(int unemployed) {
+    if (unemployed < 0) {
+      throw new IllegalArgumentException("Cannot substract by a negative number");
+    } else if (unemployed > this.unemployedWorkers) {
+      throw new IllegalArgumentException("Not enough unemployed workers");
+    } else {
+      this.unemployedWorkers -= unemployed;
+    }
+  }
+
+  /**
    * Add workers to the population
    * 
    * @param pop Number of workers to add
@@ -134,13 +150,13 @@ public class Workers implements Population {
     int foodNeeded = foodConsumption - foodAvailable;
     // if there is not enough food
     if (foodNeeded > 0) {
-      //remove unemployed workers first
+      // remove unemployed workers first
       if (unemployedWorkers >= foodNeeded) {
         unemployedWorkers -= foodNeeded;
       } else {
         foodNeeded -= unemployedWorkers;
         unemployedWorkers = 0;
-        //remove employed workers
+        // remove employed workers
         employedWorkers -= foodNeeded;
       }
       if (employedWorkers < 0) {
