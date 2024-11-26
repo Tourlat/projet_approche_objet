@@ -134,17 +134,14 @@ public class Workers implements Population {
     int foodNeeded = foodConsumption - foodAvailable;
     // if there is not enough food
     if (foodNeeded > 0) {
-      // remove employed workers first
-      if (foodNeeded >= getEmployed() * 2) {
-        foodNeeded -= getEmployed() * 2;
-        removeEmployed(getEmployed());
+      //remove unemployed workers first
+      if (unemployedWorkers >= foodNeeded) {
         unemployedWorkers -= foodNeeded;
       } else {
-        // remove unemployed workers first
-        unemployedWorkers -= foodNeeded;
-      }
-      if (unemployedWorkers < 0) {
+        foodNeeded -= unemployedWorkers;
         unemployedWorkers = 0;
+        //remove employed workers
+        employedWorkers -= foodNeeded;
       }
       if (employedWorkers < 0) {
         employedWorkers = 0;
