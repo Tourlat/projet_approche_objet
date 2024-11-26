@@ -88,7 +88,7 @@ public class Workers implements Population {
   @Override
   public void removeEmployed(int employed) {
     if (employed < 0) {
-      throw new IllegalArgumentException("Employed workers can't be negative");
+      throw new IllegalArgumentException("Cannot substract by a negative number");
     } else if (employed > this.employedWorkers) {
       throw new IllegalArgumentException("Not enough employed workers");
     } else {
