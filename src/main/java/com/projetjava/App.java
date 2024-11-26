@@ -1,11 +1,11 @@
 package com.projetjava;
 
-import com.projetjava.building.*;
-import com.projetjava.game.GameManager;
-import com.projetjava.game.GameTimer;
-import com.projetjava.map.Position;
-import com.projetjava.resources.ResourceManager;
-import com.projetjava.resources.ResourceType;
+import com.projetjava.Controller.game.GameManager;
+import com.projetjava.Controller.game.GameTimer;
+import com.projetjava.Model.building.*;
+import com.projetjava.Model.map.Position;
+import com.projetjava.Model.resources.ResourceManager;
+import com.projetjava.Model.resources.ResourceType;
 
 import java.io.IOException;
 import javafx.application.Application;
