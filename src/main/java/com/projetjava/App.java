@@ -77,12 +77,56 @@ public class App extends Application {
     // System.out.println(workers.getFoodConsumption());
     // System.out.println(populationManager.getTotalPopulation());
 
+    
+
+    // Démarrer le timer du jeu
+    // GameTimer gameTimer = GameTimer.getInstance();
+    // gameTimer.start();
+
+    // Thread pour afficher les ressources périodiquement
+    // Thread resourceDisplayThread = new Thread(() -> {
+    //   while (gameTimer.isRunning()) {
+    //     if (gameTimer.isUpdated()) {
+    //       // Afficher les ressources ici
+    //       System.out.println("Ressources mises à jour à l'heure: " + gameTimer.getTimeOfDay());
+    //       gameManager.updateResources();
+    //       gameManager.consumeFood();
+    //       System.out.println("Food: " + resourceManager.getResourceQuantity(ResourceType.FOOD) + " Wood: "
+    //           + resourceManager.getResourceQuantity(ResourceType.WOOD) + " Stone: "
+    //           + resourceManager.getResourceQuantity(ResourceType.STONE));
+    //       // Réinitialiser l'état de mise à jour
+    //       gameTimer.setUpdated(false);
+    //     }
+    //     try {
+    //       Thread.sleep(1000); // Attendre une seconde avant de vérifier à nouveau
+    //     } catch (InterruptedException e) {
+    //       e.printStackTrace();
+    //     }
+    //   }
+    // });
+
+    // resourceDisplayThread.start();
+
+    // // Boucle principale pour simuler le jeu
+    // while (true) {
+    //   try {
+    //     Thread.sleep(1000);
+
+    //   } catch (InterruptedException e) {
+    //     e.printStackTrace();
+    //   }
+    //   // Vous pouvez ajouter d'autres simulations ou mises à jour ici
+    //   // Par exemple, vérifier l'état du jeu, afficher des informations, etc.
+    // }
+
     GameManager gameManager = new GameManager();
 
-    ResourceManager resourceManager = ResourceManager.getInstance();
-    resourceManager.addResource(ResourceType.FOOD, 100);
-    resourceManager.addResource(ResourceType.WOOD, 50);
-    resourceManager.addResource(ResourceType.STONE, 30);
+    gameManager.initializeGame();
+
+    // ResourceManager resourceManager = ResourceManager.getInstance();
+    // resourceManager.addResource(ResourceType.FOOD, 100);
+    // resourceManager.addResource(ResourceType.WOOD, 50);
+    // resourceManager.addResource(ResourceType.STONE, 30);
 
     // Ajouter un bâtiment pour tester
     Position position = new Position(2, 3);
@@ -93,45 +137,22 @@ public class App extends Application {
     }
 
     gameManager.addWorkersToBuilding(position, 2);
-    // Démarrer le timer du jeu
-    GameTimer gameTimer = GameTimer.getInstance();
+    GameTimer gameTimer = GameTimer.getInstance(); 
     gameTimer.start();
 
-    // Thread pour afficher les ressources périodiquement
-    Thread resourceDisplayThread = new Thread(() -> {
-      while (gameTimer.isRunning()) {
-        if (gameTimer.isUpdated()) {
-          // Afficher les ressources ici
-          System.out.println("Ressources mises à jour à l'heure: " + gameTimer.getTimeOfDay());
-          gameManager.updateResources();
-          gameManager.consumeFood();
-          System.out.println("Food: " + resourceManager.getResourceQuantity(ResourceType.FOOD) + " Wood: "
-              + resourceManager.getResourceQuantity(ResourceType.WOOD) + " Stone: "
-              + resourceManager.getResourceQuantity(ResourceType.STONE));
-          // Réinitialiser l'état de mise à jour
-          gameTimer.setUpdated(false);
-        }
-        try {
-          Thread.sleep(1000); // Attendre une seconde avant de vérifier à nouveau
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-    });
-
-    resourceDisplayThread.start();
-
-    // Boucle principale pour simuler le jeu
-    while (true) {
+    while(true){
       try {
         Thread.sleep(1000);
-
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
-      // Vous pouvez ajouter d'autres simulations ou mises à jour ici
-      // Par exemple, vérifier l'état du jeu, afficher des informations, etc.
-    }
+      System.out.println("Time: " + gameTimer.getTimeOfDay());
+      if(gameTimer.getTimeOfDay() == 12){
+        gameManager.consumeFood();
+      }
+      if(gameTimer.getTimeOfDay() == 18){
+        gameManager.updateResources();
+    }}
 
   }
 }
