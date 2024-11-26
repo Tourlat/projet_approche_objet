@@ -48,9 +48,12 @@ public class GameManager {
         Building building = mapManager.getBuilding(position);
         boolean success = mapManager.removeBuilding(position);
         if (success) {
-            for(Map.Entry<ResourceType, Integer> entry : building.getConsumption().entrySet()) {
-                resourceManager.subtractResource(entry.getKey(), entry.getValue());
-            };
+            // for(Map.Entry<ResourceType, Integer> entry : building.getConsumption().entrySet()) {
+            //     resourceManager.subtractResource(entry.getKey(), entry.getValue());
+            // };
+            /**
+             * enlever les habitants / workers etc ....................
+             */
         }
         return success;
     }

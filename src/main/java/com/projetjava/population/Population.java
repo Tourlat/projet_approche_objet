@@ -22,6 +22,6 @@ public interface Population {
    * @return Food consumption
    */
   default int getFoodConsumption() {
-    return getUnemployed() + getEmployed() * 2;
+    return getUnemployed() + getEmployed();
   }
 }
