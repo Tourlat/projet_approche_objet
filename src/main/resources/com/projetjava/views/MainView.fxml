@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+
+<BorderPane fx:id="mainPane" fx:controller="com.projetjava.Controller.MainController" xmlns:fx="http://javafx.com/fxml">
+
+    <!-- Map and Buildings can be added here -->
+
+    <!-- Resources -->
+    <right>
+        <VBox alignment="TOP_RIGHT">
+            <fx:include source="ResourcesView.fxml" fx:id="resourcesView"/>
+        </VBox>
+    </right> 
+
+</BorderPane>

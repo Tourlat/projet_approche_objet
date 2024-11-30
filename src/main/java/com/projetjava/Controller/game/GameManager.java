@@ -10,23 +10,35 @@ import com.projetjava.Model.map.Position;
 import com.projetjava.Model.population.Workers;
 import com.projetjava.Model.resources.ResourceManager;
 import com.projetjava.Model.resources.ResourceType;
+import com.projetjava.Controller.Observer;
 
-public class GameManager {
+public class GameManager implements Observer {
     private ResourceManager resourceManager;
     private Workers workers;
     private MapManager mapManager;
+    private GameTimer gameTimer;
 
     public GameManager() {
+
         this.resourceManager = ResourceManager.getInstance();
         this.workers = Workers.getInstance();
         this.mapManager = MapManager.getInstance(10, 10);
+        this.gameTimer = GameTimer.getInstance();
+        gameTimer.addObserver(this);
 
+    }
+
+    @Override
+    public void update() {
+        updateResources();
+        consumeFood();
     }
 
     public void initializeGame(){
         resourceManager.addResource(ResourceType.FOOD, 100);
         resourceManager.addResource(ResourceType.WOOD, 50);
         resourceManager.addResource(ResourceType.STONE, 30);
+        gameTimer.start();
     
     }
 
@@ -107,6 +119,14 @@ public class GameManager {
 
     public void showResources() {
         resourceManager.showResources();
+    }
+
+    public ResourceManager getResourceManager() {
+        return resourceManager;
+    }
+
+    public GameTimer getGameTimer() {
+        return gameTimer;
     }
 
 }

@@ -1,6 +1,10 @@
 package com.projetjava.Controller.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
+
+import com.projetjava.Controller.Observer;
 
 public class GameTimer {
     private final int DAY_LENGTH = 24;
@@ -15,6 +19,8 @@ public class GameTimer {
     private Timer timer;
 
     private static GameTimer instance;
+
+     private final List<Observer> observers = new ArrayList<>();
 
     public static GameTimer getInstance() {
         if (instance == null) {
@@ -50,12 +56,15 @@ public class GameTimer {
         isUpdated = true;
         currentHour = (currentHour + 1) % DAY_LENGTH;
         if (currentHour == 6) {
+            // notify observers that it's now day time update resources etc...
+            notifyObservers();
             isDay = true;
             System.out.println("It's now day time.");
         } else if (currentHour == 18) {
             isDay = false;
             System.out.println("It's now night time.");
         }
+       
     }
 
     public boolean isDay() {
@@ -76,5 +85,19 @@ public class GameTimer {
 
     public void setUpdated(boolean updated) {
         isUpdated = updated;
+    }
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    private void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
 }

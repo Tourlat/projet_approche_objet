@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane fx:controller="com.projetjava.Controller.ResourcesController" xmlns:fx="http://javafx.com/fxml" vgap="5" alignment="CENTER">
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="0">
+        <ImageView fx:id="foodImage" />
+        <Label fx:id="foodLabel" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="1">
+        <ImageView fx:id="woodImage" />
+        <Label fx:id="woodLabel" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="2">
+        <ImageView fx:id="stoneImage" />
+        <Label fx:id="stoneLabel" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+</GridPane>
