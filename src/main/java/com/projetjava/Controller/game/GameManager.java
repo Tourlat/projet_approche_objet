@@ -1,5 +1,7 @@
 package com.projetjava.Controller.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.projetjava.Model.building.Building;
@@ -18,7 +20,18 @@ public class GameManager implements Observer {
     private MapManager mapManager;
     private GameTimer gameTimer;
 
-    public GameManager() {
+    private static GameManager instance;
+
+    private List<Observer> observers = new ArrayList<>();
+
+    public static GameManager getInstance() {
+        if (instance == null) {
+            instance = new GameManager();
+        }
+        return instance;
+    }
+
+    private GameManager() {
 
         this.resourceManager = ResourceManager.getInstance();
         this.workers = Workers.getInstance();
@@ -30,6 +43,7 @@ public class GameManager implements Observer {
 
     @Override
     public void update() {
+        System.out.println("Game update");
         updateResources();
         consumeFood();
     }
@@ -39,6 +53,7 @@ public class GameManager implements Observer {
         resourceManager.addResource(ResourceType.WOOD, 50);
         resourceManager.addResource(ResourceType.STONE, 30);
         gameTimer.start();
+        notifyObservers();
     
     }
 
@@ -58,8 +73,10 @@ public class GameManager implements Observer {
                 resourceManager.subtractResource(entry.getKey(), entry.getValue());
             }
             ;
+            
             workers.addUnemployed(newBuilding.getPopulationCreated());
         }
+        notifyObservers();
         return success;
     }
 
@@ -107,6 +124,7 @@ public class GameManager implements Observer {
                 resourceManager.addResource(entry2.getKey(), entry2.getValue());
             }
         }
+        notifyObservers();
     }
 
     public void consumeFood() {
@@ -127,6 +145,22 @@ public class GameManager implements Observer {
 
     public GameTimer getGameTimer() {
         return gameTimer;
+    }
+
+
+    // observer pattern
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
 
 }

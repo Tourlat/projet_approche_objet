@@ -55,15 +55,17 @@ public class GameTimer {
     private void updateGameTime() {
         isUpdated = true;
         currentHour = (currentHour + 1) % DAY_LENGTH;
+        
         if (currentHour == 6) {
             // notify observers that it's now day time update resources etc...
-            notifyObservers();
+           
             isDay = true;
             System.out.println("It's now day time.");
         } else if (currentHour == 18) {
             isDay = false;
             System.out.println("It's now night time.");
         }
+        notifyObservers();
        
     }
 

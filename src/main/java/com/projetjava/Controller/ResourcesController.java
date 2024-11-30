@@ -48,12 +48,16 @@
 // }
 package com.projetjava.Controller;
 
+import com.projetjava.Controller.game.GameManager;
+import com.projetjava.Model.resources.ResourceType;
+
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class ResourcesController {
+public class ResourcesController implements Observer {
 
     @FXML
     private Label foodLabel;
@@ -119,8 +123,23 @@ public class ResourcesController {
     }
 
     public void updateResources(int food, int wood, int stone) {
-        foodLabel.setText("Food: " + food);
-        woodLabel.setText("Wood: " + wood);
-        stoneLabel.setText("Stone: " + stone);
+        System.out.println(food + " " + wood + " " + stone);
+         Platform.runLater(() -> {
+            foodLabel.setText("Food: " + food);
+            woodLabel.setText("Wood: " + wood);
+            stoneLabel.setText("Stone: " + stone);
+        });
     }
+
+    @Override
+    public void update() {
+        System.out.println("Resources update");
+        
+        int food = GameManager.getInstance().getResourceManager().getResourceQuantity(ResourceType.FOOD);
+        int wood = GameManager.getInstance().getResourceManager().getResourceQuantity(ResourceType.WOOD);
+        int stone = GameManager.getInstance().getResourceManager().getResourceQuantity(ResourceType.STONE);
+        updateResources(food, wood, stone);
+    }
+
+    
 }
