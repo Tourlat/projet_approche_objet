@@ -1,12 +1,13 @@
 package com.projetjava;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-import javafx.scene.Parent;
+
 import java.net.URL;
 
 public class App extends Application {
@@ -29,6 +30,12 @@ public class App extends Application {
     stage.setScene(scene);
     stage.setMaximized(true);
     stage.show();
+
+    stage.setOnCloseRequest(event -> {
+        System.out.println("Window close request received. Stopping the application...");
+        Platform.exit();
+        System.exit(0);
+    });
   }
 
   public static void main(String[] args) {

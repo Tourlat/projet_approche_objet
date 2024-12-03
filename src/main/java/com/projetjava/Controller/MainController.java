@@ -2,8 +2,8 @@ package com.projetjava.Controller;
 
 import java.io.IOException;
 
-import com.projetjava.Controller.game.GameManager;
 import com.projetjava.Model.building.BuildingType;
+import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.Position;
 
 import javafx.fxml.FXML;

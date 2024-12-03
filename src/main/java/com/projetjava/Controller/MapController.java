@@ -2,8 +2,8 @@ package com.projetjava.Controller;
 
 import com.projetjava.Model.map.MapManager;
 import com.projetjava.Model.map.Position;
+import com.projetjava.util.ImageCache;
 import com.projetjava.Model.building.Building;
-import com.projetjava.View.ImageCache;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;

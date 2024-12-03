@@ -1,4 +1,4 @@
-package com.projetjava.Controller.game;
+package com.projetjava.Model.game;
 
 import java.util.ArrayList;
 import java.util.List;

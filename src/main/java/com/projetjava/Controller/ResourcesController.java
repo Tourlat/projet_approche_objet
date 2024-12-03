@@ -1,8 +1,9 @@
 package com.projetjava.Controller;
 
-import com.projetjava.Controller.game.GameManager;
+import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.resources.ResourceType;
-import com.projetjava.View.ImageCache;
+import com.projetjava.util.ImageCache;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
