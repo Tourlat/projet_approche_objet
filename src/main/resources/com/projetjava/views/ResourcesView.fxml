@@ -20,8 +20,8 @@
         <Label fx:id="stoneLabel" text="Stone: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
     </VBox>
     <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="3">
-        <ImageView fx:id="lumberMillImage" />
-        <Label fx:id="lumberMillLabel" text="Lumber Mill: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <ImageView fx:id="lumberImage" />
+        <Label fx:id="lumberLabel" text="Lumber: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
     </VBox>
     <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="4">
         <ImageView fx:id="coalImage" />
