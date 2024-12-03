@@ -2,29 +2,23 @@ package com.projetjava.Controller;
 
 import com.projetjava.Model.map.MapManager;
 import com.projetjava.Model.map.Position;
-import com.projetjava.View.ImageCache;
 import com.projetjava.Model.building.Building;
+import com.projetjava.View.ImageCache;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.input.MouseEvent;
 
-
-public class MapController {
+public class MapController implements Observer{
 
     @FXML
     private GridPane mapGrid;
 
     private Image ground;
-
-    // Buidling images ...
-
     private Image woodenCabin;
-    // private Image farmImage;
-    // private Image mineImage;
-
 
     @FXML
     public void initialize() {
@@ -37,13 +31,10 @@ public class MapController {
             ImageCache imageCache = ImageCache.getInstance();
             ground = imageCache.getImage("/com/projetjava/sprites/ground.png");
             woodenCabin = imageCache.getImage("/com/projetjava/sprites/resources_sprites/Food.png");
-            
-            // Load all images here
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     private void loadMap() {
         MapManager mapManager = MapManager.getInstance(30, 25); 
@@ -53,6 +44,9 @@ public class MapController {
                 Pane cell = new Pane();
                 cell.setPrefSize(25, 25);
 
+                final int finalX = x;
+                final int finalY = y;
+
 
                 ImageView buildingImage = new ImageView();
 
@@ -61,7 +55,8 @@ public class MapController {
                 if (building != null) {
                     switch (building.getType()) {
                         case WOODEN_CABIN:
-                            buildingImage.setImage(woodenCabin);
+                            buildingImage.setImage(woodenCabin);    
+                            break;
                         default:
                             buildingImage.setImage(ground);
                             break;
@@ -75,9 +70,22 @@ public class MapController {
             
                 cell.getChildren().add(buildingImage);
            
+                // Add mouse click event handler
+                cell.setOnMouseClicked(event -> handleMouseClick(finalX, finalY));
 
                 mapGrid.add(cell, x, y);
             }
         }
+    }
+
+    private void handleMouseClick( int x, int y) {
+        System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
+    }
+
+    public void update() {
+        // Clear the existing cells
+        mapGrid.getChildren().clear();
+        // Reload the map data
+        loadMap();
     }
 }

@@ -51,6 +51,8 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        gameManager.addObserver(mapController);
+
 
         // test building creation
         gameManager.addBuilding(new Position(1, 1), BuildingType.WOODEN_CABIN);

@@ -50,6 +50,7 @@ package com.projetjava.Controller;
 
 import com.projetjava.Controller.game.GameManager;
 import com.projetjava.Model.resources.ResourceType;
+import com.projetjava.View.ImageCache;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -86,9 +87,10 @@ public class ResourcesController implements Observer {
 
     private void loadImages() {
         try {
-            Image foodImg = new Image(getClass().getResourceAsStream("/com/projetjava/sprites/resources_sprites/Food.png"));
-            Image woodImg = new Image(getClass().getResourceAsStream("/com/projetjava/sprites/resources_sprites/Wood.png"));
-            Image stoneImg = new Image(getClass().getResourceAsStream("/com/projetjava/sprites/resources_sprites/Stone.png"));
+            ImageCache imageCache = ImageCache.getInstance();
+            Image foodImg = imageCache.getImage("/com/projetjava/sprites/resources_sprites/Food.png");
+            Image woodImg = imageCache.getImage("/com/projetjava/sprites/resources_sprites/Wood.png");
+            Image stoneImg = imageCache.getImage("/com/projetjava/sprites/resources_sprites/Stone.png");
 
             if (foodImg.isError()) {
                 System.err.println("Error loading food image.");
