@@ -2,6 +2,7 @@ package com.projetjava.Controller;
 
 import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.resources.ResourceType;
+import com.projetjava.customexceptions.InvalidResourceLoadException;
 import com.projetjava.util.ImageCache;
 
 import javafx.application.Platform;
@@ -108,9 +109,7 @@ public class ResourcesController implements Observer {
 
   private void setImageView(ImageView imageView, Image image) {
     if (image == null || image.isError()) {
-      System.err.println(
-        "Error loading image: " + (image != null ? image.getUrl() : "null")
-      );
+      throw new InvalidResourceLoadException("Error loading image: " + (image != null ? image.getUrl() : "null"));
     } else {
       imageView.setImage(image);
       imageView.setFitHeight(50);

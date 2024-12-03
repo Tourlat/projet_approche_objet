@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.projetjava.Model.building.BuildingType;
 import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.Position;
+import com.projetjava.customexceptions.InvalidResourceLoadException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,7 +37,7 @@ public class MainController {
         try {
             resourcesView = loadView("/com/projetjava/views/ResourcesView.fxml");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new InvalidResourceLoadException("Error loading resourceView in MainController", e);
         }
 
         // Set the ResourcesView to the right of the mainPane
@@ -49,7 +50,7 @@ public class MainController {
         try {
             mapView = loadView("/com/projetjava/views/MapView.fxml");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new InvalidResourceLoadException("Error loading mapView in MainController", e);
         }
         gameManager.addObserver(mapController);
 

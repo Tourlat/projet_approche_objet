@@ -2,6 +2,8 @@ package com.projetjava.Model.resources;
 
 import java.util.HashMap;
 
+import com.projetjava.customexceptions.UnknownResourceTypeException;
+
 public class ResourceManager {
     private static ResourceManager instance;
     private HashMap<ResourceType, Resource> resources;

@@ -1,4 +1,4 @@
-package com.projetjava.Model.building;
+package com.projetjava.customexceptions;
 
 /**
  * Exception thrown when trying to create a building of an unknown type.
