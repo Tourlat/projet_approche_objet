@@ -59,6 +59,7 @@ public class MainController {
         gameManager.addBuilding(new Position(1, 1), BuildingType.WOODEN_CABIN);
 
         gameManager.addWorkersToBuilding(new Position(1, 1), 2);
+
     }
 
     private Pane loadView(String fxmlPath) throws IOException {
