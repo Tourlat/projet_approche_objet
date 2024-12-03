@@ -9,14 +9,34 @@
 <GridPane fx:controller="com.projetjava.Controller.ResourcesController" xmlns:fx="http://javafx.com/fxml" vgap="5" alignment="CENTER">
     <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="0">
         <ImageView fx:id="foodImage" />
-        <Label fx:id="foodLabel" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <Label fx:id="foodLabel" text="Food: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
     </VBox>
     <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="1">
         <ImageView fx:id="woodImage" />
-        <Label fx:id="woodLabel" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <Label fx:id="woodLabel" text="Wood: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
     </VBox>
     <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="2">
         <ImageView fx:id="stoneImage" />
-        <Label fx:id="stoneLabel" text="0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <Label fx:id="stoneLabel" text="Stone: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="3">
+        <ImageView fx:id="lumberMillImage" />
+        <Label fx:id="lumberMillLabel" text="Lumber Mill: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="4">
+        <ImageView fx:id="coalImage" />
+        <Label fx:id="coalLabel" text="Coal: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="5">
+        <ImageView fx:id="ironImage" />
+        <Label fx:id="ironLabel" text="Iron: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="6">
+        <ImageView fx:id="steelImage" />
+        <Label fx:id="steelLabel" text="Steel: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="7">
+        <ImageView fx:id="toolsImage" />
+        <Label fx:id="toolsLabel" text="Tools: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
     </VBox>
 </GridPane>
