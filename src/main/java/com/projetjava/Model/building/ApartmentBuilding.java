@@ -9,6 +9,7 @@ public class ApartmentBuilding extends Building {
   public ApartmentBuilding() {
     super(
         "Apartment Building",
+        BuildingType.APARTMENT_BUILDING,
         3,
         2,
         6,

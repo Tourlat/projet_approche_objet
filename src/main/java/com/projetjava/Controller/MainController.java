@@ -22,6 +22,9 @@ public class MainController {
     private ResourcesController resourcesController;
 
     @FXML
+    private MapController mapController;
+
+    @FXML
     public void initialize() {
         // Initialize the GameManager
         System.out.println("Initializing GameManager...");
@@ -41,6 +44,14 @@ public class MainController {
 
         gameManager.addObserver(resourcesController);
 
+        // Load the MapView
+        Pane mapView = null;
+        try {
+            mapView = loadView("/com/projetjava/views/MapView.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // test building creation
         gameManager.addBuilding(new Position(1, 1), BuildingType.WOODEN_CABIN);
 
@@ -53,6 +64,9 @@ public class MainController {
 
         if (fxmlPath.contains("ResourcesView")) {
             resourcesController = loader.getController();
+        }
+        if(fxmlPath.contains("MapView")){
+            mapController = loader.getController();
         }
 
         return pane;

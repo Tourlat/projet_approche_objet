@@ -9,6 +9,7 @@ public class SteelMill extends Building {
   public SteelMill() {
     super(
         "Steel Mill",
+        BuildingType.STEEL_MILL,
         4,
         3,
         6,

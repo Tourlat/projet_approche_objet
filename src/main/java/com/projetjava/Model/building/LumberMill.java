@@ -9,6 +9,7 @@ public class LumberMill extends Building {
   public LumberMill() {
     super(
         "Lumber Mill",
+        BuildingType.LUMBER_MILL,
         3,
         3,
         4,

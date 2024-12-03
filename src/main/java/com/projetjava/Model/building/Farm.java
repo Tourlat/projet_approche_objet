@@ -9,6 +9,7 @@ public class Farm extends Building {
   public Farm() {
     super(
         "Farm",
+        BuildingType.FARM,
         3,
         3,
         2,

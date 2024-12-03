@@ -4,11 +4,13 @@ import java.util.Map;
 
 import com.projetjava.Model.resources.ResourceType;
 
+
 public class CementPlant extends Building {
 
   public CementPlant() {
     super(
         "Cement Plant",
+        BuildingType.CEMENT_PLANT,
         4,
         3,
         4,

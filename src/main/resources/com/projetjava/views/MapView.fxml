@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane fx:id="mapGrid" fx:controller="com.projetjava.Controller.MapController" xmlns:fx="http://javafx.com/fxml" hgap="1" vgap="1" alignment="CENTER">
+    <!-- The map will be displayed here -->
+</GridPane>

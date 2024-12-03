@@ -9,6 +9,7 @@ public class Quarry extends Building {
   public Quarry() {
     super(
         "Quarry",
+        BuildingType.QUARRY,
         2,
         2,
         2,

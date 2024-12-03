@@ -9,6 +9,7 @@ public class ToolFactory extends Building {
   public ToolFactory() {
     super(
         "Tool Factory",
+        BuildingType.TOOL_FACTORY,
         4,
         3,
         8,

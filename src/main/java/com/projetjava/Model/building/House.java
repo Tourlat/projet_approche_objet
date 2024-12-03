@@ -9,6 +9,7 @@ public class House extends Building {
   public House() {
     super(
         "House",
+        BuildingType.HOUSE,
         2,
         2,
         4,

@@ -19,9 +19,13 @@ public abstract class Building {
   private int maxEmployees;
   private int currentEmployees;
   private static Integer uid = 0;
+  private boolean constructed;
+
+  private BuildingType type;
 
   public Building(
       String name,
+      BuildingType type,
       int width,
       int height,
       int constructionTime,
@@ -30,8 +34,10 @@ public abstract class Building {
       Map<ResourceType, Integer> production,
       int maxEmployees,
       int populationCreated) {
+      
     uid++;
     this.name = name + "_" + uid.toString();
+    this.type = type;
     this.width = width;
     this.height = height;
     this.constructionTime = constructionTime;
@@ -42,6 +48,7 @@ public abstract class Building {
     this.currentPopulation = populationCreated;
     this.maxEmployees = maxEmployees;
     this.currentEmployees = 0;
+    this.constructed = false;
   }
 
   /**
@@ -189,5 +196,12 @@ public abstract class Building {
     } else {
       this.currentEmployees -= workers;
     }
+  }
+
+  /*
+   * Return building type
+   */
+  public BuildingType getType(){
+    return this.type;
   }
 }

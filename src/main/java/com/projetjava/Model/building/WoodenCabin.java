@@ -9,6 +9,7 @@ public class WoodenCabin extends Building {
   public WoodenCabin() {
     super(
         "Wooden Cabin",
+        BuildingType.WOODEN_CABIN,
         1,
         1,
         2,
