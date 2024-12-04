@@ -36,7 +36,7 @@ public class GameManager implements Observer {
   private GameManager() {
     this.resourceManager = ResourceManager.getInstance();
     this.workers = Workers.getInstance();
-    this.mapManager = MapManager.getInstance(10, 10);
+    this.mapManager = MapManager.getInstance();
     this.gameTimer = GameTimer.getInstance();
     gameTimer.addObserver(this);
   }

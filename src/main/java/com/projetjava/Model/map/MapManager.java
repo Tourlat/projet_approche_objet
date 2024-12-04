@@ -14,6 +14,9 @@ public class MapManager {
 
   private static HashMap<Position, Building> buildings;
 
+  private static int MAP_WIDTH = 50;
+  private static int MAP_HEIGHT = 30;
+
   private MapManager(int width, int height) {
     MapManager.width = width;
     MapManager.height = height;
@@ -21,9 +24,9 @@ public class MapManager {
     MapManager.buildings = new HashMap<>();
   }
 
-  public static MapManager getInstance(int width, int height) {
+  public static MapManager getInstance() {
     if (instance == null) {
-      instance = new MapManager(width, height);
+      instance = new MapManager(MAP_WIDTH, MAP_HEIGHT);
     }
     return instance;
   }

@@ -25,6 +25,7 @@ public class MapController {
   private Image steelMillImage;
   private Image quarryImage;
 
+  private Image lumber_mill;
   private BuildingType selectedBuildingType;
   private GameManager gameManager;
 
@@ -73,7 +74,7 @@ public class MapController {
   }
 
   private void loadMap() {
-    MapManager mapManager = MapManager.getInstance(50, 30);
+    MapManager mapManager = MapManager.getInstance();
 
     for (int x = 0; x < mapManager.getWidth(); x++) {
       for (int y = 0; y < mapManager.getHeight(); y++) {
