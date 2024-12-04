@@ -57,17 +57,9 @@ public class MainController {
         // Set the MapView to the center of the mainPane
         mainPane.setCenter(mapView);
 
-        gameManager.addResourceObserver(resourcesController);
-  
 
-        // Load the MapView
-
-        try {
-            loadView("/com/projetjava/views/MapView.fxml");
-        } catch (IOException e) {
-            throw new InvalidResourceLoadException("Error loading mapView in MainController", e);
-        }
         // test building creation
+
         gameManager.addBuilding(new Position(1, 1), BuildingType.WOODEN_CABIN);
 
         gameManager.addWorkersToBuilding(new Position(1, 1), 2);
