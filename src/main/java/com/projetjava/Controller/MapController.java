@@ -1,7 +1,6 @@
 package com.projetjava.Controller;
 
 import com.projetjava.Model.building.Building;
-import com.projetjava.Model.building.Building;
 import com.projetjava.Model.building.BuildingType;
 import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.MapManager;
@@ -10,7 +9,6 @@ import com.projetjava.util.ImageCache;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
@@ -84,8 +82,6 @@ public class MapController {
 
                 buildingImageView.setFitHeight(25);
                 buildingImageView.setFitWidth(25);
-
-                cell.getChildren().addAll(groundImageView, buildingImageView);
 
                 // Add mouse click event handler
                 cell.setOnMouseClicked(event -> handleMouseClick(finalX, finalY));
