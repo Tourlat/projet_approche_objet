@@ -43,7 +43,7 @@ public class MainController {
         // Set the ResourcesView to the right of the mainPane
         mainPane.setRight(resourcesView);
 
-        gameManager.addObserver(resourcesController);
+        gameManager.addResourceObserver(resourcesController);
 
         // Load the MapView
         Pane mapView = null;
@@ -52,9 +52,7 @@ public class MainController {
         } catch (IOException e) {
             throw new InvalidResourceLoadException("Error loading mapView in MainController", e);
         }
-        gameManager.addObserver(mapController);
-
-
+      
         // test building creation
         gameManager.addBuilding(new Position(1, 1), BuildingType.WOODEN_CABIN);
 

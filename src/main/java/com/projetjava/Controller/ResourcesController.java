@@ -11,7 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class ResourcesController implements Observer {
+public class ResourcesController implements ResourceObserver {
 
   @FXML
   private ImageView foodImage;
@@ -117,6 +117,7 @@ public class ResourcesController implements Observer {
     }
   }
 
+  @Override
   public void updateResources(
     int food,
     int wood,

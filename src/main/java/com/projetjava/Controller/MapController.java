@@ -14,7 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
 
-public class MapController implements Observer {
+public class MapController {
 
     @FXML
     private GridPane mapGrid;
