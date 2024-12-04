@@ -56,7 +56,7 @@ public class GameManager implements Observer {
         resourceManager.addResource(ResourceType.WOOD, 50);
         resourceManager.addResource(ResourceType.STONE, 30);
         gameTimer.start();
-        notifyObservers();
+        notifyResourceObservers();
     
     }
 

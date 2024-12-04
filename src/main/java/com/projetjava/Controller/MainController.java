@@ -33,6 +33,7 @@ public class MainController {
         gameManager.initializeGame();
 
         // Load the ResourcesView
+
         Pane resourcesView = null;
         try {
             resourcesView = loadView("/com/projetjava/views/ResourcesView.fxml");
@@ -52,7 +53,20 @@ public class MainController {
         } catch (IOException e) {
             throw new InvalidResourceLoadException("Error loading mapView in MainController", e);
         }
-      
+
+        // Set the MapView to the center of the mainPane
+        mainPane.setCenter(mapView);
+
+        gameManager.addResourceObserver(resourcesController);
+  
+
+        // Load the MapView
+
+        try {
+            loadView("/com/projetjava/views/MapView.fxml");
+        } catch (IOException e) {
+            throw new InvalidResourceLoadException("Error loading mapView in MainController", e);
+        }
         // test building creation
         gameManager.addBuilding(new Position(1, 1), BuildingType.WOODEN_CABIN);
 
@@ -67,7 +81,7 @@ public class MainController {
         if (fxmlPath.contains("ResourcesView")) {
             resourcesController = loader.getController();
         }
-        if(fxmlPath.contains("MapView")){
+        if (fxmlPath.contains("MapView")) {
             mapController = loader.getController();
         }
 

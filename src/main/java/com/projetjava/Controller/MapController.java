@@ -92,6 +92,7 @@ public class MapController {
 
   private void handleMouseClick(int x, int y) {
     System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
+    update();
     if (selectedBuildingType != null) {
       // Place the selected building on the map
       GameManager gameManager = GameManager.getInstance();

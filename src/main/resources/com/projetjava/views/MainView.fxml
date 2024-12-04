@@ -10,15 +10,15 @@
 <BorderPane fx:id="mainPane" fx:controller="com.projetjava.Controller.MainController" xmlns:fx="http://javafx.com/fxml">
 
     <!-- Map can be added here -->
-      <left>
-       <VBox alignment="TOP_LEFT">
+    <center>
+       <VBox alignment="CENTER">
         <fx:include source="MapView.fxml" fx:id="mapView"/>
         </VBox>
-    </left>
+    </center>
 
     <!-- Resources -->
     <right>
-        <VBox alignment="TOP_RIGHT">
+        <VBox alignment="CENTER">
             <fx:include source="ResourcesView.fxml" fx:id="resourcesView"/>
         </VBox>
     </right> 
