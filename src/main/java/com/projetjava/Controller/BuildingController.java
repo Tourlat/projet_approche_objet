@@ -1,12 +1,9 @@
 package com.projetjava.Controller;
 
 import com.projetjava.Model.building.BuildingType;
-import com.projetjava.customexceptions.InvalidResourceLoadException;
-import com.projetjava.util.ImageCache;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 public class BuildingController {
@@ -18,10 +15,22 @@ public class BuildingController {
   private ImageView apartmentImage;
 
   @FXML
+  private ImageView steelMillImage;
+
+  @FXML
+  private ImageView quarryImage;
+
+  @FXML
   private VBox lumberMillVBox;
 
   @FXML
   private VBox apartmentVBox;
+
+  @FXML
+  private VBox steelMillVBox;
+
+  @FXML
+  private VBox quarryVBox;
 
   private VBox lastClickedVBox;
 
@@ -29,18 +38,20 @@ public class BuildingController {
   MapController mapController;
 
   @FXML
-  public void initialize() {
-    loadImages();
-
-  }
+  public void initialize() {}
 
   public void initializeEventHandlers() {
-    lumberMillImage.setOnMouseClicked(event -> handleLumberMillClick());
-    apartmentImage.setOnMouseClicked(event -> handleApartmentClick());
+    lumberMillImage.setOnMouseClicked(event ->
+      handleBuildingClick(lumberMillVBox)
+    );
+    apartmentImage.setOnMouseClicked(event -> handleBuildingClick(apartmentVBox)
+    );
+    steelMillImage.setOnMouseClicked(event -> handleBuildingClick(steelMillVBox)
+    );
+    quarryImage.setOnMouseClicked(event -> handleBuildingClick(quarryVBox));
   }
 
   private void resetScales() {
-    System.out.println(lastClickedVBox);
     if (lastClickedVBox != null) {
       lastClickedVBox.setScaleX(1.0);
       lastClickedVBox.setScaleY(1.0);
@@ -48,60 +59,60 @@ public class BuildingController {
     }
   }
 
-  private void loadImages() {
-    try {
-      ImageCache imageCache = ImageCache.getInstance();
-      Image lumberMillImg = imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/lumber_mill.png");
-      Image apartmentImg = imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/apartment.png");
+  public void setImages(
+    Image lumberMillImg,
+    Image apartmentImg,
+    Image steelMillImg,
+    Image quarryImg
+  ) {
+    if (lumberMillImg != null) {
+      lumberMillImage.setImage(lumberMillImg);
+    } else {
+      System.out.println("Lumber Mill image in BuildingController is null");
+    }
+    if (apartmentImg != null) {
+      apartmentImage.setImage(apartmentImg);
+    } else {
+      System.out.println("Apartment image in BuildingController is null");
+    }
 
-      if (lumberMillImg.isError()) {
-        System.err.println("Error loading lumber mill image.");
-      } else {
-        lumberMillImage.setImage(lumberMillImg);
-        System.out.println("Lumber mill image loaded successfully.");
-      }
-
-      if (apartmentImg.isError()) {
-        System.err.println("Error loading apartment image.");
-      } else {
-        apartmentImage.setImage(apartmentImg);
-        System.out.println("Apartment image loaded successfully.");
-      }
-    } catch (Exception e) {
-      throw new InvalidResourceLoadException(
-          "Error loading images in BuildingController",
-          e);
+    if (steelMillImg != null) {
+      steelMillImage.setImage(steelMillImg);
+    } else {
+      System.out.println("Steel Mill image in BuildingController is null");
+    }
+    if (quarryImg != null) {
+      quarryImage.setImage(quarryImg);
+    } else {
+      System.out.println("Quarry image in BuildingController is null");
     }
   }
 
-  private void handleLumberMillClick() {
-    // Logique pour gérer le clic sur le Lumber Mill
-    System.out.println("Lumber Mill clicked!");
-    resetScales();
-    lumberMillVBox.setScaleX(0.9);
-    lumberMillVBox.setScaleY(0.9);
-
-    mapController.setSelectedBuildingType(BuildingType.LUMBER_MILL);
-
-    lastClickedVBox = lumberMillVBox;
-    // Ajoutez ici la logique pour les actions à effectuer lors du clic
-  }
-
-  private void handleApartmentClick() {
-    // Logique pour gérer le clic sur l'Apartment
-    System.out.println("Apartment clicked!");
-    resetScales();
-    apartmentVBox.setScaleX(0.9);
-    apartmentVBox.setScaleY(0.9);
-
-    lastClickedVBox = apartmentVBox;
-    // Ajoutez ici la logique pour les actions à effectuer lors du clic
-  }
-
   public void setMapController(MapController mapController) {
-    System.out.println("Setting mapController in BuildingController ");
     this.mapController = mapController;
+  }
+
+  private void handleBuildingClick(VBox BuildingVBox) {
+    resetScales();
+    BuildingVBox.setScaleX(0.9);
+    BuildingVBox.setScaleY(0.9);
+
+    this.mapController.setSelectedBuildingType(convertVBoxToType(BuildingVBox));
+
+    lastClickedVBox = BuildingVBox;
+  }
+
+  private BuildingType convertVBoxToType(VBox BuildingVBox) {
+    if (BuildingVBox == lumberMillVBox) {
+      return BuildingType.LUMBER_MILL;
+    } else if (BuildingVBox == apartmentVBox) {
+      return BuildingType.APARTMENT_BUILDING;
+    } else if (BuildingVBox == steelMillVBox) {
+      return BuildingType.STEEL_MILL;
+    } else if (BuildingVBox == quarryVBox) {
+      return BuildingType.QUARRY;
+    } else {
+      return null;
+    }
   }
 }
