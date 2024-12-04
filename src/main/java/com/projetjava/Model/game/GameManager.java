@@ -60,6 +60,10 @@ public class GameManager implements Observer {
     
     }
 
+    public int[] getQuantityOfWorkers() {
+        return new int[] { workers.getEmployed(), workers.getTotal() };
+    }
+
     public boolean addBuilding(Position position, BuildingType building) {
         Building newBuilding = BuildingFactory.createBuilding(building);
 
@@ -96,6 +100,7 @@ public class GameManager implements Observer {
              */
             workers.removeEmployed(building.getCurrentEmployees());
             workers.removeUnemployed(building.getCurrentPopulation());
+            notifyResourceObservers();
         }
         return success;
     }
@@ -105,6 +110,7 @@ public class GameManager implements Observer {
         if (building != null && workers.getUnemployed() >= numberOfWorkers) {
             building.addWorkers(numberOfWorkers);
             workers.addEmployed(numberOfWorkers);
+            notifyResourceObservers();
             return true;
         }
         return false;
@@ -115,6 +121,7 @@ public class GameManager implements Observer {
         if (building != null && building.getCurrentEmployees() >= numberOfWorkers) {
             building.removeWorkers(numberOfWorkers);
             workers.removeEmployed(numberOfWorkers);
+            notifyResourceObservers();
             return true;
         }
         return false;
@@ -136,6 +143,7 @@ public class GameManager implements Observer {
         System.out.println("Food consumption: " + workers.getFoodConsumption());
         resourceManager.setResourceQuantity(ResourceType.FOOD,
                 Math.max(0, foodAvailable - workers.getFoodConsumption()));
+        notifyResourceObservers();
     }
 
     public void showResources() {

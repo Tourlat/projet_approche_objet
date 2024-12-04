@@ -38,6 +38,9 @@ public class ResourcesController implements ResourceObserver {
   private ImageView toolsImage;
 
   @FXML
+  private ImageView workerImage;
+
+  @FXML
   private Label foodLabel;
 
   @FXML
@@ -60,6 +63,9 @@ public class ResourcesController implements ResourceObserver {
 
   @FXML
   private Label toolsLabel;
+
+  @FXML 
+  private Label workerLabel;
 
   @FXML
   public void initialize() {
@@ -93,6 +99,9 @@ public class ResourcesController implements ResourceObserver {
       Image toolsImg = imageCache.getImage(
         "/com/projetjava/sprites/resources_sprites/Tools.png"
       );
+      Image workerImg = imageCache.getImage(
+        "/com/projetjava/sprites/worker.png"
+      );
 
       setImageView(foodImage, foodImg);
       setImageView(woodImage, woodImg);
@@ -102,6 +111,7 @@ public class ResourcesController implements ResourceObserver {
       setImageView(ironImage, ironImg);
       setImageView(steelImage, steelImg);
       setImageView(toolsImage, toolsImg);
+      setImageView(workerImage, workerImg);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -126,7 +136,9 @@ public class ResourcesController implements ResourceObserver {
     int coal,
     int iron,
     int steel,
-    int tools
+    int tools,
+    int workers,
+    int inahbitants
   ) {
     System.out.println(
       food +
@@ -154,6 +166,7 @@ public class ResourcesController implements ResourceObserver {
       ironLabel.setText("Iron: " + iron);
       steelLabel.setText("Steel: " + steel);
       toolsLabel.setText("Tools: " + tools);
+      workerLabel.setText("Workers: " + workers + "/" + inahbitants);
     });
   }
 
@@ -186,7 +199,10 @@ public class ResourcesController implements ResourceObserver {
     int tools = gameManager
       .getResourceManager()
       .getResourceQuantity(ResourceType.TOOL);
+    
+    int[] workers = gameManager.getQuantityOfWorkers();
 
-    updateResources(food, wood, stone, lumber, coal, iron, steel, tools);
+
+    updateResources(food, wood, stone, lumber, coal, iron, steel, tools, workers[0], workers[1]);
   }
 }
