@@ -38,7 +38,7 @@ public class GameManager implements Observer {
 
         this.resourceManager = ResourceManager.getInstance();
         this.workers = Workers.getInstance();
-        this.mapManager = MapManager.getInstance(10, 10);
+        this.mapManager = MapManager.getInstance();
         this.gameTimer = GameTimer.getInstance();
         gameTimer.addObserver(this);
 
@@ -54,7 +54,7 @@ public class GameManager implements Observer {
     public void initializeGame(){
         resourceManager.addResource(ResourceType.FOOD, 100);
         resourceManager.addResource(ResourceType.WOOD, 50);
-        resourceManager.addResource(ResourceType.STONE, 30);
+        resourceManager.addResource(ResourceType.STONE, 50);
         gameTimer.start();
         notifyResourceObservers();
     

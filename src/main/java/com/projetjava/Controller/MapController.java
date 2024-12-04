@@ -16,108 +16,111 @@ import javafx.scene.layout.StackPane;
 
 public class MapController {
 
-  @FXML
-  private GridPane mapGrid;
+    @FXML
+    private GridPane mapGrid;
 
-  private Image ground;
-  private Image woodenCabin;
-  private BuildingType selectedBuildingType;
+    private Image ground;
+    private Image woodenCabin;
+    private Image lumber_mill;
+    private BuildingType selectedBuildingType;
 
-  @FXML
-  public void initialize() {
-    loadImages();
-    loadMap();
-  }
-
-  private void loadImages() {
-    try {
-      ImageCache imageCache = ImageCache.getInstance();
-      ground = imageCache.getImage("/com/projetjava/sprites/ground.png");
-      woodenCabin =
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/apartment.png"
-        );
-    } catch (Exception e) {
-      e.printStackTrace();
+    @FXML
+    public void initialize() {
+        loadImages();
+        loadMap();
     }
-  }
 
-  private void loadMap() {
-    MapManager mapManager = MapManager.getInstance(50, 30);
-
-    for (int x = 0; x < mapManager.getWidth(); x++) {
-      for (int y = 0; y < mapManager.getHeight(); y++) {
-        StackPane cell = new StackPane();
-        cell.setPrefSize(25, 25);
-
-        final int finalX = x;
-        final int finalY = y;
-
-        ImageView groundImageView = new ImageView(ground);
-        groundImageView.setFitHeight(25);
-        groundImageView.setFitWidth(25);
-
-        ImageView buildingImageView = new ImageView();
-
-        Building building = mapManager.getBuilding(new Position(x, y));
-
-        if (building != null) {
-          switch (building.getType()) {
-            case WOODEN_CABIN:
-              System.out.println(
-                "Wooden Cabin found at position: (" + x + ", " + y + ")"
-              );
-              buildingImageView.setImage(woodenCabin);
-              break;
-            default:
-              buildingImageView.setImage(woodenCabin);
-              break;
-          }
-        } else {
-          buildingImageView.setImage(null);
+    private void loadImages() {
+        try {
+            ImageCache imageCache = ImageCache.getInstance();
+            ground = imageCache.getImage("/com/projetjava/sprites/ground.png");
+            woodenCabin = imageCache.getImage(
+                    "/com/projetjava/sprites/building_sprites/apartment.png");
+            lumber_mill = imageCache.getImage(
+                    "/com/projetjava/sprites/building_sprites/lumber_mill.png");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        buildingImageView.setFitHeight(25);
-        buildingImageView.setFitWidth(25);
-
-        cell.getChildren().addAll(groundImageView, buildingImageView);
-
-        // Add mouse click event handler
-        cell.setOnMouseClicked(event -> handleMouseClick(finalX, finalY));
-
-        mapGrid.add(cell, x, y);
-      }
     }
-  }
 
-  private void handleMouseClick(int x, int y) {
-    System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
-    update();
-    if (selectedBuildingType != null) {
-      // Place the selected building on the map
-      GameManager gameManager = GameManager.getInstance();
-      boolean success = gameManager.addBuilding(
-        new Position(x, y),
-        selectedBuildingType
-      );
-      if (success) {
-        System.out.println("Building placed: " + selectedBuildingType);
-        update();
-      } else {
-        System.out.println("Failed to place building: " + selectedBuildingType);
-      }
+    private void loadMap() {
+        MapManager mapManager = MapManager.getInstance();
+
+        for (int x = 0; x < mapManager.getWidth(); x++) {
+            for (int y = 0; y < mapManager.getHeight(); y++) {
+                StackPane cell = new StackPane();
+                cell.setPrefSize(25, 25);
+
+                final int finalX = x;
+                final int finalY = y;
+
+                ImageView groundImageView = new ImageView(ground);
+                groundImageView.setFitHeight(25);
+                groundImageView.setFitWidth(25);
+
+                ImageView buildingImageView = new ImageView();
+
+                Building building = mapManager.getBuilding(new Position(x, y));
+
+                if (building != null) {
+                    switch (building.getType()) {
+                        case WOODEN_CABIN:
+                            System.out.println(
+                                    "Wooden Cabin found at position: (" + x + ", " + y + ")");
+                            buildingImageView.setImage(woodenCabin);
+                            break;
+                        case LUMBER_MILL:
+                            System.out.println(
+                                    "Lumber Mill found at position: (" + x + ", " + y + ")");
+                            buildingImageView.setImage(lumber_mill);
+                            break;
+                        default:
+                            buildingImageView.setImage(woodenCabin);
+                            break;
+                    }
+                } else {
+                    buildingImageView.setImage(null);
+                }
+
+                buildingImageView.setFitHeight(25);
+                buildingImageView.setFitWidth(25);
+
+                cell.getChildren().addAll(groundImageView, buildingImageView);
+
+                // Add mouse click event handler
+                cell.setOnMouseClicked(event -> handleMouseClick(finalX, finalY));
+
+                mapGrid.add(cell, x, y);
+            }
+        }
     }
-  }
 
-  public void update() {
-    // Clear the existing cells
-    mapGrid.getChildren().clear();
-    // Reload the map data
-    loadMap();
-  }
+    private void handleMouseClick(int x, int y) {
+        System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
+        if (selectedBuildingType != null) {
+            // Place the selected building on the map
+            GameManager gameManager = GameManager.getInstance();
+            boolean success = gameManager.addBuilding(
+                    new Position(x, y),
+                    selectedBuildingType);
+            if (success) {
+                System.out.println("Building placed: " + selectedBuildingType);
+                update();
+            } else {
+                System.out.println("Failed to place building: " + selectedBuildingType);
+            }
+        }
+    }
 
-  public void setSelectedBuildingType(BuildingType selectedBuildingType) {
-    System.out.println("Selected building type: " + selectedBuildingType);
-    this.selectedBuildingType = selectedBuildingType;
-  }
+    public void update() {
+        // Clear the existing cells
+        mapGrid.getChildren().clear();
+        // Reload the map data
+        loadMap();
+    }
+
+    public void setSelectedBuildingType(BuildingType selectedBuildingType) {
+        System.out.println("Selected building type: " + selectedBuildingType);
+        this.selectedBuildingType = selectedBuildingType;
+    }
 }
