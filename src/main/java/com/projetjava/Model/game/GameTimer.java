@@ -20,6 +20,8 @@ public class GameTimer {
 
     private static GameTimer instance;
 
+    private final static int TICK_RATE = 1000;
+
      private final List<Observer> observers = new ArrayList<>();
 
     public static GameTimer getInstance() {
@@ -43,7 +45,7 @@ public class GameTimer {
             public void run() {
                 updateGameTime();
             }
-        }, 0, 1000);
+        }, 0, TICK_RATE);
 
     }
 

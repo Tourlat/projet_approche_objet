@@ -61,7 +61,7 @@ public class GameManager implements Observer {
    * "ADMIN MODE" -> to remove
    */
   private void adminMode() {
-    resourceManager.addResource(ResourceType.FOOD, 10000);
+    resourceManager.addResource(ResourceType.FOOD, 14);
     resourceManager.addResource(ResourceType.WOOD, 10000);
     resourceManager.addResource(ResourceType.STONE, 10000);
     resourceManager.addResource(ResourceType.COAL, 10000);
@@ -70,7 +70,6 @@ public class GameManager implements Observer {
     resourceManager.addResource(ResourceType.CEMENT, 10000);
     resourceManager.addResource(ResourceType.LUMBER, 10000);
     resourceManager.addResource(ResourceType.TOOL, 10000);
-    workers.addUnemployed(1000);
     notifyResourceObservers();
   }
 
@@ -162,9 +161,6 @@ public class GameManager implements Observer {
     notifyResourceObservers();
   }
 
-  public boolean canPlaceBuilding(int x, int y) {
-    return mapManager.canPlaceBuilding(x, y);
-  }
 
   public void consumeFood() {
     int foodAvailable = resourceManager.getResourceQuantity(ResourceType.FOOD);

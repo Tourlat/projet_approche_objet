@@ -98,12 +98,6 @@ public class MainController {
     mainPane.setBottom(buildingView);
     // Set the MapView to the center of the mainPane
     mainPane.setCenter(mapView);
-
-    // test building creation
-
-    gameManager.addBuilding(new Position(1, 1), BuildingType.WOODEN_CABIN);
-
-    gameManager.addWorkersToBuilding(new Position(1, 1), 2);
   }
 
   private Pane loadView(String fxmlPath) throws IOException {

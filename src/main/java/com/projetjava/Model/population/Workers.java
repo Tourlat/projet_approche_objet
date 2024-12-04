@@ -27,6 +27,7 @@ public class Workers implements Population {
    */
   @Override
   public int getTotal() {
+    System.out.println("Total workers: " + (getUnemployed() + getEmployed()));
     return getUnemployed() + getEmployed();
   }
 

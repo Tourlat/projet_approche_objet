@@ -148,11 +148,7 @@ public class MapController {
           GridPane.setRowSpan(cell, buildingHeight);
 
           // Marquez les cellules occupées par le bâtiment
-          for (int i = 0; i < buildingWidth; i++) {
-            for (int j = 0; j < buildingHeight; j++) {
-              mapManager.setOccupied(x + i, y + j, true);
-            }
-          }
+          
         } else {
           buildingImageView.setImage(null);
         }
@@ -175,29 +171,9 @@ public class MapController {
   private void handleMouseClick(int x, int y) {
     System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
     if (selectedBuildingType != null) {
-      // Place the selected building on the map
+      // Place the building
 
-      int buildingWidth = BuildingType.getWidth(selectedBuildingType);
-      int buildingHeight = BuildingType.getHeight(selectedBuildingType);
-
-      // Vérifiez si le bâtiment peut être placé à la position (x, y)
-      boolean canPlace = true;
-      for (int i = 0; i < buildingWidth; i++) {
-        for (int j = 0; j < buildingHeight; j++) {
-          if (!gameManager.canPlaceBuilding((x + i), (y + j))) {
-            canPlace = false;
-            break;
-          }
-        }
-        if (!canPlace) break;
-      }
-
-      if (canPlace) {
-        // Placez le bâtiment sur la carte
-        boolean success = gameManager.addBuilding(
-          new Position(x, y),
-          selectedBuildingType
-        );
+      boolean success = gameManager.addBuilding(new Position(x, y), selectedBuildingType);
         if (success) {
           System.out.println("Building placed: " + selectedBuildingType);
           update();
@@ -206,11 +182,7 @@ public class MapController {
             "Failed to place building: " + selectedBuildingType
           );
         }
-      } else {
-        System.out.println(
-          "Cannot place building at position: (" + x + ", " + y + ")"
-        );
-      }
+      
     }
   }
 
