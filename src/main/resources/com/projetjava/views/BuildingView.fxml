@@ -18,5 +18,15 @@
             <ImageView fx:id="apartmentImage" fitWidth="100" fitHeight="100" />
             <Label text="Apartment" maxWidth="100" alignment="CENTER"/>
         </VBox>
+
+        <VBox fx:id="steelMillVBox" spacing="2" alignment="CENTER" >
+            <ImageView fx:id="steelMillImage" fitWidth="100" fitHeight="100" />
+            <Label text="Steel Mill" maxWidth="100" alignment="CENTER"/>
+        </VBox>
+
+        <VBox fx:id="quarryVBox" spacing="2" alignment="CENTER" >
+            <ImageView fx:id="quarryImage" fitWidth="100" fitHeight="100" />
+            <Label text="Quarry" maxWidth="100" alignment="CENTER"/>
+        </VBox>
     </HBox>
 </GridPane>
