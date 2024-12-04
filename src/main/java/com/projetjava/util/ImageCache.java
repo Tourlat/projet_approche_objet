@@ -1,4 +1,4 @@
-package com.projetjava.View;
+package com.projetjava.util;
 
 import javafx.scene.image.Image;
 

@@ -2,9 +2,10 @@ package com.projetjava.Controller;
 
 import java.io.IOException;
 
-import com.projetjava.Controller.game.GameManager;
 import com.projetjava.Model.building.BuildingType;
+import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.Position;
+import com.projetjava.customexceptions.InvalidResourceLoadException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,28 +37,27 @@ public class MainController {
         try {
             resourcesView = loadView("/com/projetjava/views/ResourcesView.fxml");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new InvalidResourceLoadException("Error loading resourceView in MainController", e);
         }
 
         // Set the ResourcesView to the right of the mainPane
         mainPane.setRight(resourcesView);
 
-        gameManager.addObserver(resourcesController);
+        gameManager.addResourceObserver(resourcesController);
 
         // Load the MapView
         Pane mapView = null;
         try {
             mapView = loadView("/com/projetjava/views/MapView.fxml");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new InvalidResourceLoadException("Error loading mapView in MainController", e);
         }
-        gameManager.addObserver(mapController);
-
-
+      
         // test building creation
         gameManager.addBuilding(new Position(1, 1), BuildingType.WOODEN_CABIN);
 
         gameManager.addWorkersToBuilding(new Position(1, 1), 2);
+
     }
 
     private Pane loadView(String fxmlPath) throws IOException {

@@ -1,4 +1,4 @@
-package com.projetjava.Controller.game;
+package com.projetjava.Model.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import com.projetjava.Model.population.Workers;
 import com.projetjava.Model.resources.ResourceManager;
 import com.projetjava.Model.resources.ResourceType;
 import com.projetjava.Controller.Observer;
+import com.projetjava.Controller.ResourceObserver;
 
 public class GameManager implements Observer {
     private ResourceManager resourceManager;
@@ -23,6 +24,8 @@ public class GameManager implements Observer {
     private static GameManager instance;
 
     private List<Observer> observers = new ArrayList<>();
+    private List<ResourceObserver> resourceObservers = new ArrayList<>();
+
 
     public static GameManager getInstance() {
         if (instance == null) {
@@ -57,6 +60,10 @@ public class GameManager implements Observer {
     
     }
 
+    public int[] getQuantityOfWorkers() {
+        return new int[] { workers.getEmployed(), workers.getTotal() };
+    }
+
     public boolean addBuilding(Position position, BuildingType building) {
         Building newBuilding = BuildingFactory.createBuilding(building);
 
@@ -76,7 +83,7 @@ public class GameManager implements Observer {
             
             workers.addUnemployed(newBuilding.getPopulationCreated());
         }
-        notifyObservers();
+        notifyResourceObservers();
         return success;
     }
 
@@ -93,6 +100,7 @@ public class GameManager implements Observer {
              */
             workers.removeEmployed(building.getCurrentEmployees());
             workers.removeUnemployed(building.getCurrentPopulation());
+            notifyResourceObservers();
         }
         return success;
     }
@@ -102,6 +110,7 @@ public class GameManager implements Observer {
         if (building != null && workers.getUnemployed() >= numberOfWorkers) {
             building.addWorkers(numberOfWorkers);
             workers.addEmployed(numberOfWorkers);
+            notifyResourceObservers();
             return true;
         }
         return false;
@@ -112,6 +121,7 @@ public class GameManager implements Observer {
         if (building != null && building.getCurrentEmployees() >= numberOfWorkers) {
             building.removeWorkers(numberOfWorkers);
             workers.removeEmployed(numberOfWorkers);
+            notifyResourceObservers();
             return true;
         }
         return false;
@@ -124,7 +134,7 @@ public class GameManager implements Observer {
                 resourceManager.addResource(entry2.getKey(), entry2.getValue());
             }
         }
-        notifyObservers();
+        notifyResourceObservers();
     }
 
     public void consumeFood() {
@@ -133,6 +143,7 @@ public class GameManager implements Observer {
         System.out.println("Food consumption: " + workers.getFoodConsumption());
         resourceManager.setResourceQuantity(ResourceType.FOOD,
                 Math.max(0, foodAvailable - workers.getFoodConsumption()));
+        notifyResourceObservers();
     }
 
     public void showResources() {
@@ -159,6 +170,20 @@ public class GameManager implements Observer {
 
     public void notifyObservers() {
         for (Observer observer : observers) {
+            observer.update();
+        }
+    }
+     // resource observer pattern
+     public void addResourceObserver(ResourceObserver observer) {
+        resourceObservers.add(observer);
+    }
+
+    public void removeResourceObserver(ResourceObserver observer) {
+        resourceObservers.remove(observer);
+    }
+
+    public void notifyResourceObservers() {
+        for (ResourceObserver observer : resourceObservers) {
             observer.update();
         }
     }

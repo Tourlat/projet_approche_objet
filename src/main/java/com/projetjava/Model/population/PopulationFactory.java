@@ -1,5 +1,7 @@
 package com.projetjava.Model.population;
 
+import com.projetjava.customexceptions.UnknownPopulationTypeException;
+
 public class PopulationFactory {
 
   public static Population createPopulation(PopulationType type) {

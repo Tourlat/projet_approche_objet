@@ -1,5 +1,7 @@
 package com.projetjava.Model.building;
 
+import com.projetjava.customexceptions.UnknownBuildingTypeException;
+
 public class BuildingFactory {
     public static Building createBuilding(BuildingType type) {
         switch (type) {

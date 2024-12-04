@@ -1,4 +1,4 @@
-package com.projetjava.Model.population;
+package com.projetjava.customexceptions;
 
 public class UnknownPopulationTypeException extends RuntimeException {
 

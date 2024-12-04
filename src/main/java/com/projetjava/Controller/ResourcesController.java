@@ -1,15 +1,17 @@
 package com.projetjava.Controller;
 
-import com.projetjava.Controller.game.GameManager;
+import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.resources.ResourceType;
-import com.projetjava.View.ImageCache;
+import com.projetjava.customexceptions.InvalidResourceLoadException;
+import com.projetjava.util.ImageCache;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class ResourcesController implements Observer {
+public class ResourcesController implements ResourceObserver {
 
   @FXML
   private ImageView foodImage;
@@ -36,6 +38,9 @@ public class ResourcesController implements Observer {
   private ImageView toolsImage;
 
   @FXML
+  private ImageView workerImage;
+
+  @FXML
   private Label foodLabel;
 
   @FXML
@@ -58,6 +63,9 @@ public class ResourcesController implements Observer {
 
   @FXML
   private Label toolsLabel;
+
+  @FXML 
+  private Label workerLabel;
 
   @FXML
   public void initialize() {
@@ -91,6 +99,9 @@ public class ResourcesController implements Observer {
       Image toolsImg = imageCache.getImage(
         "/com/projetjava/sprites/resources_sprites/Tools.png"
       );
+      Image workerImg = imageCache.getImage(
+        "/com/projetjava/sprites/worker.png"
+      );
 
       setImageView(foodImage, foodImg);
       setImageView(woodImage, woodImg);
@@ -100,6 +111,7 @@ public class ResourcesController implements Observer {
       setImageView(ironImage, ironImg);
       setImageView(steelImage, steelImg);
       setImageView(toolsImage, toolsImg);
+      setImageView(workerImage, workerImg);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -107,9 +119,7 @@ public class ResourcesController implements Observer {
 
   private void setImageView(ImageView imageView, Image image) {
     if (image == null || image.isError()) {
-      System.err.println(
-        "Error loading image: " + (image != null ? image.getUrl() : "null")
-      );
+      throw new InvalidResourceLoadException("Error loading image: " + (image != null ? image.getUrl() : "null"));
     } else {
       imageView.setImage(image);
       imageView.setFitHeight(50);
@@ -117,6 +127,7 @@ public class ResourcesController implements Observer {
     }
   }
 
+  @Override
   public void updateResources(
     int food,
     int wood,
@@ -125,7 +136,9 @@ public class ResourcesController implements Observer {
     int coal,
     int iron,
     int steel,
-    int tools
+    int tools,
+    int workers,
+    int inahbitants
   ) {
     System.out.println(
       food +
@@ -153,6 +166,7 @@ public class ResourcesController implements Observer {
       ironLabel.setText("Iron: " + iron);
       steelLabel.setText("Steel: " + steel);
       toolsLabel.setText("Tools: " + tools);
+      workerLabel.setText("Workers: " + workers + "/" + inahbitants);
     });
   }
 
@@ -185,7 +199,10 @@ public class ResourcesController implements Observer {
     int tools = gameManager
       .getResourceManager()
       .getResourceQuantity(ResourceType.TOOL);
+    
+    int[] workers = gameManager.getQuantityOfWorkers();
 
-    updateResources(food, wood, stone, lumber, coal, iron, steel, tools);
+
+    updateResources(food, wood, stone, lumber, coal, iron, steel, tools, workers[0], workers[1]);
   }
 }

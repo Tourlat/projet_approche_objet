@@ -1,6 +1,8 @@
 package com.projetjava.Controller;
 
-import com.projetjava.View.ImageCache;
+import com.projetjava.Model.building.BuildingType;
+import com.projetjava.customexceptions.InvalidResourceLoadException;
+import com.projetjava.util.ImageCache;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -69,7 +71,10 @@ public class BuildingController {
         System.out.println("Apartment image loaded successfully.");
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new InvalidResourceLoadException(
+        "Error loading images in BuildingController",
+        e
+      );
     }
   }
 

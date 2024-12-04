@@ -1,4 +1,4 @@
-package com.projetjava.Model.resources;
+package com.projetjava.customexceptions;
 
 /**
  * Exception thrown when an unknown resource type is encountered.
