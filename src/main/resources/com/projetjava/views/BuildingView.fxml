@@ -9,12 +9,12 @@
 
 <GridPane fx:controller="com.projetjava.Controller.BuildingController" xmlns:fx="http://javafx.com/fxml" vgap="5" alignment="CENTER">
     <HBox spacing="50" alignment="CENTER" GridPane.rowIndex="0" prefWidth="9000.0" HBox.hgrow="ALWAYS" style="-fx-background-color: rgb(204, 204, 204); -fx-border-color: black; -fx-border-width: 2 0 0 0;">
-        <VBox spacing="2" alignment="CENTER" >
+        <VBox fx:id="lumberMillVBox" spacing="2" alignment="CENTER" >
             <ImageView fx:id="lumberMillImage" fitWidth="100" fitHeight="100" />
             <Label text="Lumber Mill" maxWidth="100" alignment="CENTER"/>
         </VBox>
 
-        <VBox spacing="2" alignment="CENTER" >
+        <VBox fx:id="apartmentVBox" spacing="2" alignment="CENTER" >
             <ImageView fx:id="apartmentImage" fitWidth="100" fitHeight="100" />
             <Label text="Apartment" maxWidth="100" alignment="CENTER"/>
         </VBox>
