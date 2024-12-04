@@ -26,16 +26,17 @@ public class BuildingController {
   private VBox lastClickedVBox;
 
   @FXML
+  MapController mapController;
+
+  @FXML
   public void initialize() {
     loadImages();
-    lumberMillVBox.addEventHandler(
-      MouseEvent.MOUSE_CLICKED,
-      event -> handleLumberMillClick()
-    );
-    apartmentVBox.addEventHandler(
-      MouseEvent.MOUSE_CLICKED,
-      event -> handleApartmentClick()
-    );
+
+  }
+
+  public void initializeEventHandlers() {
+    lumberMillImage.setOnMouseClicked(event -> handleLumberMillClick());
+    apartmentImage.setOnMouseClicked(event -> handleApartmentClick());
   }
 
   private void resetScales() {
@@ -51,11 +52,9 @@ public class BuildingController {
     try {
       ImageCache imageCache = ImageCache.getInstance();
       Image lumberMillImg = imageCache.getImage(
-        "/com/projetjava/sprites/building_sprites/lumber_mill.png"
-      );
+          "/com/projetjava/sprites/building_sprites/lumber_mill.png");
       Image apartmentImg = imageCache.getImage(
-        "/com/projetjava/sprites/building_sprites/apartment.png"
-      );
+          "/com/projetjava/sprites/building_sprites/apartment.png");
 
       if (lumberMillImg.isError()) {
         System.err.println("Error loading lumber mill image.");
@@ -72,9 +71,8 @@ public class BuildingController {
       }
     } catch (Exception e) {
       throw new InvalidResourceLoadException(
-        "Error loading images in BuildingController",
-        e
-      );
+          "Error loading images in BuildingController",
+          e);
     }
   }
 
@@ -84,6 +82,8 @@ public class BuildingController {
     resetScales();
     lumberMillVBox.setScaleX(0.9);
     lumberMillVBox.setScaleY(0.9);
+
+    mapController.setSelectedBuildingType(BuildingType.LUMBER_MILL);
 
     lastClickedVBox = lumberMillVBox;
     // Ajoutez ici la logique pour les actions à effectuer lors du clic
@@ -98,5 +98,10 @@ public class BuildingController {
 
     lastClickedVBox = apartmentVBox;
     // Ajoutez ici la logique pour les actions à effectuer lors du clic
+  }
+
+  public void setMapController(MapController mapController) {
+    System.out.println("Setting mapController in BuildingController ");
+    this.mapController = mapController;
   }
 }

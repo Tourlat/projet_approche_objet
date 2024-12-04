@@ -117,6 +117,7 @@ public class MapController {
   }
 
   public void setSelectedBuildingType(BuildingType selectedBuildingType) {
+    System.out.println("Selected building type: " + selectedBuildingType);
     this.selectedBuildingType = selectedBuildingType;
   }
 }

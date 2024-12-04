@@ -26,6 +26,9 @@ public class MainController {
     private MapController mapController;
 
     @FXML
+    private BuildingController buildingController;
+
+    @FXML
     public void initialize() {
         // Initialize the GameManager
         System.out.println("Initializing GameManager...");
@@ -54,6 +57,16 @@ public class MainController {
             throw new InvalidResourceLoadException("Error loading mapView in MainController", e);
         }
 
+        Pane buildingView = null;
+        try {
+            buildingView = loadView("/com/projetjava/views/BuildingView.fxml");
+        } catch (IOException e) {
+            throw new InvalidResourceLoadException("Error loading buildingView in MainController", e);
+        }
+
+        buildingController.setMapController(mapController);
+        buildingController.initializeEventHandlers();
+        mainPane.setBottom(buildingView);
         // Set the MapView to the center of the mainPane
         mainPane.setCenter(mapView);
 
@@ -75,6 +88,10 @@ public class MainController {
         }
         if (fxmlPath.contains("MapView")) {
             mapController = loader.getController();
+        }
+        if(fxmlPath.contains("BuildingView")){
+          buildingController = loader.getController();
+    
         }
 
         return pane;
