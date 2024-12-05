@@ -82,25 +82,37 @@ public class GameManager implements Observer {
 
     // check if the player has enough resources to build the building
     for (Map.Entry<ResourceType, Integer> entry : newBuilding
-      .getConstructionCost()
-      .entrySet()) {
-      if (
-        resourceManager.getResourceQuantity(entry.getKey()) < entry.getValue()
-      ) {
+        .getConstructionCost()
+        .entrySet()) {
+      if (resourceManager.getResourceQuantity(entry.getKey()) < entry.getValue()) {
         return false;
       }
     }
 
     boolean success = mapManager.placeBuilding(position, newBuilding);
-    if (success) {
-      for (Map.Entry<ResourceType, Integer> entry : newBuilding
-        .getConstructionCost()
-        .entrySet()) {
-        resourceManager.subtractResource(entry.getKey(), entry.getValue());
+    Thread thread = new Thread(() -> {
+      try {
+        System.out.println("finished building");
+        if ((success)) {
+          System.out.println(newBuilding.getConstructionTime() + "  " +newBuilding.isConstructed() + " to build");
+          Thread.sleep(newBuilding.getConstructionTime() * 1000);
+          for (Map.Entry<ResourceType, Integer> entry : newBuilding
+              .getConstructionCost()
+              .entrySet()) {
+            resourceManager.subtractResource(entry.getKey(), entry.getValue());
+          }
+          workers.addUnemployed(newBuilding.getPopulationCreated());
+          System.out.println("finished building");
+          newBuilding.setConstructTrue();
+          notifyResourceObservers();
+          notifyObservers();
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
       }
-      workers.addUnemployed(newBuilding.getPopulationCreated());
-    }
-    notifyResourceObservers();
+    });
+    thread.start();
+
     return success;
   }
 
@@ -134,9 +146,8 @@ public class GameManager implements Observer {
   }
 
   public boolean removeWorkersFromBuilding(
-    Position position,
-    int numberOfWorkers
-  ) {
+      Position position,
+      int numberOfWorkers) {
     Building building = mapManager.getBuilding(position);
     if (building != null && building.getCurrentEmployees() >= numberOfWorkers) {
       building.removeWorkers(numberOfWorkers);
@@ -149,27 +160,25 @@ public class GameManager implements Observer {
 
   public void updateResources() {
     for (Map.Entry<Position, Building> entry : mapManager
-      .getBuildings()
-      .entrySet()) {
+        .getBuildings()
+        .entrySet()) {
       Building building = entry.getValue();
       for (Map.Entry<ResourceType, Integer> entry2 : building
-        .getCurrentProduction()
-        .entrySet()) {
+          .getCurrentProduction()
+          .entrySet()) {
         resourceManager.addResource(entry2.getKey(), entry2.getValue());
       }
     }
     notifyResourceObservers();
   }
 
-
   public void consumeFood() {
     int foodAvailable = resourceManager.getResourceQuantity(ResourceType.FOOD);
     workers.foodConsumption(foodAvailable);
     System.out.println("Food consumption: " + workers.getFoodConsumption());
     resourceManager.setResourceQuantity(
-      ResourceType.FOOD,
-      Math.max(0, foodAvailable - workers.getFoodConsumption())
-    );
+        ResourceType.FOOD,
+        Math.max(0, foodAvailable - workers.getFoodConsumption()));
     notifyResourceObservers();
   }
 

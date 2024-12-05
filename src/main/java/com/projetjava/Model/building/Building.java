@@ -19,7 +19,7 @@ public abstract class Building {
   private int maxEmployees;
   private int currentEmployees;
   private static Integer uid = 0;
-  private boolean constructed;
+  private boolean constructed = false;
 
   private BuildingType type;
 
@@ -203,5 +203,18 @@ public abstract class Building {
    */
   public BuildingType getType(){
     return this.type;
+  }
+
+  /**
+   * Check if the building is constructed
+   * 
+   * @return true if the building is constructed, false otherwise
+   */
+  public boolean isConstructed() {
+    return constructed;
+  }
+
+  public boolean setConstructTrue() {
+    return constructed = true;
   }
 }

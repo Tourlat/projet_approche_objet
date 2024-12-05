@@ -6,13 +6,15 @@ import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.MapManager;
 import com.projetjava.Model.map.Position;
 import com.projetjava.util.ImageCache;
+
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
-public class MapController {
+public class MapController implements Observer {
 
   @FXML
   private GridPane mapGrid;
@@ -104,7 +106,9 @@ public class MapController {
               mapGrid.add(groundImageViewForBuilding, x + i, y + j);
             }
           }
-
+          if(!building.isConstructed()){
+            buildingImageView.setImage(ground);
+          }else{
           switch (building.getType()) {
             case WOODEN_CABIN:
               System.out.println(
@@ -139,7 +143,7 @@ public class MapController {
             default:
               buildingImageView.setImage(woodenCabin);
               break;
-          }
+          }}
 
           buildingImageView.setFitWidth(buildingWidth * 25);
           buildingImageView.setFitHeight(buildingHeight * 25);
@@ -176,7 +180,7 @@ public class MapController {
       boolean success = gameManager.addBuilding(new Position(x, y), selectedBuildingType);
         if (success) {
           System.out.println("Building placed: " + selectedBuildingType);
-          update();
+          updateMap();
         } else {
           System.out.println(
             "Failed to place building: " + selectedBuildingType
@@ -186,11 +190,18 @@ public class MapController {
     }
   }
 
-  public void update() {
+  public void updateMap() {
     // Clear the existing cells
     mapGrid.getChildren().clear();
     // Reload the map data
     loadMap();
+  }
+
+  @Override
+  public void update() {
+    Platform.runLater(() -> {
+      updateMap();
+    });
   }
 
   public void setSelectedBuildingType(BuildingType selectedBuildingType) {

@@ -59,6 +59,8 @@ public class MainController {
 
     gameManager.addResourceObserver(resourcesController);
 
+
+
     // Load the MapView
     Pane mapView = null;
     try {
@@ -75,6 +77,8 @@ public class MainController {
       steelMillImage,
       quarryImage
     );
+
+    gameManager.addObserver(mapController);
 
     Pane buildingView = null;
     try {
