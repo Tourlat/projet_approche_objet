@@ -3,6 +3,7 @@ package com.projetjava.Model.building;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.projetjava.Model.resources.Resource;
 import com.projetjava.Model.resources.ResourceType;
 
 public abstract class Building {
@@ -217,4 +218,22 @@ public abstract class Building {
   public boolean setConstructTrue() {
     return constructed = true;
   }
+
+  /**
+   * Check if the building can produce with the available resources
+   * @param availableResources
+   * @return
+   */
+  public boolean canProduce(Map<ResourceType, Resource> availableResources) {
+    for (Map.Entry<ResourceType, Integer> entry : consumption.entrySet()) {
+        ResourceType resourceType = entry.getKey();
+        int requiredAmount = entry.getValue();
+        int availableAmount = availableResources.get(resourceType).getQuantity();
+        if (availableAmount < requiredAmount) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }

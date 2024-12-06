@@ -77,10 +77,8 @@ public class GameManager implements Observer {
     return new int[] { workers.getEmployed(), workers.getTotal() };
   }
 
-  public boolean addBuilding(Position position, BuildingType building) {
+  public boolean haveResourcesToBuild(BuildingType building) {
     Building newBuilding = BuildingFactory.createBuilding(building);
-
-    // check if the player has enough resources to build the building
     for (Map.Entry<ResourceType, Integer> entry : newBuilding
         .getConstructionCost()
         .entrySet()) {
@@ -88,13 +86,24 @@ public class GameManager implements Observer {
         return false;
       }
     }
+    return true;
+  }
+  public boolean addBuilding(Position position, BuildingType building) {
+    Building newBuilding = BuildingFactory.createBuilding(building);
+
+    // check if the player has enough resources to build the building
+    if(!haveResourcesToBuild(building)){
+      return false;
+    }
 
     boolean success = mapManager.placeBuilding(position, newBuilding);
+
+    // start a thread to build the building
     Thread thread = new Thread(() -> {
       try {
         System.out.println("finished building");
         if ((success)) {
-          System.out.println(newBuilding.getConstructionTime() + "  " +newBuilding.isConstructed() + " to build");
+          System.out.println(newBuilding.getConstructionTime() + "  " + newBuilding.isConstructed() + " to build");
           Thread.sleep(newBuilding.getConstructionTime() * 1000);
           for (Map.Entry<ResourceType, Integer> entry : newBuilding
               .getConstructionCost()
@@ -102,7 +111,6 @@ public class GameManager implements Observer {
             resourceManager.subtractResource(entry.getKey(), entry.getValue());
           }
           workers.addUnemployed(newBuilding.getPopulationCreated());
-          System.out.println("finished building");
           newBuilding.setConstructTrue();
           notifyResourceObservers();
           notifyObservers();
@@ -158,17 +166,42 @@ public class GameManager implements Observer {
     return false;
   }
 
+  /**
+   * Add the production of a building to the resources
+   * @param building
+   */
+  public void addProduction(Building building) {
+    Map<ResourceType, Integer> production = building.getCurrentProduction();
+    for (Map.Entry<ResourceType, Integer> entry : production.entrySet()) {
+      resourceManager.addResource(entry.getKey(), entry.getValue());
+    }
+  }
+
+  /**
+   * Consume the resources needed for a building production
+   * @param building
+   */
+  public void consumeBuildingResources(Building building) {
+    Map<ResourceType, Integer> consumption = building.getConsumption();
+    for (Map.Entry<ResourceType, Integer> entry : consumption.entrySet()) {
+      resourceManager.subtractResource(entry.getKey(), entry.getValue());
+    }
+  }
+
   public void updateResources() {
     for (Map.Entry<Position, Building> entry : mapManager
         .getBuildings()
         .entrySet()) {
       Building building = entry.getValue();
-      for (Map.Entry<ResourceType, Integer> entry2 : building
-          .getCurrentProduction()
-          .entrySet()) {
-        resourceManager.addResource(entry2.getKey(), entry2.getValue());
+      // Check if the building can produce with the available resources and is
+      // constructed
+      if (building.canProduce(resourceManager.getResources()) && building.isConstructed()) {
+        consumeBuildingResources(building);
+        addProduction(building);
       }
+
     }
+
     notifyResourceObservers();
   }
 

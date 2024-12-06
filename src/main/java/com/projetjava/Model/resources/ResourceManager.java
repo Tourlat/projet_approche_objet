@@ -2,6 +2,7 @@ package com.projetjava.Model.resources;
 
 import java.util.HashMap;
 
+import java.util.Map;
 import com.projetjava.customexceptions.UnknownResourceTypeException;
 
 public class ResourceManager {
@@ -94,5 +95,9 @@ public class ResourceManager {
         for (Resource resource : resources.values()) {
             System.out.println(resource.getType() + " : " + resource.getQuantity());
         }
+    }
+
+    public Map<ResourceType, Resource> getResources() {
+        return resources;
     }
 }
