@@ -32,6 +32,8 @@ public class MainController {
   private Image apartmentImage;
   private Image steelMillImage;
   private Image quarryImage;
+  private Image farmImage;
+  private Image cementPlantImage;
 
   @FXML
   public void initialize() {
@@ -59,8 +61,6 @@ public class MainController {
 
     gameManager.addResourceObserver(resourcesController);
 
-
-
     // Load the MapView
     Pane mapView = null;
     try {
@@ -75,7 +75,9 @@ public class MainController {
       lumberMillImage,
       apartmentImage,
       steelMillImage,
-      quarryImage
+      quarryImage,
+      farmImage,
+      cementPlantImage
     );
 
     gameManager.addObserver(mapController);
@@ -96,7 +98,9 @@ public class MainController {
       lumberMillImage,
       apartmentImage,
       steelMillImage,
-      quarryImage
+      quarryImage,
+      farmImage,
+      cementPlantImage
     );
 
     mainPane.setBottom(buildingView);
@@ -157,6 +161,24 @@ public class MainController {
         );
       if (quarryImage == null) {
         throw new InvalidResourceLoadException("Error loading quarry image");
+      }
+
+      farmImage =
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/farm.png"
+        );
+      if (farmImage == null) {
+        throw new InvalidResourceLoadException("Error loading farm image");
+      }
+
+      cementPlantImage =
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/cement_plant.png"
+        );
+      if (cementPlantImage == null) {
+        throw new InvalidResourceLoadException(
+          "Error loading cement plant image"
+        );
       }
     } catch (Exception e) {
       e.printStackTrace();
