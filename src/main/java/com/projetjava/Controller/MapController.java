@@ -25,6 +25,7 @@ public class MapController implements Observer {
   private Image apartmentImage;
   private Image steelMillImage;
   private Image quarryImage;
+  private Image inConstruction;
 
   private Image lumber_mill;
   private BuildingType selectedBuildingType;
@@ -41,6 +42,7 @@ public class MapController implements Observer {
     try {
       ImageCache imageCache = ImageCache.getInstance();
       ground = imageCache.getImage("/com/projetjava/sprites/ground.png");
+      inConstruction = imageCache.getImage("/com/projetjava/sprites/building_sprites/inConstruction.png");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -107,7 +109,7 @@ public class MapController implements Observer {
             }
           }
           if(!building.isConstructed()){
-            buildingImageView.setImage(ground);
+            buildingImageView.setImage(inConstruction);
           }else{
           switch (building.getType()) {
             case WOODEN_CABIN:
