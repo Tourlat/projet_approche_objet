@@ -305,7 +305,10 @@ public class MapController implements Observer {
 
   @Override
   public void update() {
-    Platform.runLater(this::loadMap);
+    Platform.runLater(() -> {
+      mapGrid.getChildren().clear();
+      loadMap();
+    });
   }
 
   public void setSelectedBuildingType(BuildingType selectedBuildingType) {
