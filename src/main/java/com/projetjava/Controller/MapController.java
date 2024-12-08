@@ -10,10 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 
 public class MapController implements Observer {
 
@@ -112,7 +118,7 @@ public class MapController implements Observer {
           int buildingWidth = building.getWidth();
           int buildingHeight = building.getHeight();
 
-          // Afficher le sol des cases que le bâtiment occupe
+          // Add the ground image under the building image
           for (int i = 0; i < buildingWidth; i++) {
             for (int j = 0; j < buildingHeight; j++) {
               ImageView groundImageViewForBuilding = new ImageView(ground);
@@ -128,12 +134,14 @@ public class MapController implements Observer {
             buildingImageView.setImage(buildingImages.get(building.getType()));
           }
 
+          // Set the size of the building image to fit the building size
           buildingImageView.setFitWidth(buildingWidth * 25);
           buildingImageView.setFitHeight(buildingHeight * 25);
 
           GridPane.setColumnSpan(cell, buildingWidth);
           GridPane.setRowSpan(cell, buildingHeight);
         } else {
+          // No building at this position
           buildingImageView.setImage(null);
         }
 
@@ -145,16 +153,56 @@ public class MapController implements Observer {
           .add(buildingImageView);
 
         // Add mouse click event handler
-        cell.setOnMouseClicked(event -> handleMouseClick(finalX, finalY));
+        cell.setOnMouseClicked(event -> handleMouseClick(event, finalX, finalY)
+        );
 
         mapGrid.add(cell, x, y);
       }
     }
   }
 
-  private void handleMouseClick(int x, int y) {
+  // private void handleMouseClick(int x, int y) {
+  // System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
+  // if (selectedBuildingType != null) {
+  // // Place the building
+
+  // boolean success = gameManager.addBuilding(new Position(x, y),
+  // selectedBuildingType);
+  // if (success) {
+  // System.out.println("Building placed: " + selectedBuildingType);
+  // updateMap();
+  // } else {
+  // System.out.println(
+  // "Failed to place building: " + selectedBuildingType
+  // );
+  // }
+
+  // }
+  // }
+
+  /**
+   * Handle mouse click event
+   *
+   * @param event the mouse event
+   * @param x     the x position
+   * @param y     the y position
+   */
+  private void handleMouseClick(MouseEvent event, int x, int y) {
+    MapManager mapManager = MapManager.getInstance();
+
     System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
-    if (selectedBuildingType != null) {
+    Position origin = mapManager.getBuildingPosition(new Position(x, y));
+    Building building = mapManager.getBuilding(origin);
+    if (building != null && building.isConstructed()) {
+      showBuildingOptions(
+        building,
+        x,
+        y,
+        event.getScreenX(),
+        event.getScreenY()
+      );
+    } else if (selectedBuildingType != null) {
+      // Place the selected building on the map
       boolean success = gameManager.addBuilding(
         new Position(x, y),
         selectedBuildingType
@@ -165,7 +213,180 @@ public class MapController implements Observer {
       } else {
         System.out.println("Failed to place building: " + selectedBuildingType);
       }
+      selectedBuildingType = null;
     }
+  }
+
+  /**
+   * Display building options popup, such as adding/removing workers, removing
+   * building
+   *
+   * @param building the building
+   * @param x        the x position
+   * @param y        the y position
+   * @param screenX  the screen x position
+   * @param screenY  the screen y position
+   */
+  private void showBuildingOptions(
+    Building building,
+    int x,
+    int y,
+    double screenX,
+    double screenY
+  ) {
+    Popup popup = new Popup();
+
+    VBox vbox = new VBox();
+    vbox.setStyle(
+      "-fx-background-color: white; -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1;"
+    );
+
+    Label workerLabel = new Label(
+      "Workers: " +
+      building.getCurrentEmployees() +
+      "/" +
+      building.getMaxEmployees()
+    );
+
+    Position origin = MapManager
+      .getInstance()
+      .getBuildingPosition(new Position(x, y));
+
+    Button removeWorkerButton = new Button("-");
+    removeWorkerButton.setOnAction(e -> {
+      if (building.getCurrentEmployees() > 0) {
+        gameManager.removeWorkersFromBuilding(origin, 1);
+        workerLabel.setText(
+          "Workers: " +
+          building.getCurrentEmployees() +
+          "/" +
+          building.getMaxEmployees()
+        );
+      }
+    });
+
+    Button addWorkerButton = new Button("+");
+    addWorkerButton.setOnAction(e -> {
+      if (
+        building.getCurrentEmployees() < building.getMaxEmployees() &&
+        gameManager.getAvailableWorkers() > 0
+      ) {
+        gameManager.addWorkersToBuilding(origin, 1);
+        workerLabel.setText(
+          "Workers: " +
+          building.getCurrentEmployees() +
+          "/" +
+          building.getMaxEmployees()
+        );
+      }
+    });
+
+    HBox workerButtons = new HBox(5);
+    workerButtons.getChildren().addAll(removeWorkerButton, addWorkerButton);
+
+    Button removeBuildingButton = new Button("Remove Building");
+    removeBuildingButton.setOnAction(e -> {
+      gameManager.removeBuilding(origin);
+      update();
+      popup.hide();
+    });
+
+    Button cancelButton = new Button("Cancel");
+    cancelButton.setOnAction(e -> popup.hide());
+
+    vbox
+      .getChildren()
+      .addAll(workerLabel, workerButtons, removeBuildingButton, cancelButton);
+
+    popup.getContent().add(vbox);
+    popup.setAutoHide(true);
+    popup.show(mapGrid.getScene().getWindow(), screenX, screenY);
+  }
+
+  /**
+   * Display building options popup, such as adding/removing workers, removing
+   * building
+   *
+   * @param building the building
+   * @param x        the x position
+   * @param y        the y position
+   * @param screenX  the screen x position
+   * @param screenY  the screen y position
+   */
+  private void showBuildingOptions(
+    Building building,
+    int x,
+    int y,
+    double screenX,
+    double screenY
+  ) {
+    Popup popup = new Popup();
+
+    VBox vbox = new VBox();
+    vbox.setStyle(
+      "-fx-background-color: white; -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1;"
+    );
+
+    Label workerLabel = new Label(
+      "Workers: " +
+      building.getCurrentEmployees() +
+      "/" +
+      building.getMaxEmployees()
+    );
+
+    Position origin = MapManager
+      .getInstance()
+      .getBuildingPosition(new Position(x, y));
+
+    Button removeWorkerButton = new Button("-");
+    removeWorkerButton.setOnAction(e -> {
+      if (building.getCurrentEmployees() > 0) {
+        gameManager.removeWorkersFromBuilding(origin, 1);
+        workerLabel.setText(
+          "Workers: " +
+          building.getCurrentEmployees() +
+          "/" +
+          building.getMaxEmployees()
+        );
+      }
+    });
+
+    Button addWorkerButton = new Button("+");
+    addWorkerButton.setOnAction(e -> {
+      if (
+        building.getCurrentEmployees() < building.getMaxEmployees() &&
+        gameManager.getAvailableWorkers() > 0
+      ) {
+        gameManager.addWorkersToBuilding(origin, 1);
+        workerLabel.setText(
+          "Workers: " +
+          building.getCurrentEmployees() +
+          "/" +
+          building.getMaxEmployees()
+        );
+      }
+    });
+
+    HBox workerButtons = new HBox(5);
+    workerButtons.getChildren().addAll(removeWorkerButton, addWorkerButton);
+
+    Button removeBuildingButton = new Button("Remove Building");
+    removeBuildingButton.setOnAction(e -> {
+      gameManager.removeBuilding(origin);
+      update();
+      popup.hide();
+    });
+
+    Button cancelButton = new Button("Cancel");
+    cancelButton.setOnAction(e -> popup.hide());
+
+    vbox
+      .getChildren()
+      .addAll(workerLabel, workerButtons, removeBuildingButton, cancelButton);
+
+    popup.getContent().add(vbox);
+    popup.setAutoHide(true);
+    popup.show(mapGrid.getScene().getWindow(), screenX, screenY);
   }
 
   @Override

@@ -13,6 +13,7 @@ public class MapManager {
   private static MapManager instance;
 
   private static HashMap<Position, Building> buildings;
+  private static HashMap<Position, Position> buildingPositions;
 
   private static int MAP_WIDTH = 50;
   private static int MAP_HEIGHT = 30;
@@ -21,7 +22,10 @@ public class MapManager {
     MapManager.width = width;
     MapManager.height = height;
     MapManager.map = new boolean[width][height];
+    // Map used to store the buildings
     MapManager.buildings = new HashMap<>();
+    // Map used to store the position of the buildings
+    MapManager.buildingPositions = new HashMap<>();
   }
 
   public static MapManager getInstance() {
@@ -77,6 +81,7 @@ public class MapManager {
       for (int i = 0; i < building.getWidth(); i++) {
         for (int j = 0; j < building.getHeight(); j++) {
           map[x + i][y + j] = true;
+          buildingPositions.put(new Position(x + i, y + j), pos);
         }
       }
       buildings.put(pos, building);
@@ -102,16 +107,17 @@ public class MapManager {
   public boolean removeBuilding(Position pos) {
     int x = pos.getX();
     int y = pos.getY();
-    Building building = buildings.get(new Position(x, y));
+    Building building = buildings.get(pos);
     if (building == null) {
       return false;
     }
     for (int i = 0; i < building.getWidth(); i++) {
       for (int j = 0; j < building.getHeight(); j++) {
         map[x + i][y + j] = false;
+        buildingPositions.remove(new Position(x + i, y + j));
       }
     }
-    buildings.remove(new Position(x, y));
+    buildings.remove(pos);
     return true;
   }
 
@@ -138,6 +144,14 @@ public class MapManager {
 
   public Building getBuilding(Position pos) {
     return buildings.get(pos);
+  }
+
+  public Position getBuildingPosition(Position pos) {
+    Position buildingPos = buildingPositions.get(pos);
+    if (buildingPos == null) {
+      return null;
+    }
+    return buildingPos;
   }
 
   public HashMap<Position, Building> getBuildings() {
