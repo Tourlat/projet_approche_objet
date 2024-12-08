@@ -6,7 +6,6 @@ import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.MapManager;
 import com.projetjava.Model.map.Position;
 import com.projetjava.util.ImageCache;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -32,8 +31,9 @@ public class MapController implements Observer {
   private Image steelMillImage;
   private Image quarryImage;
   private Image inConstruction;
+  private Image farmImage;
+  private Image cementPlantImage;
 
-  private Image lumber_mill;
   private BuildingType selectedBuildingType;
   private GameManager gameManager;
 
@@ -48,17 +48,23 @@ public class MapController implements Observer {
     try {
       ImageCache imageCache = ImageCache.getInstance();
       ground = imageCache.getImage("/com/projetjava/sprites/ground.png");
-      inConstruction = imageCache.getImage("/com/projetjava/sprites/building_sprites/inConstruction.png");
+      inConstruction =
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/inConstruction.png"
+        );
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   public void setImages(
-      Image lumberMillImg,
-      Image apartmentImg,
-      Image steelMillImg,
-      Image quarryImg) {
+    Image lumberMillImg,
+    Image apartmentImg,
+    Image steelMillImg,
+    Image quarryImg,
+    Image farmImg,
+    Image cementPlantImg
+  ) {
     if (lumberMillImg != null) {
       lumberMillImage = lumberMillImg;
     } else {
@@ -78,6 +84,17 @@ public class MapController implements Observer {
       quarryImage = quarryImg;
     } else {
       System.out.println("Quarry image in MapController is null");
+    }
+
+    if (farmImg != null) {
+      farmImage = farmImg;
+    } else {
+      System.out.println("Farm image in MapController is null");
+    }
+    if (cementPlantImg != null) {
+      cementPlantImage = cementPlantImg;
+    } else {
+      System.out.println("Cement Plant image in MapController is null");
     }
   }
 
@@ -119,28 +136,45 @@ public class MapController implements Observer {
             switch (building.getType()) {
               case WOODEN_CABIN:
                 System.out.println(
-                    "Wooden Cabin found at position: (" + x + ", " + y + ")");
+                  "Wooden Cabin found at position: (" + x + ", " + y + ")"
+                );
                 buildingImageView.setImage(woodenCabin);
                 break;
               case APARTMENT_BUILDING:
                 System.out.println(
-                    "Apartment found at position: (" + x + ", " + y + ")");
+                  "Apartment found at position: (" + x + ", " + y + ")"
+                );
                 buildingImageView.setImage(apartmentImage);
                 break;
               case LUMBER_MILL:
                 System.out.println(
-                    "Lumber Mill found at position: (" + x + ", " + y + ")");
+                  "Lumber Mill found at position: (" + x + ", " + y + ")"
+                );
                 buildingImageView.setImage(lumberMillImage);
                 break;
               case STEEL_MILL:
                 System.out.println(
-                    "Steel Mill found at position: (" + x + ", " + y + ")");
+                  "Steel Mill found at position: (" + x + ", " + y + ")"
+                );
                 buildingImageView.setImage(steelMillImage);
                 break;
               case QUARRY:
                 System.out.println(
-                    "Quarry found at position: (" + x + ", " + y + ")");
+                  "Quarry found at position: (" + x + ", " + y + ")"
+                );
                 buildingImageView.setImage(quarryImage);
+                break;
+              case FARM:
+                System.out.println(
+                  "Farm found at position: (" + x + ", " + y + ")"
+                );
+                buildingImageView.setImage(farmImage);
+                break;
+              case CEMENT_PLANT:
+                System.out.println(
+                  "Cement Plant found at position: (" + x + ", " + y + ")"
+                );
+                buildingImageView.setImage(cementPlantImage);
                 break;
               default:
                 buildingImageView.setImage(woodenCabin);
@@ -153,7 +187,6 @@ public class MapController implements Observer {
 
           GridPane.setColumnSpan(cell, buildingWidth);
           GridPane.setRowSpan(cell, buildingHeight);
-
           // Marquez les cellules occupées par le bâtiment
 
         } else {

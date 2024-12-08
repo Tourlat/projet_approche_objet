@@ -19,14 +19,24 @@
             <Label text="Apartment" maxWidth="100" alignment="CENTER"/>
         </VBox>
 
-        <VBox fx:id="steelMillVBox" spacing="2" alignment="CENTER" >
-            <ImageView fx:id="steelMillImage" fitWidth="100" fitHeight="100" />
-            <Label text="Steel Mill" maxWidth="100" alignment="CENTER"/>
+        <VBox fx:id="farmVBox" spacing="2" alignment="CENTER" >
+            <ImageView fx:id="farmImage" fitWidth="100" fitHeight="100" />
+            <Label text="Farm" maxWidth="100" alignment="CENTER"/>
         </VBox>
 
         <VBox fx:id="quarryVBox" spacing="2" alignment="CENTER" >
             <ImageView fx:id="quarryImage" fitWidth="100" fitHeight="100" />
             <Label text="Quarry" maxWidth="100" alignment="CENTER"/>
+        </VBox>
+
+        <VBox fx:id="steelMillVBox" spacing="2" alignment="CENTER" >
+            <ImageView fx:id="steelMillImage" fitWidth="100" fitHeight="100" />
+            <Label text="Steel Mill" maxWidth="100" alignment="CENTER"/>
+        </VBox>
+
+        <VBox fx:id="cementPlantVBox" spacing="2" alignment="CENTER" >
+            <ImageView fx:id="cementPlantImage" fitWidth="100" fitHeight="100" />
+            <Label text="Cement Plant" maxWidth="100" alignment="CENTER"/>
         </VBox>
     </HBox>
 </GridPane>
