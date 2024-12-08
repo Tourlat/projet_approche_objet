@@ -1,72 +1,86 @@
 package com.projetjava.Controller;
 
 import com.projetjava.Model.building.BuildingType;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class BuildingController {
 
-  @FXML
-  private ImageView lumberMillImage;
+  private List<VBox> buildingVBoxes = new ArrayList<>();
+  private List<ImageView> buildingImages = new ArrayList<>();
 
-  @FXML
-  private ImageView apartmentImage;
-
-  @FXML
-  private ImageView steelMillImage;
-
-  @FXML
-  private ImageView quarryImage;
-
-  @FXML
-  private ImageView farmImage;
-
-  @FXML
-  private ImageView cementPlantImage;
-
-  @FXML
-  private VBox farmVBox;
-
-  @FXML
-  private VBox cementPlantVBox;
-
-  @FXML
-  private VBox lumberMillVBox;
-
-  @FXML
-  private VBox apartmentVBox;
-
-  @FXML
-  private VBox steelMillVBox;
-
-  @FXML
-  private VBox quarryVBox;
-
+  private MapController mapController;
   private VBox lastClickedVBox;
 
   @FXML
-  MapController mapController;
+  private HBox buildingContainer;
 
   @FXML
-  public void initialize() {}
+  public void initialize() {
+    // Initialisez les listes en utilisant lookup pour récupérer les éléments FXML par leur fx:id
+    String[] vboxIds = {
+      "lumberMillVBox",
+      "apartmentVBox",
+      "farmVBox",
+      "quarryVBox",
+      "steelMillVBox",
+      "cementPlantVBox",
+      "goldMineVBox",
+    };
+    String[] imageIds = {
+      "lumberMillImage",
+      "apartmentImage",
+      "farmImage",
+      "quarryImage",
+      "steelMillImage",
+      "cementPlantImage",
+      "goldMineImage",
+    };
 
-  public void initializeEventHandlers() {
-    lumberMillImage.setOnMouseClicked(event ->
-      handleBuildingClick(lumberMillVBox)
-    );
-    apartmentImage.setOnMouseClicked(event -> handleBuildingClick(apartmentVBox)
-    );
-    steelMillImage.setOnMouseClicked(event -> handleBuildingClick(steelMillVBox)
-    );
-    quarryImage.setOnMouseClicked(event -> handleBuildingClick(quarryVBox));
-    farmImage.setOnMouseClicked(event -> handleBuildingClick(farmVBox));
-    cementPlantImage.setOnMouseClicked(event ->
-      handleBuildingClick(cementPlantVBox)
-    );
+    for (String id : vboxIds) {
+      VBox vbox = (VBox) buildingContainer.lookup("#" + id);
+      if (vbox != null) {
+        buildingVBoxes.add(vbox);
+      } else {
+        System.err.println("VBox with id " + id + " not found");
+      }
+    }
+
+    for (String id : imageIds) {
+      ImageView imageView = (ImageView) buildingContainer.lookup("#" + id);
+      if (imageView != null) {
+        buildingImages.add(imageView);
+      } else {
+        System.err.println("ImageView with id " + id + " not found");
+      }
+    }
+
+    initializeEventHandlers();
   }
 
+  /**
+   * Initialise les gestionnaires d'événements (onclick) pour les images des bâtiments.
+   * Lorsqu'une image est cliquée, la méthode handleBuildingClick est appelée.
+   */
+  public void initializeEventHandlers() {
+    for (int i = 0; i < buildingImages.size(); i++) {
+      final int index = i;
+      buildingImages
+        .get(i)
+        .setOnMouseClicked(event ->
+          handleBuildingClick(buildingVBoxes.get(index))
+        );
+    }
+  }
+
+  /**
+   * Réinitialise les échelles des VBox des bâtiments (lorsque l'utilisateur clique sur un autre bâtiment).
+   */
   private void resetScales() {
     if (lastClickedVBox != null) {
       lastClickedVBox.setScaleX(1.0);
@@ -75,74 +89,94 @@ public class BuildingController {
     }
   }
 
+  /**
+   * Définit les images des bâtiments dans les ImageView correspondantes.
+   * @param lumberMillImg
+   * @param apartmentImg
+   * @param farmImg
+   * @param quarryImg
+   * @param steelMillImg
+   * @param cementPlantImg
+   * @param goldMineImg
+   */
   public void setImages(
     Image lumberMillImg,
     Image apartmentImg,
-    Image steelMillImg,
-    Image quarryImg,
     Image farmImg,
-    Image cementPlantImg
+    Image quarryImg,
+    Image steelMillImg,
+    Image cementPlantImg,
+    Image goldMineImg
   ) {
-    if (lumberMillImg != null) {
-      lumberMillImage.setImage(lumberMillImg);
-    } else {
-      System.out.println("Lumber Mill image in BuildingController is null");
-    }
-    if (apartmentImg != null) {
-      apartmentImage.setImage(apartmentImg);
-    } else {
-      System.out.println("Apartment image in BuildingController is null");
-    }
+    Image[] images = {
+      lumberMillImg,
+      apartmentImg,
+      farmImg,
+      quarryImg,
+      steelMillImg,
+      cementPlantImg,
+      goldMineImg,
+    };
 
-    if (steelMillImg != null) {
-      steelMillImage.setImage(steelMillImg);
-    } else {
-      System.out.println("Steel Mill image in BuildingController is null");
-    }
-    if (quarryImg != null) {
-      quarryImage.setImage(quarryImg);
-    } else {
-      System.out.println("Quarry image in BuildingController is null");
-    }
-    if (farmImg != null) {
-      farmImage.setImage(farmImg);
-    } else {
-      System.out.println("Farm image in BuildingController is null");
-    }
-    if (cementPlantImg != null) {
-      cementPlantImage.setImage(cementPlantImg);
-    } else {
-      System.out.println("Cement Plant image in BuildingController is null");
+    for (int i = 0; i < buildingImages.size(); i++) {
+      if (images[i] != null) {
+        buildingImages.get(i).setImage(images[i]);
+      } else {
+        System.out.println(
+          buildingVBoxes.get(i).getId() + " image in BuildingController is null"
+        );
+      }
     }
   }
 
+  /**
+   * Définit le MapController pour ce BuildingController.
+   * @param mapController
+   */
   public void setMapController(MapController mapController) {
     this.mapController = mapController;
   }
 
-  private void handleBuildingClick(VBox BuildingVBox) {
+  /**
+   * Gère le clic sur un bâtiment.
+   * @param buildingVBox
+   */
+  private void handleBuildingClick(VBox buildingVBox) {
     resetScales();
-    BuildingVBox.setScaleX(0.9);
-    BuildingVBox.setScaleY(0.9);
+    buildingVBox.setScaleX(0.9);
+    buildingVBox.setScaleY(0.9);
 
-    this.mapController.setSelectedBuildingType(convertVBoxToType(BuildingVBox));
+    if (this.mapController != null) {
+      this.mapController.setSelectedBuildingType(
+          convertVBoxToType(buildingVBox)
+        );
+    } else {
+      System.err.println("MapController is null in handleBuildingClick");
+    }
 
-    lastClickedVBox = BuildingVBox;
+    lastClickedVBox = buildingVBox;
   }
 
-  private BuildingType convertVBoxToType(VBox BuildingVBox) {
-    if (BuildingVBox == lumberMillVBox) {
+  /**
+   * Convertit une VBox en BuildingType.
+   * @param buildingVBox
+   * @return BuildingType
+   */
+  private BuildingType convertVBoxToType(VBox buildingVBox) {
+    if (buildingVBox.getId().equals("lumberMillVBox")) {
       return BuildingType.LUMBER_MILL;
-    } else if (BuildingVBox == apartmentVBox) {
+    } else if (buildingVBox.getId().equals("apartmentVBox")) {
       return BuildingType.APARTMENT_BUILDING;
-    } else if (BuildingVBox == steelMillVBox) {
-      return BuildingType.STEEL_MILL;
-    } else if (BuildingVBox == quarryVBox) {
-      return BuildingType.QUARRY;
-    } else if (BuildingVBox == farmVBox) {
+    } else if (buildingVBox.getId().equals("farmVBox")) {
       return BuildingType.FARM;
-    } else if (BuildingVBox == cementPlantVBox) {
+    } else if (buildingVBox.getId().equals("quarryVBox")) {
+      return BuildingType.QUARRY;
+    } else if (buildingVBox.getId().equals("steelMillVBox")) {
+      return BuildingType.STEEL_MILL;
+    } else if (buildingVBox.getId().equals("cementPlantVBox")) {
       return BuildingType.CEMENT_PLANT;
+    } else if (buildingVBox.getId().equals("goldMineVBox")) {
+      return BuildingType.GOLD_MINE;
     } else {
       return null;
     }

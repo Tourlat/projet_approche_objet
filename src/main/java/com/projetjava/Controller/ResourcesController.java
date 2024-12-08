@@ -4,7 +4,6 @@ import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.resources.ResourceType;
 import com.projetjava.customexceptions.InvalidResourceLoadException;
 import com.projetjava.util.ImageCache;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -38,6 +37,9 @@ public class ResourcesController implements ResourceObserver {
   private ImageView toolsImage;
 
   @FXML
+  private ImageView goldImage;
+
+  @FXML
   private ImageView workerImage;
 
   @FXML
@@ -64,7 +66,10 @@ public class ResourcesController implements ResourceObserver {
   @FXML
   private Label toolsLabel;
 
-  @FXML 
+  @FXML
+  private Label goldLabel;
+
+  @FXML
   private Label workerLabel;
 
   @FXML
@@ -99,6 +104,9 @@ public class ResourcesController implements ResourceObserver {
       Image toolsImg = imageCache.getImage(
         "/com/projetjava/sprites/resources_sprites/Tools.png"
       );
+      Image goldImg = imageCache.getImage(
+        "/com/projetjava/sprites/resources_sprites/Gold.png"
+      );
       Image workerImg = imageCache.getImage(
         "/com/projetjava/sprites/worker.png"
       );
@@ -111,6 +119,7 @@ public class ResourcesController implements ResourceObserver {
       setImageView(ironImage, ironImg);
       setImageView(steelImage, steelImg);
       setImageView(toolsImage, toolsImg);
+      setImageView(goldImage, goldImg);
       setImageView(workerImage, workerImg);
     } catch (Exception e) {
       e.printStackTrace();
@@ -119,7 +128,9 @@ public class ResourcesController implements ResourceObserver {
 
   private void setImageView(ImageView imageView, Image image) {
     if (image == null || image.isError()) {
-      throw new InvalidResourceLoadException("Error loading image: " + (image != null ? image.getUrl() : "null"));
+      throw new InvalidResourceLoadException(
+        "Error loading image: " + (image != null ? image.getUrl() : "null")
+      );
     } else {
       imageView.setImage(image);
       imageView.setFitHeight(50);
@@ -137,8 +148,9 @@ public class ResourcesController implements ResourceObserver {
     int iron,
     int steel,
     int tools,
+    int gold,
     int workers,
-    int inahbitants
+    int inhabitants
   ) {
     System.out.println(
       food +
@@ -155,7 +167,9 @@ public class ResourcesController implements ResourceObserver {
       " " +
       steel +
       " " +
-      tools
+      tools +
+      " " +
+      gold
     );
     Platform.runLater(() -> {
       foodLabel.setText("Food: " + food);
@@ -166,7 +180,8 @@ public class ResourcesController implements ResourceObserver {
       ironLabel.setText("Iron: " + iron);
       steelLabel.setText("Steel: " + steel);
       toolsLabel.setText("Tools: " + tools);
-      workerLabel.setText("Workers: " + workers + "/" + inahbitants);
+      goldLabel.setText("Gold: " + gold);
+      workerLabel.setText("Workers: " + workers + "/" + inhabitants);
     });
   }
 
@@ -199,10 +214,24 @@ public class ResourcesController implements ResourceObserver {
     int tools = gameManager
       .getResourceManager()
       .getResourceQuantity(ResourceType.TOOL);
-    
+    int gold = gameManager
+      .getResourceManager()
+      .getResourceQuantity(ResourceType.GOLD);
+
     int[] workers = gameManager.getQuantityOfWorkers();
 
-
-    updateResources(food, wood, stone, lumber, coal, iron, steel, tools, workers[0], workers[1]);
+    updateResources(
+      food,
+      wood,
+      stone,
+      lumber,
+      coal,
+      iron,
+      steel,
+      tools,
+      gold,
+      workers[0],
+      workers[1]
+    );
   }
 }

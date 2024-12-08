@@ -9,5 +9,6 @@ public enum BuildingType {
   LUMBER_MILL,
   CEMENT_PLANT,
   STEEL_MILL,
-  TOOL_FACTORY
+  TOOL_FACTORY,
+  GOLD_MINE,
 }

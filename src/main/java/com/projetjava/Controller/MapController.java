@@ -6,6 +6,8 @@ import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.MapManager;
 import com.projetjava.Model.map.Position;
 import com.projetjava.util.ImageCache;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -19,14 +21,9 @@ public class MapController implements Observer {
   private GridPane mapGrid;
 
   private Image ground;
-  private Image woodenCabin;
-  private Image lumberMillImage;
-  private Image apartmentImage;
-  private Image steelMillImage;
-  private Image quarryImage;
   private Image inConstruction;
-  private Image farmImage;
-  private Image cementPlantImage;
+
+  private Map<BuildingType, Image> buildingImages = new HashMap<>();
 
   private BuildingType selectedBuildingType;
   private GameManager gameManager;
@@ -46,49 +43,49 @@ public class MapController implements Observer {
         imageCache.getImage(
           "/com/projetjava/sprites/building_sprites/inConstruction.png"
         );
+
+      buildingImages.put(
+        BuildingType.LUMBER_MILL,
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/lumber_mill.png"
+        )
+      );
+      buildingImages.put(
+        BuildingType.APARTMENT_BUILDING,
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/apartment.png"
+        )
+      );
+      buildingImages.put(
+        BuildingType.FARM,
+        imageCache.getImage("/com/projetjava/sprites/building_sprites/farm.png")
+      );
+      buildingImages.put(
+        BuildingType.QUARRY,
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/quarry.png"
+        )
+      );
+      buildingImages.put(
+        BuildingType.STEEL_MILL,
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/steel_mill.png"
+        )
+      );
+      buildingImages.put(
+        BuildingType.CEMENT_PLANT,
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/cement_plant.png"
+        )
+      );
+      buildingImages.put(
+        BuildingType.GOLD_MINE,
+        imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/gold_mine.png"
+        )
+      );
     } catch (Exception e) {
       e.printStackTrace();
-    }
-  }
-
-  public void setImages(
-    Image lumberMillImg,
-    Image apartmentImg,
-    Image steelMillImg,
-    Image quarryImg,
-    Image farmImg,
-    Image cementPlantImg
-  ) {
-    if (lumberMillImg != null) {
-      lumberMillImage = lumberMillImg;
-    } else {
-      System.out.println("Lumber Mill image in MapController is null");
-    }
-    if (apartmentImg != null) {
-      apartmentImage = apartmentImg;
-    } else {
-      System.out.println("Apartment image in MapController is null");
-    }
-    if (steelMillImg != null) {
-      steelMillImage = steelMillImg;
-    } else {
-      System.out.println("Steel Mill image in MapController is null");
-    }
-    if (quarryImg != null) {
-      quarryImage = quarryImg;
-    } else {
-      System.out.println("Quarry image in MapController is null");
-    }
-
-    if (farmImg != null) {
-      farmImage = farmImg;
-    } else {
-      System.out.println("Farm image in MapController is null");
-    }
-    if (cementPlantImg != null) {
-      cementPlantImage = cementPlantImg;
-    } else {
-      System.out.println("Cement Plant image in MapController is null");
     }
   }
 
@@ -124,56 +121,11 @@ public class MapController implements Observer {
               mapGrid.add(groundImageViewForBuilding, x + i, y + j);
             }
           }
+
           if (!building.isConstructed()) {
             buildingImageView.setImage(inConstruction);
           } else {
-            switch (building.getType()) {
-              case WOODEN_CABIN:
-                System.out.println(
-                  "Wooden Cabin found at position: (" + x + ", " + y + ")"
-                );
-                buildingImageView.setImage(woodenCabin);
-                break;
-              case APARTMENT_BUILDING:
-                System.out.println(
-                  "Apartment found at position: (" + x + ", " + y + ")"
-                );
-                buildingImageView.setImage(apartmentImage);
-                break;
-              case LUMBER_MILL:
-                System.out.println(
-                  "Lumber Mill found at position: (" + x + ", " + y + ")"
-                );
-                buildingImageView.setImage(lumberMillImage);
-                break;
-              case STEEL_MILL:
-                System.out.println(
-                  "Steel Mill found at position: (" + x + ", " + y + ")"
-                );
-                buildingImageView.setImage(steelMillImage);
-                break;
-              case QUARRY:
-                System.out.println(
-                  "Quarry found at position: (" + x + ", " + y + ")"
-                );
-                buildingImageView.setImage(quarryImage);
-                break;
-              case FARM:
-                System.out.println(
-                  "Farm found at position: (" + x + ", " + y + ")"
-                );
-                buildingImageView.setImage(farmImage);
-                break;
-              case CEMENT_PLANT:
-                System.out.println(
-                  "Cement Plant found at position: (" + x + ", " + y + ")"
-                );
-                buildingImageView.setImage(cementPlantImage);
-                break;
-              default:
-                buildingImageView.setImage(woodenCabin);
-                break;
-            }
+            buildingImageView.setImage(buildingImages.get(building.getType()));
           }
 
           buildingImageView.setFitWidth(buildingWidth * 25);
@@ -181,13 +133,11 @@ public class MapController implements Observer {
 
           GridPane.setColumnSpan(cell, buildingWidth);
           GridPane.setRowSpan(cell, buildingHeight);
-          // Marquez les cellules occupées par le bâtiment
-
         } else {
           buildingImageView.setImage(null);
         }
 
-        // Ajouter les ImageView dans l'ordre : sol d'abord, puis bâtiment
+        // Add building on top of ground
         if (!mapManager.isOccupied(x, y)) cell
           .getChildren()
           .addAll(groundImageView, buildingImageView); else cell
@@ -205,37 +155,43 @@ public class MapController implements Observer {
   private void handleMouseClick(int x, int y) {
     System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
     if (selectedBuildingType != null) {
-      // Place the building
-
       boolean success = gameManager.addBuilding(
         new Position(x, y),
         selectedBuildingType
       );
       if (success) {
         System.out.println("Building placed: " + selectedBuildingType);
-        updateMap();
+        update();
       } else {
         System.out.println("Failed to place building: " + selectedBuildingType);
       }
     }
   }
 
-  public void updateMap() {
-    // Clear the existing cells
-    mapGrid.getChildren().clear();
-    // Reload the map data
-    loadMap();
-  }
-
   @Override
   public void update() {
-    Platform.runLater(() -> {
-      updateMap();
-    });
+    Platform.runLater(this::loadMap);
   }
 
   public void setSelectedBuildingType(BuildingType selectedBuildingType) {
-    System.out.println("Selected building type: " + selectedBuildingType);
     this.selectedBuildingType = selectedBuildingType;
+  }
+
+  public void setImages(
+    Image lumberMillImg,
+    Image apartmentImg,
+    Image farmImg,
+    Image quarryImg,
+    Image steelMillImg,
+    Image cementPlantImg,
+    Image goldMineImg
+  ) {
+    buildingImages.put(BuildingType.LUMBER_MILL, lumberMillImg);
+    buildingImages.put(BuildingType.APARTMENT_BUILDING, apartmentImg);
+    buildingImages.put(BuildingType.FARM, farmImg);
+    buildingImages.put(BuildingType.QUARRY, quarryImg);
+    buildingImages.put(BuildingType.STEEL_MILL, steelMillImg);
+    buildingImages.put(BuildingType.CEMENT_PLANT, cementPlantImg);
+    buildingImages.put(BuildingType.GOLD_MINE, goldMineImg);
   }
 }

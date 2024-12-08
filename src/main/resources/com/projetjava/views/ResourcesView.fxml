@@ -40,6 +40,10 @@
         <Label fx:id="toolsLabel" text="Tools: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
     </VBox>
     <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="8">
+        <ImageView fx:id="goldImage" />
+        <Label fx:id="goldLabel" text="Gold: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    </VBox>
+    <VBox spacing="2" alignment="CENTER" GridPane.rowIndex="9">
         <ImageView fx:id="workerImage" />
         <Label fx:id="workerLabel" text="Workers : 0 / 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
     </VBox>
