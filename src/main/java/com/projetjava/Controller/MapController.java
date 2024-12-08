@@ -9,10 +9,16 @@ import com.projetjava.util.ImageCache;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
+import javafx.scene.input.MouseEvent;
 
 public class MapController implements Observer {
 
@@ -49,11 +55,10 @@ public class MapController implements Observer {
   }
 
   public void setImages(
-    Image lumberMillImg,
-    Image apartmentImg,
-    Image steelMillImg,
-    Image quarryImg
-  ) {
+      Image lumberMillImg,
+      Image apartmentImg,
+      Image steelMillImg,
+      Image quarryImg) {
     if (lumberMillImg != null) {
       lumberMillImage = lumberMillImg;
     } else {
@@ -108,44 +113,40 @@ public class MapController implements Observer {
               mapGrid.add(groundImageViewForBuilding, x + i, y + j);
             }
           }
-          if(!building.isConstructed()){
+          if (!building.isConstructed()) {
             buildingImageView.setImage(inConstruction);
-          }else{
-          switch (building.getType()) {
-            case WOODEN_CABIN:
-              System.out.println(
-                "Wooden Cabin found at position: (" + x + ", " + y + ")"
-              );
-              buildingImageView.setImage(woodenCabin);
-              break;
-            case APARTMENT_BUILDING:
-              System.out.println(
-                "Apartment found at position: (" + x + ", " + y + ")"
-              );
-              buildingImageView.setImage(apartmentImage);
-              break;
-            case LUMBER_MILL:
-              System.out.println(
-                "Lumber Mill found at position: (" + x + ", " + y + ")"
-              );
-              buildingImageView.setImage(lumberMillImage);
-              break;
-            case STEEL_MILL:
-              System.out.println(
-                "Steel Mill found at position: (" + x + ", " + y + ")"
-              );
-              buildingImageView.setImage(steelMillImage);
-              break;
-            case QUARRY:
-              System.out.println(
-                "Quarry found at position: (" + x + ", " + y + ")"
-              );
-              buildingImageView.setImage(quarryImage);
-              break;
-            default:
-              buildingImageView.setImage(woodenCabin);
-              break;
-          }}
+          } else {
+            switch (building.getType()) {
+              case WOODEN_CABIN:
+                System.out.println(
+                    "Wooden Cabin found at position: (" + x + ", " + y + ")");
+                buildingImageView.setImage(woodenCabin);
+                break;
+              case APARTMENT_BUILDING:
+                System.out.println(
+                    "Apartment found at position: (" + x + ", " + y + ")");
+                buildingImageView.setImage(apartmentImage);
+                break;
+              case LUMBER_MILL:
+                System.out.println(
+                    "Lumber Mill found at position: (" + x + ", " + y + ")");
+                buildingImageView.setImage(lumberMillImage);
+                break;
+              case STEEL_MILL:
+                System.out.println(
+                    "Steel Mill found at position: (" + x + ", " + y + ")");
+                buildingImageView.setImage(steelMillImage);
+                break;
+              case QUARRY:
+                System.out.println(
+                    "Quarry found at position: (" + x + ", " + y + ")");
+                buildingImageView.setImage(quarryImage);
+                break;
+              default:
+                buildingImageView.setImage(woodenCabin);
+                break;
+            }
+          }
 
           buildingImageView.setFitWidth(buildingWidth * 25);
           buildingImageView.setFitHeight(buildingHeight * 25);
@@ -154,42 +155,114 @@ public class MapController implements Observer {
           GridPane.setRowSpan(cell, buildingHeight);
 
           // Marquez les cellules occupées par le bâtiment
-          
+
         } else {
           buildingImageView.setImage(null);
         }
 
         // Ajouter les ImageView dans l'ordre : sol d'abord, puis bâtiment
-        if (!mapManager.isOccupied(x, y)) cell
-          .getChildren()
-          .addAll(groundImageView, buildingImageView); else cell
-          .getChildren()
-          .add(buildingImageView);
+        if (!mapManager.isOccupied(x, y))
+          cell
+              .getChildren()
+              .addAll(groundImageView, buildingImageView);
+        else
+          cell
+              .getChildren()
+              .add(buildingImageView);
 
         // Add mouse click event handler
-        cell.setOnMouseClicked(event -> handleMouseClick(finalX, finalY));
+        cell.setOnMouseClicked(event -> handleMouseClick(event, finalX, finalY));
 
         mapGrid.add(cell, x, y);
       }
     }
   }
 
-  private void handleMouseClick(int x, int y) {
-    System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
-    if (selectedBuildingType != null) {
-      // Place the building
+  // private void handleMouseClick(int x, int y) {
+  // System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
+  // if (selectedBuildingType != null) {
+  // // Place the building
 
+  // boolean success = gameManager.addBuilding(new Position(x, y),
+  // selectedBuildingType);
+  // if (success) {
+  // System.out.println("Building placed: " + selectedBuildingType);
+  // updateMap();
+  // } else {
+  // System.out.println(
+  // "Failed to place building: " + selectedBuildingType
+  // );
+  // }
+
+  // }
+  // }
+
+  private void handleMouseClick(MouseEvent event, int x, int y) {
+    MapManager mapManager = MapManager.getInstance();
+
+    System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
+    Building building = mapManager.getBuilding(new Position(x, y));
+    if (building != null && building.isConstructed()) {
+      showBuildingOptions(building, x, y, event.getScreenX(), event.getScreenY());
+    } else if (selectedBuildingType != null) {
+      // Place the selected building on the map
       boolean success = gameManager.addBuilding(new Position(x, y), selectedBuildingType);
-        if (success) {
-          System.out.println("Building placed: " + selectedBuildingType);
-          updateMap();
-        } else {
-          System.out.println(
-            "Failed to place building: " + selectedBuildingType
-          );
-        }
-      
+      if (success) {
+        System.out.println("Building placed: " + selectedBuildingType);
+        update();
+      } else {
+        System.out.println("Failed to place building: " + selectedBuildingType);
+      }
+      selectedBuildingType = null;
     }
+  }
+
+  private void showBuildingOptions(Building building, int x, int y, double screenX, double screenY) {
+    Popup popup = new Popup();
+
+    VBox vbox = new VBox();
+    vbox.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1;");
+
+    Label workerLabel = new Label("Workers: " + building.getCurrentEmployees() + "/" + building.getMaxEmployees());
+
+    Button removeWorkerButton = new Button("-");
+    removeWorkerButton.setOnAction(e -> {
+      if (building.getCurrentEmployees() > 0) {
+        gameManager.removeWorkersFromBuilding(new Position(x, y), 1);
+        workerLabel.setText("Workers: " + building.getCurrentEmployees() + "/" + building.getMaxEmployees());
+        update();
+      }
+    });
+    
+    Button addWorkerButton = new Button("+");
+    addWorkerButton.setOnAction(e -> {
+      if (building.getCurrentEmployees() < building.getMaxEmployees() && gameManager.getAvailableWorkers() > 0) {
+        gameManager.addWorkersToBuilding(new Position(x, y), 1);
+        workerLabel.setText("Workers: " + building.getCurrentEmployees() + "/" + building.getMaxEmployees());
+        update();
+      }
+    });
+
+   
+
+    HBox workerButtons = new HBox(5); 
+    workerButtons.getChildren().addAll(addWorkerButton, removeWorkerButton);
+
+    Button removeBuildingButton = new Button("Remove Building");
+    removeBuildingButton.setOnAction(e -> {
+      gameManager.removeBuilding(new Position(x, y));
+      update();
+      popup.hide();
+    });
+
+    Button cancelButton = new Button("Cancel");
+    cancelButton.setOnAction(e -> popup.hide());
+
+    vbox.getChildren().addAll(workerLabel, workerButtons, removeBuildingButton, cancelButton);
+
+    popup.getContent().add(vbox);
+    popup.setAutoHide(true);
+    popup.show(mapGrid.getScene().getWindow(), screenX, screenY);
   }
 
   public void updateMap() {

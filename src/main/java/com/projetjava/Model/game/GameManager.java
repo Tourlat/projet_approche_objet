@@ -61,7 +61,7 @@ public class GameManager implements Observer {
    * "ADMIN MODE" -> to remove
    */
   private void adminMode() {
-    resourceManager.addResource(ResourceType.FOOD, 14);
+    resourceManager.addResource(ResourceType.FOOD, 50000);
     resourceManager.addResource(ResourceType.WOOD, 10000);
     resourceManager.addResource(ResourceType.STONE, 10000);
     resourceManager.addResource(ResourceType.COAL, 10000);
@@ -225,6 +225,10 @@ public class GameManager implements Observer {
 
   public GameTimer getGameTimer() {
     return gameTimer;
+  }
+
+  public int getAvailableWorkers() {
+    return workers.getUnemployed();
   }
 
   // observer pattern

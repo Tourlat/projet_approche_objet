@@ -103,6 +103,12 @@ public abstract class Building {
    * @return the consumption of the building
    */
   public Map<ResourceType, Integer> getConsumption() {
+    Map<ResourceType, Integer> consumption = new HashMap<>();
+    double proportion = (double) currentEmployees / maxEmployees;
+    for (Map.Entry<ResourceType, Integer> entry : this.consumption.entrySet()) {
+     
+      consumption.put(entry.getKey(), (int) (entry.getValue() * proportion));
+    }
     return consumption;
   }
 
