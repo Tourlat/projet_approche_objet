@@ -48,23 +48,20 @@ public class MapController implements Observer {
     try {
       ImageCache imageCache = ImageCache.getInstance();
       ground = imageCache.getImage("/com/projetjava/sprites/ground.png");
-      inConstruction =
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/inConstruction.png"
-        );
+      inConstruction = imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/inConstruction.png");
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   public void setImages(
-    Image lumberMillImg,
-    Image apartmentImg,
-    Image steelMillImg,
-    Image quarryImg,
-    Image farmImg,
-    Image cementPlantImg
-  ) {
+      Image lumberMillImg,
+      Image apartmentImg,
+      Image steelMillImg,
+      Image quarryImg,
+      Image farmImg,
+      Image cementPlantImg) {
     if (lumberMillImg != null) {
       lumberMillImage = lumberMillImg;
     } else {
@@ -121,7 +118,7 @@ public class MapController implements Observer {
           int buildingWidth = building.getWidth();
           int buildingHeight = building.getHeight();
 
-          // Afficher le sol des cases que le bâtiment occupe
+          // Add the ground image under the building image
           for (int i = 0; i < buildingWidth; i++) {
             for (int j = 0; j < buildingHeight; j++) {
               ImageView groundImageViewForBuilding = new ImageView(ground);
@@ -136,44 +133,37 @@ public class MapController implements Observer {
             switch (building.getType()) {
               case WOODEN_CABIN:
                 System.out.println(
-                  "Wooden Cabin found at position: (" + x + ", " + y + ")"
-                );
+                    "Wooden Cabin found at position: (" + x + ", " + y + ")");
                 buildingImageView.setImage(woodenCabin);
                 break;
               case APARTMENT_BUILDING:
                 System.out.println(
-                  "Apartment found at position: (" + x + ", " + y + ")"
-                );
+                    "Apartment found at position: (" + x + ", " + y + ")");
                 buildingImageView.setImage(apartmentImage);
                 break;
               case LUMBER_MILL:
                 System.out.println(
-                  "Lumber Mill found at position: (" + x + ", " + y + ")"
-                );
+                    "Lumber Mill found at position: (" + x + ", " + y + ")");
                 buildingImageView.setImage(lumberMillImage);
                 break;
               case STEEL_MILL:
                 System.out.println(
-                  "Steel Mill found at position: (" + x + ", " + y + ")"
-                );
+                    "Steel Mill found at position: (" + x + ", " + y + ")");
                 buildingImageView.setImage(steelMillImage);
                 break;
               case QUARRY:
                 System.out.println(
-                  "Quarry found at position: (" + x + ", " + y + ")"
-                );
+                    "Quarry found at position: (" + x + ", " + y + ")");
                 buildingImageView.setImage(quarryImage);
                 break;
               case FARM:
                 System.out.println(
-                  "Farm found at position: (" + x + ", " + y + ")"
-                );
+                    "Farm found at position: (" + x + ", " + y + ")");
                 buildingImageView.setImage(farmImage);
                 break;
               case CEMENT_PLANT:
                 System.out.println(
-                  "Cement Plant found at position: (" + x + ", " + y + ")"
-                );
+                    "Cement Plant found at position: (" + x + ", " + y + ")");
                 buildingImageView.setImage(cementPlantImage);
                 break;
               default:
@@ -182,26 +172,24 @@ public class MapController implements Observer {
             }
           }
 
+          // Set the size of the building image to fit the building size
           buildingImageView.setFitWidth(buildingWidth * 25);
           buildingImageView.setFitHeight(buildingHeight * 25);
 
           GridPane.setColumnSpan(cell, buildingWidth);
           GridPane.setRowSpan(cell, buildingHeight);
-          // Marquez les cellules occupées par le bâtiment
 
         } else {
+          // No building at this position
           buildingImageView.setImage(null);
         }
 
-        // Ajouter les ImageView dans l'ordre : sol d'abord, puis bâtiment
+        // Check if the cell is occupied
         if (!mapManager.isOccupied(x, y))
-          cell
-              .getChildren()
-              .addAll(groundImageView, buildingImageView);
+          // Add the ground image under the building image
+          cell.getChildren().addAll(groundImageView, buildingImageView);
         else
-          cell
-              .getChildren()
-              .add(buildingImageView);
+          cell.getChildren().add(buildingImageView);
 
         // Add mouse click event handler
         cell.setOnMouseClicked(event -> handleMouseClick(event, finalX, finalY));
@@ -230,11 +218,19 @@ public class MapController implements Observer {
   // }
   // }
 
+  /**
+   * Handle mouse click event
+   * 
+   * @param event the mouse event
+   * @param x     the x position
+   * @param y     the y position
+   */
   private void handleMouseClick(MouseEvent event, int x, int y) {
     MapManager mapManager = MapManager.getInstance();
 
     System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
-    Building building = mapManager.getBuilding(new Position(x, y));
+    Position origin = mapManager.getBuildingPosition(new Position(x, y));
+    Building building = mapManager.getBuilding(origin);
     if (building != null && building.isConstructed()) {
       showBuildingOptions(building, x, y, event.getScreenX(), event.getScreenY());
     } else if (selectedBuildingType != null) {
@@ -250,6 +246,16 @@ public class MapController implements Observer {
     }
   }
 
+  /**
+   * Display building options popup, such as adding/removing workers, removing
+   * building
+   * 
+   * @param building the building
+   * @param x        the x position
+   * @param y        the y position
+   * @param screenX  the screen x position
+   * @param screenY  the screen y position
+   */
   private void showBuildingOptions(Building building, int x, int y, double screenX, double screenY) {
     Popup popup = new Popup();
 
@@ -258,32 +264,30 @@ public class MapController implements Observer {
 
     Label workerLabel = new Label("Workers: " + building.getCurrentEmployees() + "/" + building.getMaxEmployees());
 
+    Position origin = MapManager.getInstance().getBuildingPosition(new Position(x, y));
+
     Button removeWorkerButton = new Button("-");
     removeWorkerButton.setOnAction(e -> {
       if (building.getCurrentEmployees() > 0) {
-        gameManager.removeWorkersFromBuilding(new Position(x, y), 1);
+        gameManager.removeWorkersFromBuilding(origin, 1);
         workerLabel.setText("Workers: " + building.getCurrentEmployees() + "/" + building.getMaxEmployees());
-        update();
       }
     });
-    
+
     Button addWorkerButton = new Button("+");
     addWorkerButton.setOnAction(e -> {
       if (building.getCurrentEmployees() < building.getMaxEmployees() && gameManager.getAvailableWorkers() > 0) {
-        gameManager.addWorkersToBuilding(new Position(x, y), 1);
+        gameManager.addWorkersToBuilding(origin, 1);
         workerLabel.setText("Workers: " + building.getCurrentEmployees() + "/" + building.getMaxEmployees());
-        update();
       }
     });
 
-   
-
-    HBox workerButtons = new HBox(5); 
-    workerButtons.getChildren().addAll(addWorkerButton, removeWorkerButton);
+    HBox workerButtons = new HBox(5);
+    workerButtons.getChildren().addAll(removeWorkerButton, addWorkerButton);
 
     Button removeBuildingButton = new Button("Remove Building");
     removeBuildingButton.setOnAction(e -> {
-      gameManager.removeBuilding(new Position(x, y));
+      gameManager.removeBuilding(origin);
       update();
       popup.hide();
     });

@@ -1,8 +1,6 @@
 package com.projetjava.Controller;
 
-import com.projetjava.Model.building.BuildingType;
 import com.projetjava.Model.game.GameManager;
-import com.projetjava.Model.map.Position;
 import com.projetjava.customexceptions.InvalidResourceLoadException;
 import com.projetjava.util.ImageCache;
 import java.io.IOException;

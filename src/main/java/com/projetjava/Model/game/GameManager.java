@@ -10,6 +10,9 @@ import com.projetjava.Model.map.Position;
 import com.projetjava.Model.population.Workers;
 import com.projetjava.Model.resources.ResourceManager;
 import com.projetjava.Model.resources.ResourceType;
+
+import javafx.application.Platform;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +47,12 @@ public class GameManager implements Observer {
   @Override
   public void update() {
     System.out.println("Game update");
-    updateResources();
-    consumeFood();
+
+    Platform.runLater(() -> {
+      updateResources();
+      consumeFood();
+      notifyObservers();
+    });
   }
 
   public void initializeGame() {
@@ -73,10 +80,20 @@ public class GameManager implements Observer {
     notifyResourceObservers();
   }
 
+  /**
+   * Get the ratio of employed and total workers
+   * @return the ratio of employed and total workers
+   */
   public int[] getQuantityOfWorkers() {
     return new int[] { workers.getEmployed(), workers.getTotal() };
   }
 
+
+  /**
+   * Check if the player has enough resources to build a building
+   * @param building the building to build
+   * @return true if the player has enough resources, false otherwise
+   */
   public boolean haveResourcesToBuild(BuildingType building) {
     Building newBuilding = BuildingFactory.createBuilding(building);
     for (Map.Entry<ResourceType, Integer> entry : newBuilding
@@ -88,11 +105,18 @@ public class GameManager implements Observer {
     }
     return true;
   }
+
+  /**
+   * Add a building to the map
+   * @param position the origin position to place the building (top left corner)
+   * @param building the building to add
+   * @return true if the building was added, false otherwise
+   */
   public boolean addBuilding(Position position, BuildingType building) {
     Building newBuilding = BuildingFactory.createBuilding(building);
 
     // check if the player has enough resources to build the building
-    if(!haveResourcesToBuild(building)){
+    if (!haveResourcesToBuild(building)) {
       return false;
     }
 
@@ -124,6 +148,11 @@ public class GameManager implements Observer {
     return success;
   }
 
+  /**
+   * Remove a building from the map
+   * @param position the position of the building to remove
+   * @return true if the building was removed, false otherwise
+   */
   public boolean removeBuilding(Position position) {
     Building building = mapManager.getBuilding(position);
     boolean success = mapManager.removeBuilding(position);
@@ -142,6 +171,12 @@ public class GameManager implements Observer {
     return success;
   }
 
+  /**
+   * Add workers to a building
+   * @param position the position of the building
+   * @param numberOfWorkers the number of workers to add
+   * @return true if the workers were added, false otherwise
+   */
   public boolean addWorkersToBuilding(Position position, int numberOfWorkers) {
     Building building = mapManager.getBuilding(position);
     if (building != null && workers.getUnemployed() >= numberOfWorkers) {
@@ -153,6 +188,12 @@ public class GameManager implements Observer {
     return false;
   }
 
+  /**
+   * Remove workers from a building
+   * @param position the position of the building
+   * @param numberOfWorkers the number of workers to remove
+   * @return true if the workers were removed, false otherwise
+   */
   public boolean removeWorkersFromBuilding(
       Position position,
       int numberOfWorkers) {
@@ -168,6 +209,7 @@ public class GameManager implements Observer {
 
   /**
    * Add the production of a building to the resources
+   * 
    * @param building
    */
   public void addProduction(Building building) {
@@ -179,6 +221,7 @@ public class GameManager implements Observer {
 
   /**
    * Consume the resources needed for a building production
+   * 
    * @param building
    */
   public void consumeBuildingResources(Building building) {
@@ -188,6 +231,9 @@ public class GameManager implements Observer {
     }
   }
 
+  /**
+   * Update the resources of the game
+   */
   public void updateResources() {
     for (Map.Entry<Position, Building> entry : mapManager
         .getBuildings()
@@ -205,6 +251,9 @@ public class GameManager implements Observer {
     notifyResourceObservers();
   }
 
+  /**
+   * Consume the food needed for the workers/ population
+   */
   public void consumeFood() {
     int foodAvailable = resourceManager.getResourceQuantity(ResourceType.FOOD);
     workers.foodConsumption(foodAvailable);

@@ -66,8 +66,8 @@ public class GameTimer {
         } else if (currentHour == 18) {
             isDay = false;
             System.out.println("It's now night time.");
+            notifyObservers();
         }
-        notifyObservers();
        
     }
 
