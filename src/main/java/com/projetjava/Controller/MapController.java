@@ -161,24 +161,6 @@ public class MapController implements Observer {
     }
   }
 
-  // private void handleMouseClick(int x, int y) {
-  // System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
-  // if (selectedBuildingType != null) {
-  // // Place the building
-
-  // boolean success = gameManager.addBuilding(new Position(x, y),
-  // selectedBuildingType);
-  // if (success) {
-  // System.out.println("Building placed: " + selectedBuildingType);
-  // updateMap();
-  // } else {
-  // System.out.println(
-  // "Failed to place building: " + selectedBuildingType
-  // );
-  // }
-
-  // }
-  // }
 
   /**
    * Handle mouse click event

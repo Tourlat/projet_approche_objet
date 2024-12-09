@@ -16,7 +16,7 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) throws IOException {
-    URL fxmlLocation = getClass().getResource("/com/projetjava/views/MainView.fxml");
+    URL fxmlLocation = getClass().getResource("/com/projetjava/views/MenuView.fxml");
     if (fxmlLocation == null) {
         System.err.println("FXML file not found at the specified path.");
         return;
