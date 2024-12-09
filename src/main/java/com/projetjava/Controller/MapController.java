@@ -45,51 +45,36 @@ public class MapController implements Observer {
     try {
       ImageCache imageCache = ImageCache.getInstance();
       ground = imageCache.getImage("/com/projetjava/sprites/ground.png");
-      inConstruction =
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/inConstruction.png"
-        );
+      inConstruction = imageCache.getImage(
+          "/com/projetjava/sprites/building_sprites/inConstruction.png");
 
       buildingImages.put(
-        BuildingType.LUMBER_MILL,
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/lumber_mill.png"
-        )
-      );
+          BuildingType.LUMBER_MILL,
+          imageCache.getImage(
+              "/com/projetjava/sprites/building_sprites/lumber_mill.png"));
       buildingImages.put(
-        BuildingType.APARTMENT_BUILDING,
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/apartment.png"
-        )
-      );
+          BuildingType.APARTMENT_BUILDING,
+          imageCache.getImage(
+              "/com/projetjava/sprites/building_sprites/apartment.png"));
       buildingImages.put(
-        BuildingType.FARM,
-        imageCache.getImage("/com/projetjava/sprites/building_sprites/farm.png")
-      );
+          BuildingType.FARM,
+          imageCache.getImage("/com/projetjava/sprites/building_sprites/farm.png"));
       buildingImages.put(
-        BuildingType.QUARRY,
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/quarry.png"
-        )
-      );
+          BuildingType.QUARRY,
+          imageCache.getImage(
+              "/com/projetjava/sprites/building_sprites/quarry.png"));
       buildingImages.put(
-        BuildingType.STEEL_MILL,
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/steel_mill.png"
-        )
-      );
+          BuildingType.STEEL_MILL,
+          imageCache.getImage(
+              "/com/projetjava/sprites/building_sprites/steel_mill.png"));
       buildingImages.put(
-        BuildingType.CEMENT_PLANT,
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/cement_plant.png"
-        )
-      );
+          BuildingType.CEMENT_PLANT,
+          imageCache.getImage(
+              "/com/projetjava/sprites/building_sprites/cement_plant.png"));
       buildingImages.put(
-        BuildingType.GOLD_MINE,
-        imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/gold_mine.png"
-        )
-      );
+          BuildingType.GOLD_MINE,
+          imageCache.getImage(
+              "/com/projetjava/sprites/building_sprites/gold_mine.png"));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -146,21 +131,22 @@ public class MapController implements Observer {
         }
 
         // Add building on top of ground
-        if (!mapManager.isOccupied(x, y)) cell
-          .getChildren()
-          .addAll(groundImageView, buildingImageView); else cell
-          .getChildren()
-          .add(buildingImageView);
+        if (!mapManager.isOccupied(x, y))
+          cell
+              .getChildren()
+              .addAll(groundImageView, buildingImageView);
+        else
+          cell
+              .getChildren()
+              .add(buildingImageView);
 
         // Add mouse click event handler
-        cell.setOnMouseClicked(event -> handleMouseClick(event, finalX, finalY)
-        );
+        cell.setOnMouseClicked(event -> handleMouseClick(event, finalX, finalY));
 
         mapGrid.add(cell, x, y);
       }
     }
   }
-
 
   /**
    * Handle mouse click event
@@ -177,18 +163,16 @@ public class MapController implements Observer {
     Building building = mapManager.getBuilding(origin);
     if (building != null && building.isConstructed()) {
       showBuildingOptions(
-        building,
-        x,
-        y,
-        event.getScreenX(),
-        event.getScreenY()
-      );
+          building,
+          x,
+          y,
+          event.getScreenX(),
+          event.getScreenY());
     } else if (selectedBuildingType != null) {
       // Place the selected building on the map
       boolean success = gameManager.addBuilding(
-        new Position(x, y),
-        selectedBuildingType
-      );
+          new Position(x, y),
+          selectedBuildingType);
       if (success) {
         System.out.println("Building placed: " + selectedBuildingType);
         update();
@@ -210,79 +194,145 @@ public class MapController implements Observer {
    * @param screenY  the screen y position
    */
   private void showBuildingOptions(
-    Building building,
-    int x,
-    int y,
-    double screenX,
-    double screenY
-  ) {
+      Building building,
+      int x,
+      int y,
+      double screenX,
+      double screenY) {
     Popup popup = new Popup();
 
-    VBox vbox = new VBox();
-    vbox.setStyle(
-      "-fx-background-color: white; -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1;"
-    );
+    VBox vbox = createVBoxPopUp();
 
-    Label workerLabel = new Label(
-      "Workers: " +
-      building.getCurrentEmployees() +
-      "/" +
-      building.getMaxEmployees()
-    );
+    Label workerLabel = createWorkerLabel(building);
 
     Position origin = MapManager
-      .getInstance()
-      .getBuildingPosition(new Position(x, y));
+        .getInstance()
+        .getBuildingPosition(new Position(x, y));
 
+    if (building.getMaxEmployees() != 0) {
+      Button removeWorkerButton = createRemoveWorkerButton(workerLabel, building, origin);
+
+      Button addWorkerButton = createAddWorkerButton(workerLabel, building, origin);
+
+      HBox workerButtons = new HBox(5);
+      workerButtons.getChildren().addAll(removeWorkerButton, addWorkerButton);
+      Button removeBuildingButton = createRemoveBuildingButton(origin, popup);
+
+      Button cancelButton = createCancelButton(popup);
+
+      vbox
+          .getChildren()
+          .addAll(workerLabel, workerButtons, removeBuildingButton, cancelButton);
+
+    } else {
+
+      Button removeBuildingButton = createRemoveBuildingButton(origin, popup);
+
+      Button cancelButton = createCancelButton(popup);
+
+      vbox
+          .getChildren()
+          .addAll(removeBuildingButton, cancelButton);
+
+    }
+
+    popup.getContent().add(vbox);
+    popup.setAutoHide(true);
+    popup.show(mapGrid.getScene().getWindow(), screenX, screenY);
+  }
+
+  private VBox createVBoxPopUp() {
+    VBox vbox = new VBox();
+    vbox.setStyle(
+        "-fx-background-color: white; " +
+            "-fx-padding: 10; " +
+            "-fx-border-color: black; " +
+            "-fx-border-width: 1; " +
+            "-fx-background-radius: 10; " + // Rounded corners
+            "-fx-border-radius: 10;" // Rounded corners
+    );
+    return vbox;
+  }
+
+  private Label createWorkerLabel(Building building) {
+    Label workerLabel = new Label(
+        "Workers: " +
+            building.getCurrentEmployees() +
+            "/" +
+            building.getMaxEmployees());
+    return workerLabel;
+  }
+
+  private Button createRemoveWorkerButton(Label workerLabel, Building building, Position origin) {
     Button removeWorkerButton = new Button("-");
+    removeWorkerButton.setStyle(
+        "-fx-background-color: #f44336; " + // Red background
+            "-fx-text-fill: white; " + // White text
+            "-fx-background-radius: 10; " + // Rounded corners
+            "-fx-border-radius: 10;" // Rounded corners
+    );
     removeWorkerButton.setOnAction(e -> {
       if (building.getCurrentEmployees() > 0) {
         gameManager.removeWorkersFromBuilding(origin, 1);
         workerLabel.setText(
-          "Workers: " +
-          building.getCurrentEmployees() +
-          "/" +
-          building.getMaxEmployees()
-        );
+            "Workers: " +
+                building.getCurrentEmployees() +
+                "/" +
+                building.getMaxEmployees());
       }
     });
 
+    return removeWorkerButton;
+  }
+
+  private Button createAddWorkerButton(Label workerLabel, Building building, Position origin) {
     Button addWorkerButton = new Button("+");
+    addWorkerButton.setStyle(
+        "-fx-background-color: #4CAF50; " + // Green background
+            "-fx-text-fill: white; " + // White text
+            "-fx-background-radius: 10; " + // Rounded corners
+            "-fx-border-radius: 10;" // Rounded corners
+    );
     addWorkerButton.setOnAction(e -> {
-      if (
-        building.getCurrentEmployees() < building.getMaxEmployees() &&
-        gameManager.getAvailableWorkers() > 0
-      ) {
+      if (building.getCurrentEmployees() < building.getMaxEmployees() &&
+          gameManager.getAvailableWorkers() > 0) {
         gameManager.addWorkersToBuilding(origin, 1);
         workerLabel.setText(
-          "Workers: " +
-          building.getCurrentEmployees() +
-          "/" +
-          building.getMaxEmployees()
-        );
+            "Workers: " +
+                building.getCurrentEmployees() +
+                "/" +
+                building.getMaxEmployees());
       }
     });
+    return addWorkerButton;
+  }
 
-    HBox workerButtons = new HBox(5);
-    workerButtons.getChildren().addAll(removeWorkerButton, addWorkerButton);
-
+  private Button createRemoveBuildingButton(Position origin, Popup popup) {
     Button removeBuildingButton = new Button("Remove Building");
+    removeBuildingButton.setStyle(
+        "-fx-background-color: #f44336; " + // Red background
+            "-fx-text-fill: white; " + // White text
+            "-fx-background-radius: 10; " + // Rounded corners
+            "-fx-border-radius: 10;" // Rounded corners
+    );
     removeBuildingButton.setOnAction(e -> {
       gameManager.removeBuilding(origin);
       update();
       popup.hide();
     });
+    return removeBuildingButton;
+  }
 
+  private Button createCancelButton(Popup popup) {
     Button cancelButton = new Button("Cancel");
+    cancelButton.setStyle(
+        "-fx-background-color: #9E9E9E; " + // Grey background
+            "-fx-text-fill: white; " + // White text
+            "-fx-background-radius: 10; " + // Rounded corners
+            "-fx-border-radius: 10;" // Rounded corners
+    );
     cancelButton.setOnAction(e -> popup.hide());
-
-    vbox
-      .getChildren()
-      .addAll(workerLabel, workerButtons, removeBuildingButton, cancelButton);
-
-    popup.getContent().add(vbox);
-    popup.setAutoHide(true);
-    popup.show(mapGrid.getScene().getWindow(), screenX, screenY);
+    return cancelButton;
   }
 
   @Override
@@ -298,14 +348,13 @@ public class MapController implements Observer {
   }
 
   public void setImages(
-    Image lumberMillImg,
-    Image apartmentImg,
-    Image farmImg,
-    Image quarryImg,
-    Image steelMillImg,
-    Image cementPlantImg,
-    Image goldMineImg
-  ) {
+      Image lumberMillImg,
+      Image apartmentImg,
+      Image farmImg,
+      Image quarryImg,
+      Image steelMillImg,
+      Image cementPlantImg,
+      Image goldMineImg) {
     buildingImages.put(BuildingType.LUMBER_MILL, lumberMillImg);
     buildingImages.put(BuildingType.APARTMENT_BUILDING, apartmentImg);
     buildingImages.put(BuildingType.FARM, farmImg);
