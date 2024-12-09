@@ -5,6 +5,7 @@ import com.projetjava.Model.building.BuildingType;
 import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.MapManager;
 import com.projetjava.Model.map.Position;
+import com.projetjava.Model.resources.ResourceType;
 import com.projetjava.util.ImageCache;
 import java.util.HashMap;
 import java.util.Map;
@@ -177,14 +178,18 @@ public class MapController implements Observer {
 
     Label workerLabel = createWorkerLabel(building);
 
+    String producString = createProductionString(building);
+
     Position origin = MapManager
         .getInstance()
         .getBuildingPosition(new Position(x, y));
 
     if (building.getMaxEmployees() != 0) {
-      Button removeWorkerButton = createRemoveWorkerButton(workerLabel, building, origin);
+      Label productionLabel = new Label(producString);
 
-      Button addWorkerButton = createAddWorkerButton(workerLabel, building, origin);
+      Button removeWorkerButton = createRemoveWorkerButton(workerLabel, productionLabel, building, origin);
+
+      Button addWorkerButton = createAddWorkerButton(workerLabel, productionLabel, building, origin);
 
       HBox workerButtons = new HBox(5);
       workerButtons.getChildren().addAll(removeWorkerButton, addWorkerButton);
@@ -192,9 +197,11 @@ public class MapController implements Observer {
 
       Button cancelButton = createCancelButton(popup);
 
+      
+
       vbox
           .getChildren()
-          .addAll(workerLabel, workerButtons, removeBuildingButton, cancelButton);
+          .addAll(workerLabel, productionLabel, workerButtons, removeBuildingButton, cancelButton);
 
     } else {
 
@@ -235,7 +242,16 @@ public class MapController implements Observer {
     return workerLabel;
   }
 
-  private Button createRemoveWorkerButton(Label workerLabel, Building building, Position origin) {
+   private String createProductionString(Building building) {
+        StringBuilder productionText = new StringBuilder("Production:\n");
+        for (Map.Entry<ResourceType, Integer> entry : building.getCurrentProduction().entrySet()) {
+            productionText.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        return productionText.toString();
+    }
+
+
+  private Button createRemoveWorkerButton(Label workerLabel, Label productionLabel, Building building, Position origin) {
     Button removeWorkerButton = new Button("-");
     removeWorkerButton.setStyle(
         "-fx-background-color: #f44336; " + // Red background
@@ -251,13 +267,14 @@ public class MapController implements Observer {
                 building.getCurrentEmployees() +
                 "/" +
                 building.getMaxEmployees());
+        productionLabel.setText(createProductionString(building));
       }
     });
 
     return removeWorkerButton;
   }
 
-  private Button createAddWorkerButton(Label workerLabel, Building building, Position origin) {
+  private Button createAddWorkerButton(Label workerLabel, Label productionLabel, Building building, Position origin) {
     Button addWorkerButton = new Button("+");
     addWorkerButton.setStyle(
         "-fx-background-color: #4CAF50; " + // Green background
@@ -275,6 +292,7 @@ public class MapController implements Observer {
                 "/" +
                 building.getMaxEmployees());
       }
+      productionLabel.setText(createProductionString(building));
     });
     return addWorkerButton;
   }
