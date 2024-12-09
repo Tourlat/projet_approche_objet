@@ -45,36 +45,8 @@ public class MapController implements Observer {
     try {
       ImageCache imageCache = ImageCache.getInstance();
       ground = imageCache.getImage("/com/projetjava/sprites/ground.png");
-      inConstruction = imageCache.getImage(
-          "/com/projetjava/sprites/building_sprites/inConstruction.png");
+      inConstruction = imageCache.getImage("/com/projetjava/sprites/building_sprites/inConstruction.png");
 
-      buildingImages.put(
-          BuildingType.LUMBER_MILL,
-          imageCache.getImage(
-              "/com/projetjava/sprites/building_sprites/lumber_mill.png"));
-      buildingImages.put(
-          BuildingType.APARTMENT_BUILDING,
-          imageCache.getImage(
-              "/com/projetjava/sprites/building_sprites/apartment.png"));
-      buildingImages.put(
-          BuildingType.FARM,
-          imageCache.getImage("/com/projetjava/sprites/building_sprites/farm.png"));
-      buildingImages.put(
-          BuildingType.QUARRY,
-          imageCache.getImage(
-              "/com/projetjava/sprites/building_sprites/quarry.png"));
-      buildingImages.put(
-          BuildingType.STEEL_MILL,
-          imageCache.getImage(
-              "/com/projetjava/sprites/building_sprites/steel_mill.png"));
-      buildingImages.put(
-          BuildingType.CEMENT_PLANT,
-          imageCache.getImage(
-              "/com/projetjava/sprites/building_sprites/cement_plant.png"));
-      buildingImages.put(
-          BuildingType.GOLD_MINE,
-          imageCache.getImage(
-              "/com/projetjava/sprites/building_sprites/gold_mine.png"));
     } catch (Exception e) {
       e.printStackTrace();
     }
