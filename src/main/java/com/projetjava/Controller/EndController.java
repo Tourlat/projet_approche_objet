@@ -1,6 +1,7 @@
 package com.projetjava.Controller;
 
 import com.projetjava.App;
+import com.projetjava.Model.game.GameManager;
 import com.projetjava.util.ImageCache;
 import java.io.IOException;
 import javafx.application.Platform;
@@ -12,7 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-public class EndController {
+public class EndController implements EndObserver {
 
   @FXML
   private ImageView endImage;
@@ -53,4 +54,16 @@ public class EndController {
       }
     });
   }
+
+  @Override
+  public void updateEnd(boolean hasWon) {
+    Platform.runLater(() -> {
+      gameEnded(hasWon);
+    });
+  }
+
+  @Override
+  public void update() {
+  }
+
 }
