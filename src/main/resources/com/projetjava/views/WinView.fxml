@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="com.projetjava.Controller.EndController">
+    <ImageView fx:id="endImage" fitWidth="300" preserveRatio="true" />
+
+    <Label text="Congratulations!" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <Label text="You have successfully completed the demo!" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <Label text="We hope you enjoyed playing and had a great time!" wrapText="true" style="-fx-font-size: 14px;"/>
+    <Label text="Thank you for playing. Please consider giving us a good grade!" wrapText="true" style="-fx-font-size: 14px;"/>
+    <Label text="Created by Félix FOUCAULT and Guilhem BONNEFOUS, 2024." wrapText="true" style="-fx-font-size: 18px;"/>
+</VBox>

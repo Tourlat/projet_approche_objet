@@ -1,107 +1,113 @@
 package com.projetjava.Model.game;
 
+import com.projetjava.Controller.Observer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
-import com.projetjava.Controller.Observer;
-
 public class GameTimer {
-    private final int DAY_LENGTH = 24;
-    private boolean isDay;
 
-    private int currentHour;
+  private final int DAY_LENGTH = 24;
+  private boolean isDay;
 
-    private boolean isUpdated;
+  private int currentHour;
 
-    private boolean running;
+  private boolean isUpdated;
 
-    private Timer timer;
+  private boolean running;
 
-    private static GameTimer instance;
+  private Timer timer;
 
-    private final static int TICK_RATE = 1000;
+  private static GameTimer instance;
 
-     private final List<Observer> observers = new ArrayList<>();
+  private static GameManager gameManager;
 
-    public static GameTimer getInstance() {
-        if (instance == null) {
-            instance = new GameTimer();
+  private static final int TICK_RATE = 1000;
+
+  private final List<Observer> observers = new ArrayList<>();
+
+  public static GameTimer getInstance() {
+    if (instance == null) {
+      instance = new GameTimer();
+    }
+    return instance;
+  }
+
+  private GameTimer() {
+    currentHour = 6;
+    isDay = true;
+    running = false;
+    timer = new Timer();
+  }
+
+  public void start() {
+    running = true;
+    GameTimer.gameManager = GameManager.getInstance();
+    timer.scheduleAtFixedRate(
+      new java.util.TimerTask() {
+        @Override
+        public void run() {
+          updateGameTime();
+          gameManager.hasGameEnded();
         }
-        return instance;
+      },
+      0,
+      TICK_RATE
+    );
+  }
+
+  public void stop() {
+    running = false;
+    timer.cancel();
+  }
+
+  private void updateGameTime() {
+    isUpdated = true;
+    currentHour = (currentHour + 1) % DAY_LENGTH;
+
+    if (currentHour == 6) {
+      // notify observers that it's now day time update resources etc...
+
+      isDay = true;
+      System.out.println("It's now day time.");
+    } else if (currentHour == 18) {
+      isDay = false;
+      System.out.println("It's now night time.");
+      notifyObservers();
     }
+  }
 
-    private GameTimer() {
-        currentHour = 6;
-        isDay = true;
-        running = false;
-        timer = new Timer();
+  public boolean isDay() {
+    return isDay;
+  }
+
+  public int getTimeOfDay() {
+    return currentHour;
+  }
+
+  public boolean isRunning() {
+    return running;
+  }
+
+  public boolean isUpdated() {
+    return isUpdated;
+  }
+
+  public void setUpdated(boolean updated) {
+    isUpdated = updated;
+  }
+
+  public void addObserver(Observer observer) {
+    observers.add(observer);
+  }
+
+  public void removeObserver(Observer observer) {
+    observers.remove(observer);
+  }
+
+  private void notifyObservers() {
+    for (Observer observer : observers) {
+      observer.update();
     }
-
-    public void start() {
-        running = true;
-        timer.scheduleAtFixedRate(new java.util.TimerTask() {
-            @Override
-            public void run() {
-                updateGameTime();
-            }
-        }, 0, TICK_RATE);
-
-    }
-
-    public void stop() {
-        running = true;
-
-    }
-
-    private void updateGameTime() {
-        isUpdated = true;
-        currentHour = (currentHour + 1) % DAY_LENGTH;
-        
-        if (currentHour == 6) {
-            // notify observers that it's now day time update resources etc...
-           
-            isDay = true;
-            System.out.println("It's now day time.");
-        } else if (currentHour == 18) {
-            isDay = false;
-            System.out.println("It's now night time.");
-            notifyObservers();
-        }
-       
-    }
-
-    public boolean isDay() {
-        return isDay;
-    }
-
-    public int getTimeOfDay() {
-        return currentHour;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public boolean isUpdated() {
-        return isUpdated;
-    }
-
-    public void setUpdated(boolean updated) {
-        isUpdated = updated;
-    }
-
-    public void addObserver(Observer observer) {
-        observers.add(observer);
-    }
-
-    public void removeObserver(Observer observer) {
-        observers.remove(observer);
-    }
-
-    private void notifyObservers() {
-        for (Observer observer : observers) {
-            observer.update();
-        }
-    }
+  }
 }

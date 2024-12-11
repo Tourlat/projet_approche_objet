@@ -24,7 +24,9 @@ public class BuildingController {
   public void initialize() {
     // Initialisez les listes en utilisant lookup pour récupérer les éléments FXML par leur fx:id
     String[] vboxIds = {
+      "woodenCabinVBox",
       "lumberMillVBox",
+      "houseVBox",
       "apartmentVBox",
       "farmVBox",
       "quarryVBox",
@@ -33,7 +35,9 @@ public class BuildingController {
       "goldMineVBox",
     };
     String[] imageIds = {
+      "woodenCabinImage",
       "lumberMillImage",
+      "houseImage",
       "apartmentImage",
       "farmImage",
       "quarryImage",
@@ -91,7 +95,9 @@ public class BuildingController {
 
   /**
    * Définit les images des bâtiments dans les ImageView correspondantes.
+   * @param woodenCabinImg
    * @param lumberMillImg
+   * @param houseImg
    * @param apartmentImg
    * @param farmImg
    * @param quarryImg
@@ -100,7 +106,9 @@ public class BuildingController {
    * @param goldMineImg
    */
   public void setImages(
+    Image woodenCabinImg,
     Image lumberMillImg,
+    Image houseImg,
     Image apartmentImg,
     Image farmImg,
     Image quarryImg,
@@ -109,7 +117,9 @@ public class BuildingController {
     Image goldMineImg
   ) {
     Image[] images = {
+      woodenCabinImg,
       lumberMillImg,
+      houseImg,
       apartmentImg,
       farmImg,
       quarryImg,
@@ -163,8 +173,12 @@ public class BuildingController {
    * @return BuildingType
    */
   private BuildingType convertVBoxToType(VBox buildingVBox) {
-    if (buildingVBox.getId().equals("lumberMillVBox")) {
+    if (buildingVBox.getId().equals("woodenCabinVBox")) {
+      return BuildingType.WOODEN_CABIN;
+    } else if (buildingVBox.getId().equals("lumberMillVBox")) {
       return BuildingType.LUMBER_MILL;
+    } else if (buildingVBox.getId().equals("houseVBox")) {
+      return BuildingType.HOUSE;
     } else if (buildingVBox.getId().equals("apartmentVBox")) {
       return BuildingType.APARTMENT_BUILDING;
     } else if (buildingVBox.getId().equals("farmVBox")) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="com.projetjava.Controller.EndController">
+    <ImageView fx:id="endImage" fitWidth="300" preserveRatio="true" />
+
+    <Label text="Unfortunately, you lost this time..." style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <Label text="Don't give up! Try again, and victory will be yours!" wrapText="true" style="-fx-font-size: 14px;"/>
+    <Label text="We hope you still had fun and enjoyed the game." wrapText="true" style="-fx-font-size: 14px;"/>
+    <Label text="Created by Félix FOUCAULT and Guilhem BONNEFOUS, 2024." wrapText="true" style="-fx-font-size: 18px;"/>
+</VBox>

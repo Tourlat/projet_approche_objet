@@ -1,5 +1,6 @@
 package com.projetjava.Model.game;
 
+import com.projetjava.Controller.EndController;
 import com.projetjava.Controller.Observer;
 import com.projetjava.Controller.ResourceObserver;
 import com.projetjava.Model.building.Building;
@@ -10,12 +11,10 @@ import com.projetjava.Model.map.Position;
 import com.projetjava.Model.population.Workers;
 import com.projetjava.Model.resources.ResourceManager;
 import com.projetjava.Model.resources.ResourceType;
-
-import javafx.application.Platform;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javafx.application.Platform;
 
 public class GameManager implements Observer {
 
@@ -23,6 +22,7 @@ public class GameManager implements Observer {
   private Workers workers;
   private MapManager mapManager;
   private GameTimer gameTimer;
+  private EndController endController = new EndController();
 
   private static GameManager instance;
 
@@ -88,7 +88,6 @@ public class GameManager implements Observer {
     return new int[] { workers.getEmployed(), workers.getTotal() };
   }
 
-
   /**
    * Check if the player has enough resources to build a building
    * @param building the building to build
@@ -97,9 +96,11 @@ public class GameManager implements Observer {
   public boolean haveResourcesToBuild(BuildingType building) {
     Building newBuilding = BuildingFactory.createBuilding(building);
     for (Map.Entry<ResourceType, Integer> entry : newBuilding
-        .getConstructionCost()
-        .entrySet()) {
-      if (resourceManager.getResourceQuantity(entry.getKey()) < entry.getValue()) {
+      .getConstructionCost()
+      .entrySet()) {
+      if (
+        resourceManager.getResourceQuantity(entry.getKey()) < entry.getValue()
+      ) {
         return false;
       }
     }
@@ -127,11 +128,16 @@ public class GameManager implements Observer {
       try {
         System.out.println("finished building");
         if ((success)) {
-          System.out.println(newBuilding.getConstructionTime() + "  " + newBuilding.isConstructed() + " to build");
+          System.out.println(
+            newBuilding.getConstructionTime() +
+            "  " +
+            newBuilding.isConstructed() +
+            " to build"
+          );
           Thread.sleep(newBuilding.getConstructionTime() * 1000);
           for (Map.Entry<ResourceType, Integer> entry : newBuilding
-              .getConstructionCost()
-              .entrySet()) {
+            .getConstructionCost()
+            .entrySet()) {
             resourceManager.subtractResource(entry.getKey(), entry.getValue());
           }
           workers.addUnemployed(newBuilding.getPopulationCreated());
@@ -195,8 +201,9 @@ public class GameManager implements Observer {
    * @return true if the workers were removed, false otherwise
    */
   public boolean removeWorkersFromBuilding(
-      Position position,
-      int numberOfWorkers) {
+    Position position,
+    int numberOfWorkers
+  ) {
     Building building = mapManager.getBuilding(position);
     if (building != null && building.getCurrentEmployees() >= numberOfWorkers) {
       building.removeWorkers(numberOfWorkers);
@@ -209,7 +216,7 @@ public class GameManager implements Observer {
 
   /**
    * Add the production of a building to the resources
-   * 
+   *
    * @param building
    */
   public void addProduction(Building building) {
@@ -221,7 +228,7 @@ public class GameManager implements Observer {
 
   /**
    * Consume the resources needed for a building production
-   * 
+   *
    * @param building
    */
   public void consumeBuildingResources(Building building) {
@@ -236,16 +243,18 @@ public class GameManager implements Observer {
    */
   public void updateResources() {
     for (Map.Entry<Position, Building> entry : mapManager
-        .getBuildings()
-        .entrySet()) {
+      .getBuildings()
+      .entrySet()) {
       Building building = entry.getValue();
       // Check if the building can produce with the available resources and is
       // constructed
-      if (building.canProduce(resourceManager.getResources()) && building.isConstructed()) {
+      if (
+        building.canProduce(resourceManager.getResources()) &&
+        building.isConstructed()
+      ) {
         consumeBuildingResources(building);
         addProduction(building);
       }
-
     }
 
     notifyResourceObservers();
@@ -259,8 +268,9 @@ public class GameManager implements Observer {
     workers.foodConsumption(foodAvailable);
     System.out.println("Food consumption: " + workers.getFoodConsumption());
     resourceManager.setResourceQuantity(
-        ResourceType.FOOD,
-        Math.max(0, foodAvailable - workers.getFoodConsumption()));
+      ResourceType.FOOD,
+      Math.max(0, foodAvailable - workers.getFoodConsumption())
+    );
     notifyResourceObservers();
   }
 
@@ -307,6 +317,35 @@ public class GameManager implements Observer {
   public void notifyResourceObservers() {
     for (ResourceObserver observer : resourceObservers) {
       observer.update();
+    }
+  }
+
+  public void Win() {
+    System.out.println("Win called");
+    resourceManager.addResource(ResourceType.GOLD, 10);
+    notifyResourceObservers();
+    System.out.println("Gold added");
+  }
+
+  public void Lose() {
+    resourceManager.setResourceQuantity(ResourceType.WOOD, 0);
+    workers.foodConsumption(100000);
+  }
+
+  public void hasGameEnded() {
+    if (
+      (getResourceManager().getResourceQuantity(ResourceType.WOOD) <= 0) &&
+      (getQuantityOfWorkers()[1] <= 0)
+    ) {
+      System.out.println("Game Over");
+      gameTimer.stop();
+      endController.gameEnded(false);
+    } else if (
+      getResourceManager().getResourceQuantity(ResourceType.GOLD) >= 10
+    ) {
+      System.out.println("Game Won");
+      gameTimer.stop();
+      endController.gameEnded(true);
     }
   }
 }

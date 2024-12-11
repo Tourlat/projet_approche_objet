@@ -5,7 +5,10 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="com.projetjava.Controller.MenuController">
-    <Label text="Welcome to Empire of Age!" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
-    <Label text="Your mission, if you accept it, is to build and manage your empire. Made by Félix Foucault and Guilhem Bonnefous." wrapText="true" />
-    <Button fx:id="playButton" text="Play" onAction="#handlePlayButtonAction" style="-fx-font-size: 18px;" />
+    <Label text="Welcome to Age of Anno!" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+    <Label text="In this demo, you can build and manage your empire in its first Age. Reach 10 gold to win the demo. Good luck and have fun!" wrapText="true" style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
+    <Label text="To end your game faster, use the keybinds 'W' to win and 'L' to lose." wrapText="true" style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
+    <Label text="Created by Félix FOUCAULT and Guilhem BONNEFOUS, 2024." wrapText="true" style="-fx-font-size: 18px; -fx-text-fill: #2c3e50;" />
+
+    <Button fx:id="playButton" text="Play!" onAction="#handlePlayButtonAction" style="-fx-font-size: 18px;" />
 </VBox>

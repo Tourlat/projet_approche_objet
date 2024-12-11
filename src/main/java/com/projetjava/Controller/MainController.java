@@ -6,8 +6,10 @@ import com.projetjava.util.ImageCache;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -23,7 +25,9 @@ public class MainController {
   private MapController mapController;
   private BuildingController buildingController;
 
+  private Image woodenCabinImage;
   private Image lumberMillImage;
+  private Image houseImage;
   private Image apartmentImage;
   private Image farmImage;
   private Image quarryImage;
@@ -58,7 +62,9 @@ public class MainController {
         System.out.println("Setting MapController in BuildingController");
         buildingController.setMapController(mapController);
         buildingController.setImages(
+          woodenCabinImage,
           lumberMillImage,
+          houseImage,
           apartmentImage,
           farmImage,
           quarryImage,
@@ -67,7 +73,9 @@ public class MainController {
           goldMineImage
         );
         mapController.setImages(
+          woodenCabinImage,
           lumberMillImage,
+          houseImage,
           apartmentImage,
           farmImage,
           quarryImage,
@@ -79,6 +87,25 @@ public class MainController {
       } else {
         throw new IllegalStateException("Controllers not initialized properly");
       }
+
+      // Ajoutez un gestionnaire d'événements pour les touches W et L pour tester la victoire et la défaite
+      Platform.runLater(() -> {
+        Scene scene = mainPane.getScene();
+        if (scene != null) {
+          scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+              case W:
+                gameManager.Win();
+                break;
+              case L:
+                gameManager.Lose();
+                break;
+              default:
+                break;
+            }
+          });
+        }
+      });
     } catch (IOException e) {
       throw new InvalidResourceLoadException(
         "Error loading views in MainController",
@@ -112,8 +139,16 @@ public class MainController {
       ImageCache imageCache = ImageCache.getInstance();
       Map<String, String> imagePaths = new HashMap<>();
       imagePaths.put(
+        "woodenCabinImage",
+        "/com/projetjava/sprites/building_sprites/wooden_cabin.png"
+      );
+      imagePaths.put(
         "lumberMillImage",
         "/com/projetjava/sprites/building_sprites/lumber_mill.png"
+      );
+      imagePaths.put(
+        "houseImage",
+        "/com/projetjava/sprites/building_sprites/house.png"
       );
       imagePaths.put(
         "apartmentImage",
@@ -148,8 +183,14 @@ public class MainController {
           );
         }
         switch (entry.getKey()) {
+          case "woodenCabinImage":
+            woodenCabinImage = image;
+            break;
           case "lumberMillImage":
             lumberMillImage = image;
+            break;
+          case "houseImage":
+            houseImage = image;
             break;
           case "apartmentImage":
             apartmentImage = image;
