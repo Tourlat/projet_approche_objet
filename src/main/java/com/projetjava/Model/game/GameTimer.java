@@ -66,12 +66,12 @@ public class GameTimer {
     currentHour = (currentHour + 1) % DAY_LENGTH;
 
     if (currentHour == 6) {
-      // notify observers that it's now day time update resources etc...
-
       isDay = true;
       System.out.println("It's now day time.");
     } else if (currentHour == 18) {
       isDay = false;
+      // notify observers that it's now night time update resources etc...
+
       System.out.println("It's now night time.");
       notifyObservers();
     }

@@ -1,6 +1,6 @@
 package com.projetjava.Model.game;
 
-import com.projetjava.Controller.EndController;
+import com.projetjava.Controller.EndObserver;
 import com.projetjava.Controller.Observer;
 import com.projetjava.Controller.ResourceObserver;
 import com.projetjava.Model.building.Building;
@@ -22,12 +22,14 @@ public class GameManager implements Observer {
   private Workers workers;
   private MapManager mapManager;
   private GameTimer gameTimer;
-  private EndController endController = new EndController();
+
+  private boolean win;
 
   private static GameManager instance;
 
   private List<Observer> observers = new ArrayList<>();
   private List<ResourceObserver> resourceObservers = new ArrayList<>();
+  private EndObserver endObserver;
 
   public static GameManager getInstance() {
     if (instance == null) {
@@ -56,7 +58,7 @@ public class GameManager implements Observer {
   }
 
   public void initializeGame() {
-    resourceManager.addResource(ResourceType.FOOD, 100);
+    resourceManager.addResource(ResourceType.FOOD, 20);
     resourceManager.addResource(ResourceType.WOOD, 50);
     resourceManager.addResource(ResourceType.STONE, 30);
     gameTimer.start();
@@ -290,7 +292,9 @@ public class GameManager implements Observer {
     return workers.getUnemployed();
   }
 
-  // observer pattern
+  /**-- Observers methods */
+
+  // default observer pattern
   public void addObserver(Observer observer) {
     observers.add(observer);
   }
@@ -320,6 +324,29 @@ public class GameManager implements Observer {
     }
   }
 
+  // end observer pattern
+  public void setEndObserver(EndObserver observer) {
+    endObserver = observer;
+  }
+
+  public void notifyEndObserver() {
+    if (endObserver != null) {
+      endObserver.updateEnd(win);
+    }
+  }
+
+  public void removeEndObserver() {
+    endObserver = null;
+  }
+
+
+
+  /**-- End  of Observers methods */
+
+
+  /**
+   * Function to set the game in win condition
+   */
   public void Win() {
     System.out.println("Win called");
     resourceManager.addResource(ResourceType.GOLD, 10);
@@ -327,25 +354,41 @@ public class GameManager implements Observer {
     System.out.println("Gold added");
   }
 
+  /**
+   * Function to set the game in lose condition
+   */
   public void Lose() {
     resourceManager.setResourceQuantity(ResourceType.WOOD, 0);
     workers.foodConsumption(100000);
   }
 
+  /**
+   * Check if the game has ended
+   */
   public void hasGameEnded() {
+    // check if the player has lost i.e. no more wood and no more workers
     if (
       (getResourceManager().getResourceQuantity(ResourceType.WOOD) <= 0) &&
       (getQuantityOfWorkers()[1] <= 0)
     ) {
       System.out.println("Game Over");
+      win = false;
+      notifyEndObserver();
       gameTimer.stop();
-      endController.gameEnded(false);
+      
     } else if (
+      // check if the player has won i.e. has 10 gold
       getResourceManager().getResourceQuantity(ResourceType.GOLD) >= 10
     ) {
       System.out.println("Game Won");
+      win = true;
+      notifyEndObserver();
       gameTimer.stop();
-      endController.gameEnded(true);
+     
     }
+  }
+
+  public boolean isWin() {
+    return win;
   }
 }

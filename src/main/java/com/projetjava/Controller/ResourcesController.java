@@ -1,5 +1,8 @@
 package com.projetjava.Controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.resources.ResourceType;
 import com.projetjava.customexceptions.InvalidResourceLoadException;
@@ -77,60 +80,76 @@ public class ResourcesController implements ResourceObserver {
     loadImages();
   }
 
+  private Map<String, String> createImagePathsMap() {
+    Map<String, String> imagePaths = new HashMap<>();
+    imagePaths.put("foodImage", "/com/projetjava/sprites/resources_sprites/Food.png");
+    imagePaths.put("woodImage", "/com/projetjava/sprites/resources_sprites/Wood.png");
+    imagePaths.put("stoneImage", "/com/projetjava/sprites/resources_sprites/Stone.png");
+    imagePaths.put("lumberImage", "/com/projetjava/sprites/resources_sprites/Lumber.png");
+    imagePaths.put("coalImage", "/com/projetjava/sprites/resources_sprites/Coal.png");
+    imagePaths.put("ironImage", "/com/projetjava/sprites/resources_sprites/Iron.png");
+    imagePaths.put("steelImage", "/com/projetjava/sprites/resources_sprites/Steel.png");
+    imagePaths.put("toolsImage", "/com/projetjava/sprites/resources_sprites/Tools.png");
+    imagePaths.put("goldImage", "/com/projetjava/sprites/resources_sprites/Gold.png");
+    imagePaths.put("workerImage", "/com/projetjava/sprites/worker.png");
+    return imagePaths;
+  }
+
   private void loadImages() {
     try {
       ImageCache imageCache = ImageCache.getInstance();
-      Image foodImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Food.png"
-      );
-      Image woodImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Wood.png"
-      );
-      Image stoneImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Stone.png"
-      );
-      Image lumberImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Lumber.png"
-      );
-      Image coalImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Coal.png"
-      );
-      Image ironImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Iron.png"
-      );
-      Image steelImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Steel.png"
-      );
-      Image toolsImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Tools.png"
-      );
-      Image goldImg = imageCache.getImage(
-        "/com/projetjava/sprites/resources_sprites/Gold.png"
-      );
-      Image workerImg = imageCache.getImage(
-        "/com/projetjava/sprites/worker.png"
-      );
+      Map<String, String> imagePaths = createImagePathsMap();
 
-      setImageView(foodImage, foodImg);
-      setImageView(woodImage, woodImg);
-      setImageView(stoneImage, stoneImg);
-      setImageView(lumberImage, lumberImg);
-      setImageView(coalImage, coalImg);
-      setImageView(ironImage, ironImg);
-      setImageView(steelImage, steelImg);
-      setImageView(toolsImage, toolsImg);
-      setImageView(goldImage, goldImg);
-      setImageView(workerImage, workerImg);
+      for (Map.Entry<String, String> entry : imagePaths.entrySet()) {
+        Image image = imageCache.getImage(entry.getValue());
+        setImage(entry.getKey(), image);
+      }
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  private void setImage(String key, Image image) {
+    switch (key) {
+      case "foodImage":
+        setImageView(foodImage, image);
+        break;
+      case "woodImage":
+        setImageView(woodImage, image);
+        break;
+      case "stoneImage":
+        setImageView(stoneImage, image);
+        break;
+      case "lumberImage":
+        setImageView(lumberImage, image);
+        break;
+      case "coalImage":
+        setImageView(coalImage, image);
+        break;
+      case "ironImage":
+        setImageView(ironImage, image);
+        break;
+      case "steelImage":
+        setImageView(steelImage, image);
+        break;
+      case "toolsImage":
+        setImageView(toolsImage, image);
+        break;
+      case "goldImage":
+        setImageView(goldImage, image);
+        break;
+      case "workerImage":
+        setImageView(workerImage, image);
+        break;
+      default:
+        throw new InvalidResourceLoadException("Error loading image: " + key);
     }
   }
 
   private void setImageView(ImageView imageView, Image image) {
     if (image == null || image.isError()) {
       throw new InvalidResourceLoadException(
-        "Error loading image: " + (image != null ? image.getUrl() : "null")
-      );
+          "Error loading image: " + (image != null ? image.getUrl() : "null"));
     } else {
       imageView.setImage(image);
       imageView.setFitHeight(50);
@@ -140,37 +159,35 @@ public class ResourcesController implements ResourceObserver {
 
   @Override
   public void updateResources(
-    int food,
-    int wood,
-    int stone,
-    int lumber,
-    int coal,
-    int iron,
-    int steel,
-    int tools,
-    int gold,
-    int workers,
-    int inhabitants
-  ) {
+      int food,
+      int wood,
+      int stone,
+      int lumber,
+      int coal,
+      int iron,
+      int steel,
+      int tools,
+      int gold,
+      int workers,
+      int inhabitants) {
     System.out.println(
-      food +
-      " " +
-      wood +
-      " " +
-      stone +
-      " " +
-      lumber +
-      " " +
-      coal +
-      " " +
-      iron +
-      " " +
-      steel +
-      " " +
-      tools +
-      " " +
-      gold
-    );
+        food +
+            " " +
+            wood +
+            " " +
+            stone +
+            " " +
+            lumber +
+            " " +
+            coal +
+            " " +
+            iron +
+            " " +
+            steel +
+            " " +
+            tools +
+            " " +
+            gold);
     Platform.runLater(() -> {
       foodLabel.setText("Food: " + food);
       woodLabel.setText("Wood: " + wood);
@@ -191,47 +208,46 @@ public class ResourcesController implements ResourceObserver {
 
     GameManager gameManager = GameManager.getInstance();
     int food = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.FOOD);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.FOOD);
     int wood = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.WOOD);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.WOOD);
     int stone = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.STONE);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.STONE);
     int lumber = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.LUMBER);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.LUMBER);
     int coal = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.COAL);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.COAL);
     int iron = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.IRON);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.IRON);
     int steel = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.STEEL);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.STEEL);
     int tools = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.TOOL);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.TOOL);
     int gold = gameManager
-      .getResourceManager()
-      .getResourceQuantity(ResourceType.GOLD);
+        .getResourceManager()
+        .getResourceQuantity(ResourceType.GOLD);
 
     int[] workers = gameManager.getQuantityOfWorkers();
 
     updateResources(
-      food,
-      wood,
-      stone,
-      lumber,
-      coal,
-      iron,
-      steel,
-      tools,
-      gold,
-      workers[0],
-      workers[1]
-    );
+        food,
+        wood,
+        stone,
+        lumber,
+        coal,
+        iron,
+        steel,
+        tools,
+        gold,
+        workers[0],
+        workers[1]);
   }
 }
