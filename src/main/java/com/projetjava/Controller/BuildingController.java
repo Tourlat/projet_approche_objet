@@ -16,13 +16,17 @@ public class BuildingController {
 
   private MapController mapController;
   private VBox lastClickedVBox;
+  private BuildingResourcesNeededPopup buildingResourcesNeededPopup;
 
   @FXML
   private HBox buildingContainer;
 
+  /**
+   * Initialize the BuildingController.
+   */
   @FXML
   public void initialize() {
-    // Initialisez les listes en utilisant lookup pour récupérer les éléments FXML par leur fx:id
+    // Initialize the building VBoxes and images from the FXML file by their IDs
     String[] vboxIds = {
       "woodenCabinVBox",
       "lumberMillVBox",
@@ -64,14 +68,15 @@ public class BuildingController {
       }
     }
 
+    buildingResourcesNeededPopup = new BuildingResourcesNeededPopup(null);
     initializeEventHandlers();
   }
 
   /**
-   * Initialise les gestionnaires d'événements (onclick) pour les images des bâtiments.
-   * Lorsqu'une image est cliquée, la méthode handleBuildingClick est appelée.
+   * Initialize the event handlers for the building images.
+   * When a building image is clicked, the corresponding VBox is scaled down and the MapController is notified.
    */
-  public void initializeEventHandlers() {
+  private void initializeEventHandlers() {
     for (int i = 0; i < buildingImages.size(); i++) {
       final int index = i;
       buildingImages
@@ -83,7 +88,8 @@ public class BuildingController {
   }
 
   /**
-   * Réinitialise les échelles des VBox des bâtiments (lorsque l'utilisateur clique sur un autre bâtiment).
+   * Reset the scales of the building VBoxes.
+   * This is used to reset the scale of the last clicked building VBox when another building is clicked.
    */
   private void resetScales() {
     if (lastClickedVBox != null) {
@@ -94,16 +100,16 @@ public class BuildingController {
   }
 
   /**
-   * Définit les images des bâtiments dans les ImageView correspondantes.
-   * @param woodenCabinImg
-   * @param lumberMillImg
-   * @param houseImg
-   * @param apartmentImg
-   * @param farmImg
-   * @param quarryImg
-   * @param steelMillImg
-   * @param cementPlantImg
-   * @param goldMineImg
+   * Define the images for the buildings.
+   * @param woodenCabinImg - the image for the wooden cabin
+   * @param lumberMillImg - the image for the lumber mill
+   * @param houseImg - the image for the house
+   * @param apartmentImg - the image for the apartment
+   * @param farmImg - the image for the farm
+   * @param quarryImg - the image for the quarry
+   * @param steelMillImg - the image for the steel mill
+   * @param cementPlantImg - the image for the cement plant
+   * @param goldMineImg - the image for the gold mine
    */
   public void setImages(
     Image woodenCabinImg,
@@ -140,26 +146,41 @@ public class BuildingController {
   }
 
   /**
-   * Définit le MapController pour ce BuildingController.
-   * @param mapController
+   * Define the MapController.
+   * @param mapController - the MapController
    */
   public void setMapController(MapController mapController) {
     this.mapController = mapController;
+    buildingResourcesNeededPopup =
+      new BuildingResourcesNeededPopup(mapController);
   }
 
   /**
-   * Gère le clic sur un bâtiment.
-   * @param buildingVBox
+   * Handle the click on a building VBox.
+   * @param buildingVBox - the building VBox that was clicked
    */
   private void handleBuildingClick(VBox buildingVBox) {
     resetScales();
     buildingVBox.setScaleX(0.9);
     buildingVBox.setScaleY(0.9);
 
+    // Get the screen coordinates of the VBox
+    double screenX = buildingVBox
+      .localToScreen(buildingVBox.getBoundsInLocal())
+      .getMinX();
+    double screenY = buildingVBox
+      .localToScreen(buildingVBox.getBoundsInLocal())
+      .getMinY();
+
     if (this.mapController != null) {
       this.mapController.setSelectedBuildingType(
           convertVBoxToType(buildingVBox)
         );
+      showBuildingResourcesNeeded(
+        convertVBoxToType(buildingVBox),
+        screenX,
+        screenY
+      );
     } else {
       System.err.println("MapController is null in handleBuildingClick");
     }
@@ -168,8 +189,22 @@ public class BuildingController {
   }
 
   /**
-   * Convertit une VBox en BuildingType.
-   * @param buildingVBox
+   * Show the resources needed to build a building.
+   * @param building - the building type
+   * @param screenX - the screen X position
+   * @param screenY - the screen Y position
+   */
+  private void showBuildingResourcesNeeded(
+    BuildingType building,
+    double screenX,
+    double screenY
+  ) {
+    buildingResourcesNeededPopup.show(building, screenX, screenY);
+  }
+
+  /**
+   * Convert a VBox to a BuildingType.
+   * @param buildingVBox - the VBox to convert
    * @return BuildingType
    */
   private BuildingType convertVBoxToType(VBox buildingVBox) {

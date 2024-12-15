@@ -8,10 +8,17 @@ public class PopulationManager {
   private static PopulationManager instance;
   private List<Population> population;
 
+  /**
+   * Constructor of PopulationManager
+   */
   private PopulationManager() {
     initializePop();
   }
 
+  /**
+   * Singleton pattern : only one instance of PopulationManager
+   * @return the instance of PopulationManager
+   */
   public static PopulationManager getInstance() {
     if (instance == null) {
       instance = new PopulationManager();
@@ -31,7 +38,7 @@ public class PopulationManager {
 
   /**
    * Get the list of populations
-   * 
+   *
    * @return List of populations
    */
   public List<Population> getPopulation() {
@@ -40,7 +47,7 @@ public class PopulationManager {
 
   /**
    * Get the total population
-   * 
+   *
    * @return Total population
    */
   public int getTotalPopulation() {

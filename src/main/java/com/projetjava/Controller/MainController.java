@@ -37,6 +37,9 @@ public class MainController {
   private Image cementPlantImage;
   private Image goldMineImage;
 
+  /**
+   * Initialize the MainController.
+   */
   @FXML
   public void initialize() {
     loadImages();
@@ -55,7 +58,8 @@ public class MainController {
       mainPane.setCenter(mapView);
 
       GridPane buildingView = (GridPane) loadView(
-          "/com/projetjava/views/BuildingView.fxml");
+        "/com/projetjava/views/BuildingView.fxml"
+      );
       mainPane.setBottom(buildingView);
 
       // Set the MapController in the BuildingController.
@@ -64,25 +68,27 @@ public class MainController {
         System.out.println("Setting MapController in BuildingController");
         buildingController.setMapController(mapController);
         buildingController.setImages(
-            woodenCabinImage,
-            lumberMillImage,
-            houseImage,
-            apartmentImage,
-            farmImage,
-            quarryImage,
-            steelMillImage,
-            cementPlantImage,
-            goldMineImage);
+          woodenCabinImage,
+          lumberMillImage,
+          houseImage,
+          apartmentImage,
+          farmImage,
+          quarryImage,
+          steelMillImage,
+          cementPlantImage,
+          goldMineImage
+        );
         mapController.setImages(
-            woodenCabinImage,
-            lumberMillImage,
-            houseImage,
-            apartmentImage,
-            farmImage,
-            quarryImage,
-            steelMillImage,
-            cementPlantImage,
-            goldMineImage);
+          woodenCabinImage,
+          lumberMillImage,
+          houseImage,
+          apartmentImage,
+          farmImage,
+          quarryImage,
+          steelMillImage,
+          cementPlantImage,
+          goldMineImage
+        );
         gameManager.addObserver(mapController);
       } else {
         throw new ErrorInitController("Controllers not initialized properly");
@@ -92,18 +98,20 @@ public class MainController {
       endController = new EndController();
       gameManager.setEndObserver(endController);
 
-
       // Set the event handler for the win/lose conditions, if the user presses W or L.
-      setEventHandlerForWinLose();
-
+      setEventHandlerForKeybinds();
     } catch (IOException e) {
       throw new InvalidResourceLoadException(
-          "Error loading views in MainController",
-          e);
+        "Error loading views in MainController",
+        e
+      );
     }
   }
 
-  private void setEventHandlerForWinLose() {
+  /**
+   * Set the event handler for the keybinds: W for win, L for lose, A for admin mode.
+   */
+  private void setEventHandlerForKeybinds() {
     Platform.runLater(() -> {
       Scene scene = mainPane.getScene();
       if (scene != null) {
@@ -115,6 +123,9 @@ public class MainController {
             case L:
               gameManager.Lose();
               break;
+            case A:
+              gameManager.adminMode();
+              break;
             default:
               break;
           }
@@ -123,6 +134,12 @@ public class MainController {
     });
   }
 
+  /**
+   * Load a view from an FXML file.
+   * @param fxmlPath - the path to the FXML file
+   * @return the loaded view
+   * @throws IOException if the view cannot be loaded
+   */
   private Pane loadView(String fxmlPath) throws IOException {
     System.out.println("Loading view: " + fxmlPath);
     FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -140,24 +157,57 @@ public class MainController {
       System.out.println("BuildingController loaded: " + buildingController);
     }
 
-
     return pane;
   }
 
+  /**
+   * Create a map of image paths.
+   * @return the map of image paths
+   */
   private Map<String, String> createImagePathsMap() {
     Map<String, String> imagePaths = new HashMap<>();
-    imagePaths.put("woodenCabinImage", "/com/projetjava/sprites/building_sprites/wooden_cabin.png");
-    imagePaths.put("lumberMillImage", "/com/projetjava/sprites/building_sprites/lumber_mill.png");
-    imagePaths.put("houseImage", "/com/projetjava/sprites/building_sprites/house.png");
-    imagePaths.put("apartmentImage", "/com/projetjava/sprites/building_sprites/apartment.png");
-    imagePaths.put("farmImage", "/com/projetjava/sprites/building_sprites/farm.png");
-    imagePaths.put("quarryImage", "/com/projetjava/sprites/building_sprites/quarry.png");
-    imagePaths.put("steelMillImage", "/com/projetjava/sprites/building_sprites/steel_mill.png");
-    imagePaths.put("cementPlantImage", "/com/projetjava/sprites/building_sprites/cement_plant.png");
-    imagePaths.put("goldMineImage", "/com/projetjava/sprites/building_sprites/gold_mine.png");
+    imagePaths.put(
+      "woodenCabinImage",
+      "/com/projetjava/sprites/building_sprites/wooden_cabin.png"
+    );
+    imagePaths.put(
+      "lumberMillImage",
+      "/com/projetjava/sprites/building_sprites/lumber_mill.png"
+    );
+    imagePaths.put(
+      "houseImage",
+      "/com/projetjava/sprites/building_sprites/house.png"
+    );
+    imagePaths.put(
+      "apartmentImage",
+      "/com/projetjava/sprites/building_sprites/apartment.png"
+    );
+    imagePaths.put(
+      "farmImage",
+      "/com/projetjava/sprites/building_sprites/farm.png"
+    );
+    imagePaths.put(
+      "quarryImage",
+      "/com/projetjava/sprites/building_sprites/quarry.png"
+    );
+    imagePaths.put(
+      "steelMillImage",
+      "/com/projetjava/sprites/building_sprites/steel_mill.png"
+    );
+    imagePaths.put(
+      "cementPlantImage",
+      "/com/projetjava/sprites/building_sprites/cement_plant.png"
+    );
+    imagePaths.put(
+      "goldMineImage",
+      "/com/projetjava/sprites/building_sprites/gold_mine.png"
+    );
     return imagePaths;
   }
 
+  /**
+   * Load the images for the buildings.
+   */
   private void loadImages() {
     try {
       ImageCache imageCache = ImageCache.getInstance();
@@ -166,7 +216,9 @@ public class MainController {
       for (Map.Entry<String, String> entry : imagePaths.entrySet()) {
         Image image = imageCache.getImage(entry.getValue());
         if (image == null) {
-          throw new InvalidResourceLoadException("Error loading " + entry.getKey());
+          throw new InvalidResourceLoadException(
+            "Error loading " + entry.getKey()
+          );
         }
         switch (entry.getKey()) {
           case "woodenCabinImage":

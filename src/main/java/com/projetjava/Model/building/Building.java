@@ -1,10 +1,9 @@
 package com.projetjava.Model.building;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.projetjava.Model.resources.Resource;
 import com.projetjava.Model.resources.ResourceType;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Building {
 
@@ -24,18 +23,31 @@ public abstract class Building {
 
   private BuildingType type;
 
+  /**
+   * Constructor of Building
+   * @param name - the name of the building
+   * @param type - the type of the building
+   * @param width - the width of the building
+   * @param height - the height of the building
+   * @param constructionTime - the construction time of the building
+   * @param constructionCost - the construction cost of the building
+   * @param consumption - the consumption (maintenance) of the building
+   * @param production - the max production of the building
+   * @param maxEmployees - the maximum number of employees in the building
+   * @param populationCreated - the population created by the building
+   */
   public Building(
-      String name,
-      BuildingType type,
-      int width,
-      int height,
-      int constructionTime,
-      Map<ResourceType, Integer> constructionCost,
-      Map<ResourceType, Integer> consumption,
-      Map<ResourceType, Integer> production,
-      int maxEmployees,
-      int populationCreated) {
-      
+    String name,
+    BuildingType type,
+    int width,
+    int height,
+    int constructionTime,
+    Map<ResourceType, Integer> constructionCost,
+    Map<ResourceType, Integer> consumption,
+    Map<ResourceType, Integer> production,
+    int maxEmployees,
+    int populationCreated
+  ) {
     uid++;
     this.name = name + "_" + uid.toString();
     this.type = type;
@@ -54,7 +66,7 @@ public abstract class Building {
 
   /**
    * Get the name of the building
-   * 
+   *
    * @return the name of the building
    */
   public String getName() {
@@ -63,7 +75,7 @@ public abstract class Building {
 
   /**
    * Get the width of the building
-   * 
+   *
    * @return the width of the building
    */
   public int getWidth() {
@@ -72,7 +84,7 @@ public abstract class Building {
 
   /**
    * Get the height of the building
-   * 
+   *
    * @return the height of the building
    */
   public int getHeight() {
@@ -81,7 +93,7 @@ public abstract class Building {
 
   /**
    * Get the construction time of the building
-   * 
+   *
    * @return the construction time of the building
    */
   public int getConstructionTime() {
@@ -90,7 +102,7 @@ public abstract class Building {
 
   /**
    * Get the construction cost of the building
-   * 
+   *
    * @return the construction cost of the building
    */
   public Map<ResourceType, Integer> getConstructionCost() {
@@ -99,14 +111,13 @@ public abstract class Building {
 
   /**
    * Get the consumption of the building
-   * 
+   *
    * @return the consumption of the building
    */
   public Map<ResourceType, Integer> getConsumption() {
     Map<ResourceType, Integer> consumption = new HashMap<>();
     double proportion = (double) currentEmployees / maxEmployees;
     for (Map.Entry<ResourceType, Integer> entry : this.consumption.entrySet()) {
-     
       consumption.put(entry.getKey(), (int) (entry.getValue() * proportion));
     }
     return consumption;
@@ -114,7 +125,7 @@ public abstract class Building {
 
   /**
    * Get the max production of the building
-   * 
+   *
    * @return the max production of the building
    */
   public Map<ResourceType, Integer> getMaxProduction() {
@@ -123,7 +134,7 @@ public abstract class Building {
 
   /**
    * Get the current production of the building
-   * 
+   *
    * @return the current production of the building
    */
   public Map<ResourceType, Integer> getCurrentProduction() {
@@ -141,7 +152,7 @@ public abstract class Building {
 
   /**
    * Get the population created by the building at the building time
-   * 
+   *
    * @return the population created by the building at the building time
    */
   public int getPopulationCreated() {
@@ -150,7 +161,7 @@ public abstract class Building {
 
   /**
    * Get the current population created by the building
-   * 
+   *
    * @return the current population created by the building
    */
   public int getCurrentPopulation() {
@@ -159,7 +170,7 @@ public abstract class Building {
 
   /**
    * Get the employees needed for the building
-   * 
+   *
    * @return the employees needed for the building
    */
   public int getMaxEmployees() {
@@ -168,7 +179,7 @@ public abstract class Building {
 
   /**
    * Get the number of currentEmployees people in the building
-   * 
+   *
    * @return the number of currentEmployees people in the building
    */
   public int getCurrentEmployees() {
@@ -177,7 +188,7 @@ public abstract class Building {
 
   /**
    * Add workers to the building
-   * 
+   *
    * @param workers the number of workers to add
    */
   public void addWorkers(int workers) {
@@ -192,7 +203,7 @@ public abstract class Building {
 
   /**
    * Remove workers from the building
-   * 
+   *
    * @param workers the number of workers to remove
    */
   public void removeWorkers(int workers) {
@@ -208,13 +219,13 @@ public abstract class Building {
   /*
    * Return building type
    */
-  public BuildingType getType(){
+  public BuildingType getType() {
     return this.type;
   }
 
   /**
    * Check if the building is constructed
-   * 
+   *
    * @return true if the building is constructed, false otherwise
    */
   public boolean isConstructed() {
@@ -227,19 +238,18 @@ public abstract class Building {
 
   /**
    * Check if the building can produce with the available resources
-   * @param availableResources
-   * @return
+   * @param availableResources - the available resources
+   * @return true if the building can produce, false otherwise
    */
   public boolean canProduce(Map<ResourceType, Resource> availableResources) {
     for (Map.Entry<ResourceType, Integer> entry : consumption.entrySet()) {
-        ResourceType resourceType = entry.getKey();
-        int requiredAmount = entry.getValue();
-        int availableAmount = availableResources.get(resourceType).getQuantity();
-        if (availableAmount < requiredAmount) {
-            return false;
-        }
+      ResourceType resourceType = entry.getKey();
+      int requiredAmount = entry.getValue();
+      int availableAmount = availableResources.get(resourceType).getQuantity();
+      if (availableAmount < requiredAmount) {
+        return false;
+      }
     }
     return true;
-}
-
+  }
 }

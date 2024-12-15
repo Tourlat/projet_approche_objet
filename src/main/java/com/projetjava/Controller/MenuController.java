@@ -13,6 +13,9 @@ public class MenuController {
   @FXML
   private Button playButton;
 
+  /**
+   * Initialize the MenuController.
+   */
   @FXML
   public void initialize() {
     // Apply styles to the play button
@@ -51,6 +54,10 @@ public class MenuController {
     );
   }
 
+  /**
+   * Handle the play button action -> load the main view
+   * @param event - the event
+   */
   @FXML
   private void handlePlayButtonAction(javafx.event.ActionEvent event) {
     try {

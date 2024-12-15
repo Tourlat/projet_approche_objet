@@ -5,23 +5,16 @@ import com.projetjava.Model.building.BuildingType;
 import com.projetjava.Model.game.GameManager;
 import com.projetjava.Model.map.MapManager;
 import com.projetjava.Model.map.Position;
-import com.projetjava.Model.resources.ResourceType;
 import com.projetjava.util.ImageCache;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Popup;
 
 public class MapController implements Observer {
 
@@ -34,15 +27,24 @@ public class MapController implements Observer {
   private Map<BuildingType, Image> buildingImages = new HashMap<>();
 
   private BuildingType selectedBuildingType;
+  private BuildingOptionsPopup buildingOptionsPopup;
+
   private GameManager gameManager;
 
+  /**
+   * Initialize the MapController.
+   */
   @FXML
   public void initialize() {
     loadImages();
     loadMap();
     gameManager = GameManager.getInstance();
+    buildingOptionsPopup = new BuildingOptionsPopup(this);
   }
 
+  /**
+   * Load the images
+   */
   private void loadImages() {
     try {
       ImageCache imageCache = ImageCache.getInstance();
@@ -56,6 +58,43 @@ public class MapController implements Observer {
     }
   }
 
+  /**
+   * Set the images for the buildings
+   * @param woodenCabinImg - the image for the wooden cabin
+   * @param lumberMillImg - the image for the lumber mill
+   * @param houseImg  - the image for the house
+   * @param apartmentImg  - the image for the apartment
+   * @param farmImg - the image for the farm
+   * @param quarryImg - the image for the quarry
+   * @param steelMillImg  - the image for the steel mill
+   * @param cementPlantImg  - the image for the cement plant
+   * @param goldMineImg - the image for the gold mine
+   */
+  public void setImages(
+    Image woodenCabinImg,
+    Image lumberMillImg,
+    Image houseImg,
+    Image apartmentImg,
+    Image farmImg,
+    Image quarryImg,
+    Image steelMillImg,
+    Image cementPlantImg,
+    Image goldMineImg
+  ) {
+    buildingImages.put(BuildingType.WOODEN_CABIN, woodenCabinImg);
+    buildingImages.put(BuildingType.LUMBER_MILL, lumberMillImg);
+    buildingImages.put(BuildingType.HOUSE, houseImg);
+    buildingImages.put(BuildingType.APARTMENT_BUILDING, apartmentImg);
+    buildingImages.put(BuildingType.FARM, farmImg);
+    buildingImages.put(BuildingType.QUARRY, quarryImg);
+    buildingImages.put(BuildingType.STEEL_MILL, steelMillImg);
+    buildingImages.put(BuildingType.CEMENT_PLANT, cementPlantImg);
+    buildingImages.put(BuildingType.GOLD_MINE, goldMineImg);
+  }
+
+  /**
+   * Load the map
+   */
   private void loadMap() {
     MapManager mapManager = MapManager.getInstance();
 
@@ -123,18 +162,45 @@ public class MapController implements Observer {
   }
 
   /**
-   * Handle mouse click event
+   * Set the selected building type
+   * @param selectedBuildingType - the selected building type
+   */
+  public void setSelectedBuildingType(BuildingType selectedBuildingType) {
+    this.selectedBuildingType = selectedBuildingType;
+  }
+
+  /**
+   * Get the map grid
+   * @return the map grid
+   */
+  public GridPane getMapGrid() {
+    return mapGrid;
+  }
+
+  /**
+   * Get the game manager
+   * @return the game manager
+   */
+  public GameManager getGameManager() {
+    return gameManager;
+  }
+
+  /**
+   * Handle mouse click event:
+   * - If a building is already placed at the position, show building options popup
+   * - If a building type is selected, place the building on the map
    *
-   * @param event the mouse event
-   * @param x     the x position
-   * @param y     the y position
+   * @param event - the mouse event
+   * @param x - the x position
+   * @param y - the y position
    */
   private void handleMouseClick(MouseEvent event, int x, int y) {
     MapManager mapManager = MapManager.getInstance();
 
-    System.out.println("Mouse clicked at position: (" + x + ", " + y + ")");
     Position origin = mapManager.getBuildingPosition(new Position(x, y));
     Building building = mapManager.getBuilding(origin);
+    // Check if a building is already placed at this position
+    // If so, show building options popup
     if (building != null && building.isConstructed()) {
       showBuildingOptions(
         building,
@@ -150,24 +216,23 @@ public class MapController implements Observer {
         selectedBuildingType
       );
       if (success) {
-        System.out.println("Building placed: " + selectedBuildingType);
+        System.out.println(
+          "Building placed: " + selectedBuildingType + " at " + x + ", " + y
+        );
         update();
       } else {
         System.out.println("Failed to place building: " + selectedBuildingType);
       }
-      selectedBuildingType = null;
     }
   }
 
   /**
-   * Display building options popup, such as adding/removing workers, removing
-   * building
-   *
-   * @param building the building
-   * @param x        the x position
-   * @param y        the y position
-   * @param screenX  the screen x position
-   * @param screenY  the screen y position
+   * Show the building options popup
+   * @param building - the building
+   * @param x - the x position
+   * @param y - the y position
+   * @param screenX - the screen x position
+   * @param screenY - the screen y position
    */
   private void showBuildingOptions(
     Building building,
@@ -176,229 +241,17 @@ public class MapController implements Observer {
     double screenX,
     double screenY
   ) {
-    Popup popup = new Popup();
-
-    VBox vbox = createVBoxPopUp();
-
-    String buildingName = building.getType().toString().replace("_", " ");
-    Label buildingNameLabel = new Label(buildingName);
-    buildingNameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-
-    Label workerLabel = createWorkerLabel(building);
-
-    String producString = createProductionString(building);
-
-    Position origin = MapManager
-      .getInstance()
-      .getBuildingPosition(new Position(x, y));
-
-    if (building.getMaxEmployees() != 0) {
-      Label productionLabel = new Label(producString);
-      productionLabel.setStyle("-fx-font-size: 14px;");
-
-      Button removeWorkerButton = createRemoveWorkerButton(
-        workerLabel,
-        productionLabel,
-        building,
-        origin
-      );
-
-      Button addWorkerButton = createAddWorkerButton(
-        workerLabel,
-        productionLabel,
-        building,
-        origin
-      );
-
-      HBox workerButtons = new HBox(10);
-      workerButtons.getChildren().addAll(removeWorkerButton, addWorkerButton);
-      workerButtons.setAlignment(Pos.CENTER);
-
-      Button removeBuildingButton = createRemoveBuildingButton(origin, popup);
-      Button cancelButton = createCancelButton(popup);
-
-      vbox
-        .getChildren()
-        .addAll(
-          buildingNameLabel,
-          workerLabel,
-          productionLabel,
-          workerButtons,
-          removeBuildingButton,
-          cancelButton
-        );
-    } else {
-      Button removeBuildingButton = createRemoveBuildingButton(origin, popup);
-      Button cancelButton = createCancelButton(popup);
-
-      vbox
-        .getChildren()
-        .addAll(buildingNameLabel, removeBuildingButton, cancelButton);
-    }
-
-    popup.getContent().add(vbox);
-    popup.setAutoHide(true);
-    popup.show(mapGrid.getScene().getWindow(), screenX, screenY);
+    buildingOptionsPopup.show(building, x, y, screenX, screenY);
   }
 
-  private VBox createVBoxPopUp() {
-    VBox vbox = new VBox(10);
-    vbox.setStyle(
-      "-fx-background-color: white; " +
-      "-fx-padding: 20; " +
-      "-fx-border-color: black; " +
-      "-fx-border-width: 1; " +
-      "-fx-background-radius: 10; " + // Rounded corners
-      "-fx-border-radius: 10;" // Rounded corners
-    );
-    vbox.setAlignment(Pos.CENTER);
-    return vbox;
-  }
-
-  private Label createWorkerLabel(Building building) {
-    Label workerLabel = new Label(
-      "Workers: " +
-      building.getCurrentEmployees() +
-      "/" +
-      building.getMaxEmployees()
-    );
-    workerLabel.setStyle("-fx-font-size: 14px;");
-    return workerLabel;
-  }
-
-  private String createProductionString(Building building) {
-    StringBuilder productionText = new StringBuilder("Production:\n");
-    for (Map.Entry<ResourceType, Integer> entry : building
-      .getCurrentProduction()
-      .entrySet()) {
-      productionText
-        .append(entry.getKey())
-        .append(": ")
-        .append(entry.getValue())
-        .append("\n");
-    }
-    return productionText.toString();
-  }
-
-  private Button createRemoveWorkerButton(
-    Label workerLabel,
-    Label productionLabel,
-    Building building,
-    Position origin
-  ) {
-    Button removeWorkerButton = new Button("-1");
-    removeWorkerButton.setStyle(
-      "-fx-background-color: #f44336; " + // Red background
-      "-fx-text-fill: white; " + // White text
-      "-fx-background-radius: 10; " + // Rounded corners
-      "-fx-border-radius: 10;" // Rounded corners
-    );
-    removeWorkerButton.setOnAction(e -> {
-      if (building.getCurrentEmployees() > 0) {
-        gameManager.removeWorkersFromBuilding(origin, 1);
-        workerLabel.setText(
-          "Workers: " +
-          building.getCurrentEmployees() +
-          "/" +
-          building.getMaxEmployees()
-        );
-        productionLabel.setText(createProductionString(building));
-      }
-    });
-
-    return removeWorkerButton;
-  }
-
-  private Button createAddWorkerButton(
-    Label workerLabel,
-    Label productionLabel,
-    Building building,
-    Position origin
-  ) {
-    Button addWorkerButton = new Button("+1");
-    addWorkerButton.setStyle(
-      "-fx-background-color: #4CAF50; " + // Green background
-      "-fx-text-fill: white; " + // White text
-      "-fx-background-radius: 10; " + // Rounded corners
-      "-fx-border-radius: 10;" // Rounded corners
-    );
-    addWorkerButton.setOnAction(e -> {
-      if (
-        building.getCurrentEmployees() < building.getMaxEmployees() &&
-        gameManager.getAvailableWorkers() > 0
-      ) {
-        gameManager.addWorkersToBuilding(origin, 1);
-        workerLabel.setText(
-          "Workers: " +
-          building.getCurrentEmployees() +
-          "/" +
-          building.getMaxEmployees()
-        );
-      }
-      productionLabel.setText(createProductionString(building));
-    });
-    return addWorkerButton;
-  }
-
-  private Button createRemoveBuildingButton(Position origin, Popup popup) {
-    Button removeBuildingButton = new Button("Remove Building");
-    removeBuildingButton.setStyle(
-      "-fx-background-color: #f44336; " + // Red background
-      "-fx-text-fill: white; " + // White text
-      "-fx-background-radius: 10; " + // Rounded corners
-      "-fx-border-radius: 10;" // Rounded corners
-    );
-    removeBuildingButton.setOnAction(e -> {
-      gameManager.removeBuilding(origin);
-      update();
-      popup.hide();
-    });
-    return removeBuildingButton;
-  }
-
-  private Button createCancelButton(Popup popup) {
-    Button cancelButton = new Button("Cancel");
-    cancelButton.setStyle(
-      "-fx-background-color: #9E9E9E; " + // Grey background
-      "-fx-text-fill: white; " + // White text
-      "-fx-background-radius: 10; " + // Rounded corners
-      "-fx-border-radius: 10;" // Rounded corners
-    );
-    cancelButton.setOnAction(e -> popup.hide());
-    return cancelButton;
-  }
-
+  /**
+   * Update the map
+   */
   @Override
   public void update() {
     Platform.runLater(() -> {
       mapGrid.getChildren().clear();
       loadMap();
     });
-  }
-
-  public void setSelectedBuildingType(BuildingType selectedBuildingType) {
-    this.selectedBuildingType = selectedBuildingType;
-  }
-
-  public void setImages(
-    Image woodenCabinImg,
-    Image lumberMillImg,
-    Image houseImg,
-    Image apartmentImg,
-    Image farmImg,
-    Image quarryImg,
-    Image steelMillImg,
-    Image cementPlantImg,
-    Image goldMineImg
-  ) {
-    buildingImages.put(BuildingType.WOODEN_CABIN, woodenCabinImg);
-    buildingImages.put(BuildingType.LUMBER_MILL, lumberMillImg);
-    buildingImages.put(BuildingType.HOUSE, houseImg);
-    buildingImages.put(BuildingType.APARTMENT_BUILDING, apartmentImg);
-    buildingImages.put(BuildingType.FARM, farmImg);
-    buildingImages.put(BuildingType.QUARRY, quarryImg);
-    buildingImages.put(BuildingType.STEEL_MILL, steelMillImg);
-    buildingImages.put(BuildingType.CEMENT_PLANT, cementPlantImg);
-    buildingImages.put(BuildingType.GOLD_MINE, goldMineImg);
   }
 }

@@ -6,13 +6,18 @@ public class Workers implements Population {
   private int employedWorkers;
   private int unemployedWorkers;
 
-  // Constructeur privé pour empêcher la création d'instances depuis l'extérieur
+  /**
+   * Constructor of Workers
+   */
   private Workers() {
     employedWorkers = 0;
     unemployedWorkers = 0;
   }
 
-  // Méthode publique et statique pour obtenir l'instance unique
+  /**
+   * Singleton pattern : only one instance of Workers
+   * @return the instance of Workers
+   */
   public static Workers getInstance() {
     if (instance == null) {
       instance = new Workers();
@@ -132,7 +137,6 @@ public class Workers implements Population {
 
   /**
    * Remove workers depending on the food available
-   *
    */
   public void foodConsumption(int foodAvailable) {
     int foodConsumption = getFoodConsumption();

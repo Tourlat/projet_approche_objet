@@ -1,355 +1,360 @@
 @startuml
 
-package "com.projetjava" {
 
-    class App {
-        +void start(Stage stage) <<throws IOException;
-        {static} +Stage getPrimaryStage();
-        {static} +void main(String[] args);
+package "Controller" {
+
+    class BuildingController {
+        +void initialize();
+        -void initializeEventHandlers();
+        -void resetScales();
+        +public void setImages(Image woodenCabinImg, Image lumberMillImg, Image houseImg, Image apartmentImg, Image farmImg, Image quarryImg, Image steelMillImg, Image cementPlantImg, Image goldMineImg);
+        +void setMapController(MapController mapController);
+        -void handleBuildingClick(VBox buildingVBox);
+        -void showBuildingResourcesNeeded(BuildingType building, double screenX, double screenY);
+        -BuildingType convertVBoxToType(VBox buildingVBox);
     }
 
-    App --|> Application
-
-    package "Controller" {
-
-        class BuildingController {
-            +void initialize();
-            +void initializeEventHandlers();
-            +void resetScales();
-            +public void setImages(Image woodenCabinImg, Image lumberMillImg, Image houseImg, Image apartmentImg, Image farmImg, Image quarryImg, Image steelMillImg, Image cementPlantImg, Image goldMineImg);
-            +void setMapController(MapController mapController);
-            -void handleBuildingClick(VBox buildingVBox);
-            -BuildingType convertVBoxToType(VBox buildingVBox);
-        }
-
-        class EndController {
-            +void gameEnded(Boolean hasWon);
-        }
-
-        class MainController {
-            +void initialize();
-            -Pane loadView(String fxmlPath) <<throws IOException;
-            -void loadImages();
-        }
-
-        class MapController {
-            +void initialize();
-            -void loadImages();
-            -void loadMap();
-            -void handleMouseClick(MouseEvent event, int x, int y);
-            -void showBuildingOptions(Building building, int x, int y, double screenX, double screenY);
-            -VBox createVBoxPopUp();
-            -Label createWorkerLabel(Building building);
-            -String createProductionString(Building building);
-            -Button createRemoveWorkerButton(Label workerLabel, Label productionLabel, Building building, Position origin);
-            -Button createAddWorkerButton(Label workerLabel, Label productionLabel, Building building, Position origin);
-            -Button createRemoveBuildingButton(Position origin, Popup popup);
-            -Button createCancelButton(Popup popup);
-            +void update();
-            +void setSelectedBuildingType(BuildingType selectedBuildingType);
-            +void setImages(Image woodenCabinImg, Image lumberMillImg, Image houseImg, Image apartmentImg, Image farmImg, Image quarryImg, Image steelMillImg, Image cementPlantImg, Image goldMineImg);
-        }
-
-        class MenuController {
-            +void initialize();
-            -void handlePlayButtonAction(javafx.event.ActionEvent event);
-        }
-
-        interface Observer {
-            void update();
-        }
-
-        interface ResourceObserver {
-            void updateResources(int food, int wood, int stone, int lumber, int coal, int iron, int steel, int tools, int gold, int workers, int inhabitants);
-        }
-
-        class ResourcesController {
-            +void initialize();
-            -void loadImages();
-            -void setImageView(ImageView imageView, Image image);
-            +void updateResources(int food, int wood, int stone, int lumber, int coal, int iron, int steel, int tools, int gold, int workers, int inhabitants);
-            +void update()
-        }
-
-        MapController ..|> Observer
-        ResourceObserver --|> Observer
-        ResourcesController ..|> ResourceObserver
+    class BuildingOptionsPopup {
+        +BuildingOptionsPopup(MapController mapController)
+        +void show(Building building, int x, int y, double screenX, double screenY);
+        -void updatePopupContent(Building building, int x, int y);
+        -VBox createVBoxPopUp();
+        -Label createWorkerLabel(Building building);
+        -String createProductionString(Building building);
+        -Button createRemoveWorkerButton(Label workerLabel, Label productionLabel, Building building, Position origin);
+        -Button createAddWorkerButton(Label workerLabel, Label productionLabel, Building building, Position origin);
+        -Button createRemoveBuildingButton(Position origin, Popup popup);
+        -Button createCancelButton(Popup popup);
     }
 
-    package "customexceptions" {
-
-        class InvalidResourceLoadException {
-            +InvalidResourceLoadException(String message);
-            +InvalidResourceLoadException(String message, Throwable cause);
-        }
-
-        class UnknownBuildingTypeException {
-            +UnknownBuildingTypeException(String message);
-        }
-
-        class UnknownPopulationTypeException {
-            +UnknownPopulationTypeException(String message);
-        }
-        
-        class UnknownResourceTypeException {
-            +UnknownResourceTypeException(String message);
-        }
-
-        InvalidResourceLoadException --|> RuntimeException
-        UnknownBuildingTypeException --|> RuntimeException
-        UnknownPopulationTypeException --|> RuntimeException
-        UnknownResourceTypeException --|> RuntimeException
+    class BuildingResourcesNeededPopup {
+        +BuildingResourcesNeededPopup(MapController mapController);
+        +void show(BuildingType buildingType, double screenX, double screenY);
+        -void updatePopupContent(BuildingType buildingType);
+        -VBox createVBoxPopUp();
     }
 
-    package "Model" {
+    class EndController {
+        +void gameEnded(Boolean hasWon);
+    }
 
-        package "resources" {
+    class MainController {
+        +void initialize();
+        -void setEventHandlerForKeybinds();
+        -Pane loadView(String fxmlPath) <<throws IOException;
+        -void loadImages();
+    }
 
-            class Resource {
-            +Resource(ResourceType type, int quantity);
-            +ResourceType getType();
-            +void setType(ResourceType type);
-            +int getQuantity();
-            +void setQuantityint quantity();
-            +void addQuantity(int quantity);
-            +void substractQuantity(int quantity);
-            }
+    class MapController {
+        +void initialize();
+        -void loadImages();
+        +void setImages(Image woodenCabinImg, Image lumberMillImg, Image houseImg, Image apartmentImg, Image farmImg, Image quarryImg, Image steelMillImg, Image cementPlantImg, Image goldMineImg);
+        -void loadMap();
+        +void setSelectedBuildingType(BuildingType selectedBuildingType);
+        +GridPane getMapGrid();
+        +GameManager getGameManager();
+        -void handleMouseClick(MouseEvent event, int x, int y);
+        -void showBuildingOptions(Building building, int x, int y, double screenX, double screenY);
+        -VBox createVBoxPopUp();
+        +void update();
+    }
 
-            class ResourceManager {
-            -ResourceManager();
-            +ResourceManager getInstance();
-            {static} -void initializeResources();
-            +void addResource(ResourceType type, int quantity);
-            +void substractResource(ResourceType type, int quantity);
-            +void setResourceQuantity(ResourceType type, int quantity);
-            +int getResourceQuantity(ResourceType type);
-            +void showResources();
-            +Map<ResourceType, Resource> getResources();
-            }
+    class MenuController {
+        +void initialize();
+        -void handlePlayButtonAction(javafx.event.ActionEvent event);
+    }
 
-            enum ResourceType {
-            FOOD, WOOD, STONE, COAL, IRON, STEEL, CEMENT, LUMBER, TOOL, GOLD
-            }
+    interface Observer {
+        void update();
+    }
+
+    interface ResourceObserver {
+        void updateResources(int food, int wood, int stone, int lumber, int coal, int iron, int steel, int tools, int gold, int workers, int inhabitants);
+    }
+
+    class ResourcesController {
+        +void initialize();
+        -void initializeImageViewMap();
+        -void initializeLabelMap();
+        -Map<String, String> createImagePathsMap();
+        -void loadImages();
+        -void setImage(String key, Image image)
+        -void setImageView(ImageView imageView, Image image);
+        +void updateResources(int food, int wood, int stone, int lumber, int coal, int iron, int steel, int tools, int gold, int workers, int inhabitants);
+        +void update()
+    }
+
+    MapController ..|> Observer
+    ResourceObserver --|> Observer
+    ResourcesController ..|> ResourceObserver
+}
+
+package "customexceptions" {
+
+    class InvalidResourceLoadException {
+        +InvalidResourceLoadException(String message);
+        +InvalidResourceLoadException(String message, Throwable cause);
+    }
+
+    class UnknownBuildingTypeException {
+        +UnknownBuildingTypeException(String message);
+    }
+
+    class UnknownPopulationTypeException {
+        +UnknownPopulationTypeException(String message);
+    }
+    
+    class UnknownResourceTypeException {
+        +UnknownResourceTypeException(String message);
+    }
+
+    InvalidResourceLoadException --|> RuntimeException
+    UnknownBuildingTypeException --|> RuntimeException
+    UnknownPopulationTypeException --|> RuntimeException
+    UnknownResourceTypeException --|> RuntimeException
+}
+
+package "Model" {
+
+    package "resources" {
+
+        class Resource {
+        +Resource(ResourceType type, int quantity);
+        +ResourceType getType();
+        +void setType(ResourceType type);
+        +int getQuantity();
+        +void setQuantityint quantity();
+        +void addQuantity(int quantity);
+        +void substractQuantity(int quantity);
         }
 
-        package "population" {
+        class ResourceManager {
+        -ResourceManager();
+        +ResourceManager getInstance();
+        {static} -void initializeResources();
+        +void addResource(ResourceType type, int quantity);
+        +void substractResource(ResourceType type, int quantity);
+        +void setResourceQuantity(ResourceType type, int quantity);
+        +int getResourceQuantity(ResourceType type);
+        +Map<ResourceType, Resource> getResources();
+        }
 
-            interface Population {
+        enum ResourceType {
+        FOOD, WOOD, STONE, COAL, IRON, STEEL, CEMENT, LUMBER, TOOL, GOLD
+        }
+    }
+
+    package "population" {
+
+        interface Population {
+        +int getTotal();
+        +int getUnemployed();
+        +int getEmployed();
+        +void addEmployed(int employed);
+        +void removeEmployed(int employed);
+        +void removeUnemployed(int unemployed);
+        +void addUnemployed(int unemployed);
+        +void addPop(int pop);
+        +void foodConsumption(int food);
+        default int getFoodConsumption();
+        }
+
+        class PopulationFactory {
+            {static} +Population createPopulation(PopulationType type);
+        }
+
+        class PopulationManager {
+            -PopulationManager();
+            {static} +PopulationManager getInstance();
+            -void initializePop();
+            +List<Population> getPopulation();
+            +int getTotalPopulation();
+        }
+
+        enum PopulationType {
+            Workers
+        }
+
+        class Workers {
+            -Workers();
+            {static} +Workers getInstance();
             +int getTotal();
             +int getUnemployed();
             +int getEmployed();
             +void addEmployed(int employed);
+            +void addUnemployed(int unemployed);
             +void removeEmployed(int employed);
             +void removeUnemployed(int unemployed);
-            +void addUnemployed(int unemployed);
             +void addPop(int pop);
-            +void foodConsumption(int food);
-            default int getFoodConsumption();
-            }
+            +void foodConsumption(int foodAvailable);
+        }
+        Workers ..|> Population
+    }
 
-            class PopulationFactory {
-                {static} +Population createPopulation(PopulationType type);
-            }
+    package "map" {
 
-            class PopulationManager {
-                -PopulationManager();
-                {static} +PopulationManager getInstance();
-                -void initializePop();
-                +List<Population> getPopulation();
-                +int getTotalPopulation();
-            }
-
-            enum PopulationType {
-                Workers
-            }
-
-            class Workers {
-                -Workers();
-                {static} +Workers getInstance();
-                +int getTotal();
-                +int getUnemployed();
-                +int getEmployed();
-                +void addEmployed(int employed);
-                +void addUnemployed(int unemployed);
-                +void removeEmployed(int employed);
-                +void removeUnemployed(int unemployed);
-                +void addPop(int pop);
-                +void foodConsumption(int foodAvailable);
-            }
-            Workers ..|> Population
+        class MapManager {
+            -MapManager(int width, int height);
+            {static} +MapManager getInstance();
+            +boolean isOccupied(int startX, int startY, int tilesWidth, int tilesHeight);
+            +boolean isOccupied(int x, int y);
+            +void setOccupied(int x, int y, boolean occupied);
+            +boolean placeBuilding(Position pos, Building building);
+            +boolean canPlaceBuilding(int x, int y);
+            +boolean removeBuilding(Position pos);
+            +void showMap();
+            +int getWidth();
+            +int getHeight();
+            +Building getBuilding(Position pos);
+            +Position getBuildingPosition(Position pos);
+            +HashMap<Position, Building> getBuildings();
         }
 
-        package "map" {
-
-            class MapManager {
-                -MapManager(int width, int height);
-                {static} +MapManager getInstance();
-                +boolean isOccupied(int startX, int startY, int tilesWidth, int tilesHeight);
-                +boolean isOccupied(int x, int y);
-                +void setOccupied(int x, int y, boolean occupied);
-                +boolean placeBuilding(Position pos, Building building);
-                +boolean canPlaceBuilding(int x, int y);
-                +boolean removeBuilding(Position pos);
-                +void showMap();
-                +int getWidth();
-                +int getHeight();
-                +Building getBuilding(Position pos);
-                +Position getBuildingPosition(Position pos);
-                +HashMap<Position, Building> getBuildings();
-            }
-
-            class Position {
-                +Position(int x, int y);
-                +int getX();
-                +int getY();
-                +boolean equals(Object o);
-                +int hashCode();
-            }
-        }
-
-        package "game" {
-            
-            class GameManager {
-                {static} +GameManager getInstance();
-                -GameManager();
-                +void update();
-                +void initializeGame();
-                -void adminMode();
-                +int[] getQuantityOfWorkers();
-                +boolean haveResourcesToBuild(BuildingType building);
-                +boolean addBuilding(Position position, BuildingType building);
-                +boolean removeBuilding(Position position);
-                +boolean addWorkersToBuilding(Position position, int numberOfWorkers);
-                +boolean removeWorkersFromBuilding(Position position, int numberOfWorkers);
-                +void addProduction(Building building);
-                +void consumeBuildingResources(Building building);
-                +void updateResources();
-                +void consumeFood();
-                +void showResources();
-                +ResourceManager getResourceManager();
-                +GameTimer getGameTimer();
-                +int getAvailableWorkers();
-                +void addObserver(Observer observer);
-                +void removeObserver(Observer observer);
-                +void notifyObservers();
-                +void addResourceObserver(ResourceObserver observer);
-                +void removeResourceObserver(ResourceObserver observer);
-                +void notifyResourceObservers();
-                +void Win();
-                +void Lose();
-                +void hasGameEnded();
-            }
-
-            class GameTimer {
-                {static} +GameTimer getInstance();
-                -GameTimer();
-                +void start();
-                +void stop();
-                -void updateGameTime();
-                +boolean isDay();
-                +int getTimeOfDay();
-                +boolean isRunning();
-                +boolean isUpdated();
-                +void setUpdated(boolean updated);
-                +void addObserver(Observer observer);
-                +void removeObserver(Observer observer);
-                -void notifyObservers();
-            }
-
-            GameManager ..|> Observer
-        }
-
-        package "building" {
-
-            class ApartmentBuilding {
-                +ApartmentBuilding();
-            }
-
-            abstract class Building {
-                +public Building(String name, BuildingType type, int width, int height, int constructionTime, Map<ResourceType, Integer> constructionCost, Map<ResourceType, Integer> consumption, Map<ResourceType, Integer> production, int maxEmployees, int populationCreated);
-                +String getName();
-                +int getWidth();
-                +int getHeight();
-                +int getConstructionTime();
-                +Map<ResourceType, Integer> getConstructionCost();
-                +Map<ResourceType, Integer> getConsumption();
-                +Map<ResourceType, Integer> getMaxProduction();
-                +Map<ResourceType, Integer> getCurrentProduction();
-                +int getPopulationCreated();
-                +int getCurrentPopulation();
-                +int getMaxEmployees();
-                +int getCurrentEmployees();
-                +void addWorkers(int workers);
-                +void removeWorkers(int workers);
-                +BuildingType getType();
-                +boolean isConstructed();
-                +boolean setConstructTrue();
-                +boolean canProduce(Map<ResourceType, Resource> availableResources);
-            }
-
-            class BuildingFactory {
-                {static} +Building createBuilding(BuildingType type);
-            }
-
-            enum BuildingType {
-                WOODEN_CABIN, HOUSE, APARTMENT_BUILDING, FARM,QUARRY, LUMBER_MILL, CEMENT_PLANT, STEEL_MILL, TOOL_FACTORY, GOLD_MINE 
-            }
-
-            class CementPlant {
-                +CementPlant();
-            }
-
-            class Farm {
-                +Farm();
-            }
-
-            class GoldMine {
-                +GoldMine();
-            }
-
-            class House {
-                +House();
-            }
-
-            class LumberMill {
-                +LumberMill();
-            }
-
-            class Quarry {
-                +Quarry();
-            }
-
-            class SteelMill {
-                +SteelMill();
-            }
-
-            class ToolFactory {
-                +ToolFactory();
-            }
-
-            class WoodenCabin {
-                +WoodenCabin();
-            }
-
-            ApartmentBuilding --|> Building
-            CementPlant --|> Building
-            Farm --|> Building
-            GoldMine --|> Building
-            House --|> Building
-            LumberMill --|> Building
-            Quarry --|> Building
-            StellMill --|> Building
-            ToolFactory --|> Building
-            WoodenCabin --|> Building
+        class Position {
+            +Position(int x, int y);
+            +int getX();
+            +int getY();
+            +boolean equals(Object o);
+            +int hashCode();
         }
     }
 
-    package "util" {
-        class ImageCache {
-            -ImageCache();
-            {static} +ImageCache getInstance();
-            +Image getImage(String path);
+    package "game" {
+        
+        class GameManager {
+            {static} +GameManager getInstance();
+            -GameManager();
+            +void update();
+            +void initializeGame();
+            +void adminMode();
+            +int[] getQuantityOfWorkers();
+            +boolean haveResourcesToBuild(BuildingType building);
+            +boolean addBuilding(Position position, BuildingType building);
+            +boolean removeBuilding(Position position);
+            +boolean addEmployeesToBuilding(Position position, int numberOfEmployees);
+            +boolean removeEmployeesFromBuilding(Position position, int numberOfEmployees);
+            +void addBuildingProduction(Building building);
+            +void consumeBuildingMaintenance(Building building);
+            +void updateResources();
+            +void consumeFood();
+            +ResourceManager getResourceManager();
+            +GameTimer getGameTimer();
+            +int getAvailableWorkers();
+            +void addObserver(Observer observer);
+            +void removeObserver(Observer observer);
+            +void notifyObservers();
+            +void addResourceObserver(ResourceObserver observer);
+            +void removeResourceObserver(ResourceObserver observer);
+            +void notifyResourceObservers();
+            +void Win();
+            +void Lose();
+            +void hasGameEnded();
         }
+
+        class GameTimer {
+            {static} +GameTimer getInstance();
+            -GameTimer();
+            +void start();
+            +void stop();
+            -void updateGameTime();
+            +void addObserver(Observer observer);
+            +void removeObserver(Observer observer);
+            -void notifyObservers();
+        }
+
+        GameManager ..|> Observer
+    }
+
+    package "building" {
+
+        class ApartmentBuilding {
+            +ApartmentBuilding();
+        }
+
+        abstract class Building {
+            +public Building(String name, BuildingType type, int width, int height, int constructionTime, Map<ResourceType, Integer> constructionCost, Map<ResourceType, Integer> consumption, Map<ResourceType, Integer> production, int maxEmployees, int populationCreated);
+            +String getName();
+            +int getWidth();
+            +int getHeight();
+            +int getConstructionTime();
+            +Map<ResourceType, Integer> getConstructionCost();
+            +Map<ResourceType, Integer> getConsumption();
+            +Map<ResourceType, Integer> getMaxProduction();
+            +Map<ResourceType, Integer> getCurrentProduction();
+            +int getPopulationCreated();
+            +int getCurrentPopulation();
+            +int getMaxEmployees();
+            +int getCurrentEmployees();
+            +void addWorkers(int workers);
+            +void removeWorkers(int workers);
+            +BuildingType getType();
+            +boolean isConstructed();
+            +boolean setConstructTrue();
+            +boolean canProduce(Map<ResourceType, Resource> availableResources);
+        }
+
+        class BuildingFactory {
+            {static} +Building createBuilding(BuildingType type);
+        }
+
+        enum BuildingType {
+            WOODEN_CABIN, HOUSE, APARTMENT_BUILDING, FARM,QUARRY, LUMBER_MILL, CEMENT_PLANT, STEEL_MILL, TOOL_FACTORY, GOLD_MINE 
+        }
+
+        class CementPlant {
+            +CementPlant();
+        }
+
+        class Farm {
+            +Farm();
+        }
+
+        class GoldMine {
+            +GoldMine();
+        }
+
+        class House {
+            +House();
+        }
+
+        class LumberMill {
+            +LumberMill();
+        }
+
+        class Quarry {
+            +Quarry();
+        }
+
+        class SteelMill {
+            +SteelMill();
+        }
+
+        class ToolFactory {
+            +ToolFactory();
+        }
+
+        class WoodenCabin {
+            +WoodenCabin();
+        }
+
+        ApartmentBuilding --|> Building
+        CementPlant --|> Building
+        Farm --|> Building
+        GoldMine --|> Building
+        House --|> Building
+        LumberMill --|> Building
+        Quarry --|> Building
+        StellMill --|> Building
+        ToolFactory --|> Building
+        WoodenCabin --|> Building
+    }
+}
+
+package "util" {
+    class ImageCache {
+        -ImageCache();
+        {static} +ImageCache getInstance();
+        +Image getImage(String path);
     }
 }
 

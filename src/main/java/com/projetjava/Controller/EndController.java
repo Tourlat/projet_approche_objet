@@ -1,7 +1,6 @@
 package com.projetjava.Controller;
 
 import com.projetjava.App;
-import com.projetjava.Model.game.GameManager;
 import com.projetjava.util.ImageCache;
 import java.io.IOException;
 import javafx.application.Platform;
@@ -18,6 +17,10 @@ public class EndController implements EndObserver {
   @FXML
   private ImageView endImage;
 
+  /**
+   * Display the end screen
+   * @param hasWon - true if the player has won, false otherwise
+   */
   @FXML
   public void gameEnded(Boolean hasWon) {
     Platform.runLater(() -> {
@@ -46,7 +49,7 @@ public class EndController implements EndObserver {
         stage.setMaximized(true);
         stage.show();
 
-        // Définir l'image après le chargement de la vue
+        // Define the image to display after the view has been loaded
         EndController controller = loader.getController();
         controller.endImage.setImage(endImg);
       } catch (IOException e) {
@@ -55,6 +58,9 @@ public class EndController implements EndObserver {
     });
   }
 
+  /**
+   * Update the end screen
+   */
   @Override
   public void updateEnd(boolean hasWon) {
     Platform.runLater(() -> {
@@ -62,8 +68,9 @@ public class EndController implements EndObserver {
     });
   }
 
+  /**
+   * Function update from the Observer interface: does nothing
+   */
   @Override
-  public void update() {
-  }
-
+  public void update() {}
 }
