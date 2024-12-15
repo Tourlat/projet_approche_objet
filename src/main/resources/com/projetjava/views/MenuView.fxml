@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="com.projetjava.Controller.MenuController">
-    <Label text="Welcome to Age of Anno!" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+    <Label text="Welcome to Empire of Anno!" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
     <Label text="In this demo, you can build and manage your empire in its first Age." wrapText="true" style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
     <Label text="To end your game faster, use the keybinds 'W' to win and 'L' to lose." wrapText="true" style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
     <Label text="You can also use the keybind 'A' to add a lot of resources (for testing purposes)." wrapText="true" style="-fx-font-size: 14px; -fx-text-fill: #34495e;" />
