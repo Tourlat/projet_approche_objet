@@ -200,7 +200,7 @@ public class ResourcesController implements ResourceObserver {
       labelMap.get("goldLabel").setText("Gold: " + gold);
       labelMap
         .get("workerLabel")
-        .setText("Population employed: " + workers + "/" + inhabitants);
+        .setText("Employees: " + workers + "/" + inhabitants);
     });
   }
 
